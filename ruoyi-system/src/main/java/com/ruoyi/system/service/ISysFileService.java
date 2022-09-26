@@ -1,5 +1,6 @@
 package com.ruoyi.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.system.domain.SysFile;
 import com.ruoyi.system.domain.vo.SysFileVo;
 import com.ruoyi.system.domain.bo.SysFileBo;
@@ -16,7 +17,7 @@ import java.util.Map;
  * @author lbzzz
  * @date 2022-09-23
  */
-public interface ISysFileService {
+public interface ISysFileService extends IService<SysFile> {
 
     /**
      * 查询文件
@@ -54,4 +55,16 @@ public interface ISysFileService {
      * @return
      */
     public Map getFileByCode(String fileCode);
+
+    /**
+     * 更新文件
+     * @param fileCode
+     */
+    public void recovery(String fileCode);
+
+    /**
+     * 删除文件
+     * @param fileCode
+     */
+    public void deleteFile(String fileCode);
 }

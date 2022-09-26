@@ -1,12 +1,15 @@
 package com.ruoyi.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.domain.bo.SysFileBo;
@@ -14,6 +17,7 @@ import com.ruoyi.system.domain.vo.SysFileVo;
 import com.ruoyi.system.domain.SysFile;
 import com.ruoyi.system.mapper.SysFileMapper;
 import com.ruoyi.system.service.ISysFileService;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +31,7 @@ import java.util.Collection;
  */
 @RequiredArgsConstructor
 @Service
-public class SysFileServiceImpl implements ISysFileService {
+public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> implements ISysFileService {
 
     private final SysFileMapper baseMapper;
 
@@ -121,9 +125,40 @@ public class SysFileServiceImpl implements ISysFileService {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 
+    /**
+     * 根据文件编码查询文件
+     * @param fileCode
+     * @return
+     */
     @Override
     public Map getFileByCode(String fileCode){
         return baseMapper.selectFileByCode(fileCode);
     }
 
+    /**
+     * 更新文件
+     * @param fileCode
+     */
+    public void recovery(String fileCode){
+        SysFile file = lambdaQuery().eq(SysFile::getCode,fileCode).one();
+        if(ObjectUtils.isEmpty(file)){
+            throw new CustomException("文件不存在");
+        }
+        if(file.getDeleted()==0){
+            throw new CustomException("文件已恢复");
+        }
+        lambdaUpdate().eq(SysFile::getCode, fileCode).set(SysFile::getDeleted,0).update();
+    }
+
+    /**
+     * 删除文件
+     * @param fileCode
+     */
+    public void deleteFile(String fileCode) {
+        SysFile file = lambdaQuery().eq(SysFile::getCode,fileCode).one();
+        if(ObjectUtils.isEmpty(file)){
+            throw new CustomException("文件不存在");
+        }
+        lambdaUpdate().eq(SysFile::getCode, fileCode).remove();
+    }
 }
