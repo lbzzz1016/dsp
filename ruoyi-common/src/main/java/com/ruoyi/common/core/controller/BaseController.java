@@ -3,7 +3,11 @@ package com.ruoyi.common.core.controller;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.helper.LoginHelper;
+import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * web层通用数据处理
@@ -65,5 +69,17 @@ public class BaseController {
      */
     public String getUsername() {
         return LoginHelper.getUsername();
+    }
+
+    public Map getLoginMember() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        Map<String, String> member = new HashMap<>(4);
+        if (loginUser != null) {
+            member.put("memberCode", loginUser.getLoginId());
+            member.put("organizationCode", ServletUtils.getHeaderParam("organizationCode"));
+        }
+        //member.put("departmentCode","6v7be19pwman2fird04gqu53");
+        //member.put("memberCountCode","6v7be19pwman2fird04gqu11");
+        return member;
     }
 }

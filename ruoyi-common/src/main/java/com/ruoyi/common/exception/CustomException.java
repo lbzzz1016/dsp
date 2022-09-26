@@ -1,7 +1,7 @@
 package com.ruoyi.common.exception;
 
 
-import com.ruoyi.common.enums.ResultCode;
+import com.ruoyi.common.ResultCode;
 
 /**
  * 自定义异常

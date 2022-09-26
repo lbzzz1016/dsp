@@ -31,6 +31,10 @@ public class ServletUtils extends ServletUtil {
         return getRequest().getParameter(name);
     }
 
+    public static String getHeaderParam(String name){
+        return getRequest().getHeader(name);
+    }
+
     /**
      * 获取String参数
      */
