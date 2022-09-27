@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.mapper.ProjectMapper">
+
+    <resultMap type="com.ruoyi.project.domain.Project" id="TeamProjectResult">
+        <result property="id" column="id"/>
+        <result property="cover" column="cover"/>
+        <result property="name" column="name"/>
+        <result property="code" column="code"/>
+        <result property="description" column="description"/>
+        <result property="accessControlType" column="access_control_type"/>
+        <result property="whiteList" column="white_list"/>
+        <result property="order" column="order"/>
+        <result property="deleted" column="deleted"/>
+        <result property="templateCode" column="template_code"/>
+        <result property="schedule" column="schedule"/>
+        <result property="createTime" column="create_time"/>
+        <result property="organizationCode" column="organization_code"/>
+        <result property="deletedTime" column="deleted_time"/>
+        <result property="privated" column="private"/>
+        <result property="prefix" column="prefix"/>
+        <result property="openPrefix" column="open_prefix"/>
+        <result property="archive" column="archive"/>
+        <result property="archiveTime" column="archive_time"/>
+        <result property="openBeginTime" column="open_begin_time"/>
+        <result property="openTaskPrivate" column="open_task_private"/>
+        <result property="taskBoardTheme" column="task_board_theme"/>
+        <result property="beginTime" column="begin_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="autoUpdateSchedule" column="auto_update_schedule"/>
+    </resultMap>
+
+
+</mapper>

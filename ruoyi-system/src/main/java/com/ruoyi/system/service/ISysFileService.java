@@ -1,6 +1,7 @@
 package com.ruoyi.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruoyi.project.domain.Project;
 import com.ruoyi.system.domain.SysFile;
 import com.ruoyi.system.domain.vo.SysFileVo;
 import com.ruoyi.system.domain.bo.SysFileBo;
@@ -67,4 +68,13 @@ public interface ISysFileService extends IService<SysFile> {
      * @param fileCode
      */
     public void deleteFile(String fileCode);
+
+    /**
+     * 上传文件
+     * @param file
+     * @param memberCode
+     * @param projectCode
+     * @return
+     */
+    public Project uploadFiles(SysFile file, String memberCode, String projectCode);
 }

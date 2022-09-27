@@ -1,8 +1,6 @@
 package com.ruoyi.common.core.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ruoyi.common.annotation.Sensitive;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.BaseEntity;
@@ -138,6 +136,12 @@ public class SysUser extends BaseEntity {
      */
     @ApiModelProperty(value = "备注")
     private String remark;
+
+    /**
+     * 编码
+     */
+    @ApiModelProperty(value = "编码")
+    private String code;
 
     /**
      * 部门对象

@@ -9,10 +9,9 @@ import java.util.*;
 import cn.hutool.core.util.IdUtil;
 import com.ruoyi.common.AjaxResult;
 import com.ruoyi.common.config.MProjectConfig;
-import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.project.domain.Project;
 import com.ruoyi.system.domain.SysFile;
-import liquibase.hub.model.Project;
 import lombok.RequiredArgsConstructor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +30,6 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
-import com.ruoyi.common.core.validate.QueryGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.vo.SysFileVo;
@@ -297,7 +295,6 @@ public class SysFileController extends BaseController {
                 }
             }
 
-
             if(chunkNumber == totalChunks){
                 //分片读写结束
                 //重命名，以免重复
@@ -315,7 +312,7 @@ public class SysFileController extends BaseController {
                     .downloads(0l)
                     .taskCode(taskCode)
                     .extension(originFileName.substring(originFileName.lastIndexOf(".")+1)).build();
-                //Project project = iSysFileService.uploadFiles(file,memberCode,projectCode);
+                Project project = iSysFileService.uploadFiles(file,memberCode,projectCode);
                 Map result = new HashMap();
                 result.put("key",file.getPathName());
                 result.put("url",file.getFileUrl());

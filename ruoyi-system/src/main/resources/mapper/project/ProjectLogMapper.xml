@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.mapper.ProjectLogMapper">
+
+    <resultMap type="com.ruoyi.project.domain.ProjectLog" id="ProjectLogResult">
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="memberCode" column="member_code"/>
+        <result property="content" column="content"/>
+        <result property="remark" column="remark"/>
+        <result property="type" column="type"/>
+        <result property="createTime" column="create_time"/>
+        <result property="sourceCode" column="source_code"/>
+        <result property="actionType" column="action_type"/>
+        <result property="toMemberCode" column="to_member_code"/>
+        <result property="isComment" column="is_comment"/>
+        <result property="projectCode" column="project_code"/>
+        <result property="icon" column="icon"/>
+        <result property="isRobot" column="is_robot"/>
+    </resultMap>
+
+
+</mapper>

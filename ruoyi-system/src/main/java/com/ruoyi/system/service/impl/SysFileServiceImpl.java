@@ -10,7 +10,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import liquibase.hub.model.Project;
+import com.ruoyi.project.domain.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.domain.bo.SysFileBo;
@@ -21,7 +21,6 @@ import com.ruoyi.system.service.ISysFileService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
@@ -142,6 +141,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
      * 更新文件
      * @param fileCode
      */
+    @Override
     public void recovery(String fileCode){
         SysFile file = lambdaQuery().eq(SysFile::getCode,fileCode).one();
         if(ObjectUtils.isEmpty(file)){
@@ -157,6 +157,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
      * 删除文件
      * @param fileCode
      */
+    @Override
     public void deleteFile(String fileCode) {
         SysFile file = lambdaQuery().eq(SysFile::getCode,fileCode).one();
         if(ObjectUtils.isEmpty(file)){
@@ -165,41 +166,50 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
         lambdaUpdate().eq(SysFile::getCode, fileCode).remove();
     }
 
-//    @Transactional
-//    public Project uploadFiles(SysFile file, String memberCode, String projectCode){
-//        file.setProjectCode(projectCode);
-//        file.setCreateBy(memberCode);
-//        if(StringUtils.isNotEmpty(file.getTaskCode())){
-//
-////            SourceLink sourceLink = SourceLink.builder().source_type("file").code(CommUtils.getUUID()).
-////                create_by(memberCode).organization_code(file.getOrganization_code()).link_code(file.getTask_code())
-////                .link_type("task").source_code(file.getCode()).source_type("file").sort(0).build();
-////            sourceLinkMapper.insert(sourceLink);
-//        }
-//        baseMapper.insert(file);
-////        ProjectLog projectLog=ProjectLog.builder().project_code(file.getProject_code()).member_code(memberCode)
-////            .type("uploadFile").to_member_code("").is_comment(0).remark("").content("").build();
-//        /**
-//         * is_comment
-//         * to_member_code
-//         * content
-//         * type
-//         * source_code
-//         * member_code
-//         *
-//         */
-////        Project project = projectLogService.run(new HashMap(){{
-////            put("is_comment",0);
-////            put("to_member_code","");
-////            put("content","");
-////            put("type","uploadFile");
-////            put("source_code",file.getTaskCode());
-////            put("member_code",memberCode);
-////            put("action_type","task");
-////            put("url",file.getFileUrl());
-////            put("title",file.getTitle());
-////            put("project_code",projectCode);
-////        }});
-////        return project;
-//    }
+    /**
+     * 上传文件
+     * @param file
+     * @param memberCode
+     * @param projectCode
+     * @return
+     */
+    @Override
+    @Transactional
+    public Project uploadFiles(SysFile file, String memberCode, String projectCode) {
+        file.setProjectCode(projectCode);
+        file.setCreateBy(memberCode);
+        if(StringUtils.isNotEmpty(file.getTaskCode())){
+
+//            SourceLink sourceLink = SourceLink.builder().source_type("file").code(CommUtils.getUUID()).
+//                create_by(memberCode).organization_code(file.getOrganization_code()).link_code(file.getTask_code())
+//                .link_type("task").source_code(file.getCode()).source_type("file").sort(0).build();
+//            sourceLinkMapper.insert(sourceLink);
+        }
+        baseMapper.insert(file);
+//        ProjectLog projectLog=ProjectLog.builder().project_code(file.getProject_code()).member_code(memberCode)
+//            .type("uploadFile").to_member_code("").is_comment(0).remark("").content("").build();
+        /**
+         * is_comment
+         * to_member_code
+         * content
+         * type
+         * source_code
+         * member_code
+         *
+         */
+        Project project = new Project();
+//            projectLogService.run(new HashMap(){{
+//            put("is_comment",0);
+//            put("to_member_code","");
+//            put("content","");
+//            put("type","uploadFile");
+//            put("source_code",file.getTaskCode());
+//            put("member_code",memberCode);
+//            put("action_type","task");
+//            put("url",file.getFileUrl());
+//            put("title",file.getTitle());
+//            put("project_code",projectCode);
+//        }});
+        return project;
+    }
 }

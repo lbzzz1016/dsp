@@ -208,4 +208,10 @@ public interface ISysUserService {
      */
     int deleteUserByIds(Long[] userIds);
 
+    /**
+     * 通过code查询用户信息
+     * @param code
+     * @return
+     */
+    SysUser getUserByCode(String code);
 }

@@ -18,6 +18,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.helper.DataBaseHelper;
 import com.ruoyi.common.helper.LoginHelper;
+import com.ruoyi.common.utils.CommUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
@@ -277,6 +278,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int insertUser(SysUser user) {
+        user.setCode(CommUtils.getUUID());
         // 新增用户信息
         int rows = baseMapper.insert(user);
         // 新增用户岗位关联
@@ -294,6 +296,7 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public boolean registerUser(SysUser user) {
+        user.setCode(CommUtils.getUUID());
         user.setCreateBy(user.getUserName());
         user.setUpdateBy(user.getUserName());
         return baseMapper.insert(user) > 0;
@@ -483,4 +486,15 @@ public class SysUserServiceImpl implements ISysUserService {
         return baseMapper.deleteBatchIds(ids);
     }
 
+    /**
+     * 通过code查询用户信息
+     * @param code
+     * @return
+     */
+    @Override
+    public SysUser getUserByCode(String code) {
+        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUser::getCode, code);
+        return baseMapper.selectOne(queryWrapper);
+    }
 }
