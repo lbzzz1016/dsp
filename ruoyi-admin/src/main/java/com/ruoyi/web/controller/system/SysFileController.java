@@ -9,9 +9,11 @@ import java.util.*;
 import cn.hutool.core.util.IdUtil;
 import com.ruoyi.common.AjaxResult;
 import com.ruoyi.common.config.MProjectConfig;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.project.domain.Project;
 import com.ruoyi.system.domain.SysFile;
+import com.ruoyi.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,6 +57,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class SysFileController extends BaseController {
 
     private final ISysFileService iSysFileService;
+
+    private final ISysUserService iSysUserService;
 
     /**
      * 查询文件列表
@@ -197,12 +201,12 @@ public class SysFileController extends BaseController {
 //            put("projectCode",projectCode);
 //            put("deleted",deleted);
 //        }};
-//        IPage<com.projectm.task.domain.File> page_ = Constant.createPage(new Page<com.projectm.task.domain.File>(),mmap);
+//        IPage<com.project.task.domain.File> page_ = Constant.createPage(new Page<com.projectm.task.domain.File>(),mmap);
 //        page_=fileService.lambdaQuery().eq(com.projectm.task.domain.File::getProject_code,projectCode).eq(com.projectm.task.domain.File::getDeleted,0).page(page_);
 //        List<com.projectm.task.domain.File> resultList = new ArrayList<>();
 //        for(int i=0;page_ !=null && page_.getRecords() !=null && i<page_.getRecords().size();i++){
 //            com.projectm.task.domain.File f = page_.getRecords().get(i);
-//            Member member = memberService.lambdaQuery().eq(Member::getCode,f.getCreate_by()).one();
+//            SysUser user = iSysUserService.lambdaQuery().eq(Member::getCode,f.getCreate_by()).one();
 //            f.setCreatorName(member.getName());
 //            f.setFullName(f.getTitle()+"."+f.getExtension());
 //            resultList.add(f);

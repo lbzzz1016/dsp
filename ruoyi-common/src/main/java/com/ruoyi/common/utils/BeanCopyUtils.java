@@ -12,6 +12,7 @@ import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.cglib.core.Converter;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -179,6 +180,30 @@ public class BeanCopyUtils {
                 key.append('#').append(converter.getClass().getName());
             }
             return key.toString();
+        }
+
+        /**
+         * 将map集合中的数据转化为指定对象的同名属性中
+         */
+        private static <T> T mapToBean(Map<String, Object> map, Class<T> clazz) throws Exception {
+            T bean = clazz.newInstance();
+            BeanMap beanMap = BeanMap.create(bean);
+            beanMap.putAll(map);
+            return bean;
+        }
+
+        /**
+         * 将对象属性转化为map结合
+         */
+        public static <T> Map<String, Object> beanToMap(T bean) {
+            Map<String, Object> map = new HashMap<>();
+            if (bean != null) {
+                BeanMap beanMap = BeanMap.create(bean);
+                for (Object key : beanMap.keySet()) {
+                    map.put(key+"", beanMap.get(key));
+                }
+            }
+            return map;
         }
     }
 

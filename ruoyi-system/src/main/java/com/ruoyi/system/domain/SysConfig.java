@@ -9,8 +9,10 @@ import com.ruoyi.common.convert.ExcelDictConvert;
 import com.ruoyi.common.core.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -26,6 +28,8 @@ import javax.validation.constraints.Size;
 @TableName("sys_config")
 @ExcelIgnoreUnannotated
 @ApiModel("参数配置业务对象")
+@NoArgsConstructor
+@AllArgsConstructor
 public class SysConfig extends BaseEntity {
 
     /**

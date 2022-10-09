@@ -1,93 +1,47 @@
 package com.ruoyi.project.domain;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.common.domain.BaseDomain;
+import com.ruoyi.member.domain.Member;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.math.BigDecimal;
 
-import com.ruoyi.common.core.domain.BaseEntity;
-
-/**
- * 项目日志对象 project_log
- *
- * @author lbzzz
- * @date 2022-09-26
- */
-@Data
-@EqualsAndHashCode(callSuper = true)
+@TableName("team_project_log")
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@TableName("project_log")
-public class ProjectLog extends BaseEntity {
+@Data
+public class ProjectLog  extends BaseDomain implements Serializable {
 
-    private static final long serialVersionUID=1L;
-
-    /**
-     * 
-     */
-    @TableId(value = "id")
-    private Long id;
-    /**
-     * 
-     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
     private String code;
-    /**
-     * 操作人id
-     */
-    private String memberCode;
-    /**
-     * 操作内容
-     */
+    private String member_code;
     private String content;
-    /**
-     * 
-     */
     private String remark;
-    /**
-     * 操作类型
-     */
     private String type;
-    /**
-     * 任务id
-     */
-    private String sourceCode;
-    /**
-     * 场景类型
-     */
-    private String actionType;
-    /**
-     * 
-     */
-    private String toMemberCode;
-    /**
-     * 是否评论，0：否
-     */
-    private Integer isComment;
-    /**
-     * 
-     */
-    private String projectCode;
-    /**
-     * 
-     */
+    private String create_time;
+    private String source_code;
+    private String action_type;
+    private String to_member_code;
+    private Integer is_comment;
+    private String project_code;
     private String icon;
-    /**
-     * 是否机器人
-     */
-    private Integer isRobot;
+    private Integer is_robot;
 
-//    @TableField(exist = false)
-//    private Member member;
+    @TableField(exist = false)
+    private Member member;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public ProjectLog setId(Long id) {
+    public ProjectLog setId(Integer id) {
         this.id = id;
         return this;
     }
@@ -101,12 +55,12 @@ public class ProjectLog extends BaseEntity {
         return this;
     }
 
-    public String getMemberCode() {
-        return memberCode;
+    public String getMember_code() {
+        return member_code;
     }
 
-    public ProjectLog setMemberCode(String memberCode) {
-        this.memberCode = memberCode;
+    public ProjectLog setMember_code(String member_code) {
+        this.member_code = member_code;
         return this;
     }
 
@@ -137,48 +91,57 @@ public class ProjectLog extends BaseEntity {
         return this;
     }
 
-    public String getSourceCode() {
-        return sourceCode;
+    public String getCreate_time() {
+        return create_time;
     }
 
-    public ProjectLog setSourceCode(String sourceCode) {
-        this.sourceCode = sourceCode;
+    public ProjectLog setCreate_time(String create_time) {
+        this.create_time = create_time;
         return this;
     }
 
-    public String getActionType() {
-        return actionType;
+    public String getSource_code() {
+        return source_code;
     }
 
-    public ProjectLog setActionType(String action_type) {
-        this.actionType = action_type;
+    public ProjectLog setSource_code(String source_code) {
+        this.source_code = source_code;
         return this;
     }
 
-    public String getToMemberCode() {
-        return toMemberCode;
+    public String getAction_type() {
+        return action_type;
     }
 
-    public ProjectLog setToMemberCode(String toMemberCode) {
-        this.toMemberCode = toMemberCode;
+    public ProjectLog setAction_type(String action_type) {
+        this.action_type = action_type;
         return this;
     }
 
-    public Integer getIsComment() {
-        return isComment;
+    public String getTo_member_code() {
+        return to_member_code;
     }
 
-    public ProjectLog setIsComment(Integer is_comment) {
-        this.isComment = is_comment;
+    public ProjectLog setTo_member_code(String to_member_code) {
+        this.to_member_code = to_member_code;
         return this;
     }
 
-    public String getProjectCode() {
-        return projectCode;
+    public Integer getIs_comment() {
+        return is_comment;
     }
 
-    public ProjectLog setProjectCode(String project_code) {
-        this.projectCode = project_code;
+    public ProjectLog setIs_comment(Integer is_comment) {
+        this.is_comment = is_comment;
+        return this;
+    }
+
+    public String getProject_code() {
+        return project_code;
+    }
+
+    public ProjectLog setProject_code(String project_code) {
+        this.project_code = project_code;
         return this;
     }
 
@@ -191,12 +154,12 @@ public class ProjectLog extends BaseEntity {
         return this;
     }
 
-    public Integer getIsRobot() {
-        return isRobot;
+    public Integer getIs_robot() {
+        return is_robot;
     }
 
-    public ProjectLog setIsRobot(Integer isRobot) {
-        this.isRobot = isRobot;
+    public ProjectLog setIs_robot(Integer is_robot) {
+        this.is_robot = is_robot;
         return this;
     }
 }

@@ -1,7 +1,9 @@
 package com.ruoyi.common.core.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -81,5 +83,13 @@ public class BaseController {
         //member.put("departmentCode","6v7be19pwman2fird04gqu53");
         //member.put("memberCountCode","6v7be19pwman2fird04gqu11");
         return member;
+    }
+
+    public String getOrgCode() {
+        String organizationCode = ServletUtils.getHeaderParam("organizationCode");
+        if (StrUtil.isEmpty(organizationCode)) {
+            throw new CustomException("缺少组织信息");
+        }
+        return organizationCode;
     }
 }

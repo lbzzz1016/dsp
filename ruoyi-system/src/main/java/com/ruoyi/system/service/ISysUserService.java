@@ -1,5 +1,6 @@
 package com.ruoyi.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -11,7 +12,7 @@ import java.util.List;
  *
  * @author LBZ
  */
-public interface ISysUserService {
+public interface ISysUserService extends IService<SysUser> {
 
 
     TableDataInfo<SysUser> selectPageUserList(SysUser user, PageQuery pageQuery);

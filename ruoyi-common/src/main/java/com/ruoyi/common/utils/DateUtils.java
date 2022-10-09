@@ -12,8 +12,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 /**
  * 时间工具类
@@ -249,4 +248,51 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         return new Date();
     }
 
+    public static final String formatDateTime(Date date) {
+        return new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS).format(date);
+    }
+
+    public static final String format(String pattern, Date date) {
+        return new SimpleDateFormat(pattern, Locale.US).format(date);
+    }
+
+    /**
+     * 对输入日期进行增减
+     *
+     * @param date      输入日期
+     * @param field     1则代表的是对年份操作，2是对月份操作，3是对星期操作，5是对日期操作，11是对小时操作，12是对分钟操作，13是对秒操作，14是对毫秒操作
+     * @param increment 要增减的值
+     *           e.g. 增加一天 （date,11,24） or (date,5,1)
+     */
+    public static Date add(Date date, int field, int increment) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        cal.add(field, increment);
+        return cal.getTime();
+    }
+
+    public static List<String> findDaysStr(String begintTime, String endTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date dBegin = null;
+        Date dEnd = null;
+        try {
+            dBegin = sdf.parse(begintTime);
+            dEnd = sdf.parse(endTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        List<String> daysStrList = new ArrayList<String>();
+        daysStrList.add(sdf.format(dBegin));
+        Calendar calBegin = Calendar.getInstance();
+        calBegin.setTime(dBegin);
+        Calendar calEnd = Calendar.getInstance();
+        calEnd.setTime(dEnd);
+        while (dEnd.after(calBegin.getTime())) {
+            calBegin.add(Calendar.DAY_OF_MONTH, 1);
+            String dayStr = sdf.format(calBegin.getTime());
+            daysStrList.add(dayStr);
+        }
+        return daysStrList;
+    }
 }

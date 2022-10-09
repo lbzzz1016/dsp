@@ -77,6 +77,11 @@ public class LoginUser implements Serializable {
     private String os;
 
     /**
+     * 用户编码
+     */
+    private String code;
+
+    /**
      * 菜单权限
      */
     private Set<String> menuPermission;

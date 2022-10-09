@@ -122,5 +122,50 @@ public interface Constants {
      */
     String SYS_DICT_KEY = "sys_dict:";
 
+    /**
+     * 资源映射路径 前缀
+     */
+    public static final String RESOURCE_PREFIX = "/profile";
+
+    //------- 业务常量配置 ------
+
+    /**
+     * 任务优先级--非常紧急
+     */
+    public static final String VERY_URGENT_STR = "非常紧急";
+    public static final Integer VERY_URGENT = 2;
+
+    /**
+     * 任务优先级--紧急
+     */
+    public static final String URGENT_STR = "紧急";
+    public static final Integer URGENT = 1;
+
+    /**
+     * 任务优先级--普通
+     */
+    public static final String GENERAL_STR = "普通";
+    public static final Integer GENERAL = 0;
+
+    /**
+     * 消息通知类型--信息
+     */
+    public static final String MESSAGE = "message";
+    /**
+     * 消息通知类型--通知
+     */
+    public static final String NOTICE = "notice";
+    /**
+     * 消息通知类型--任务
+     */
+    public static final String TASK = "task";
+    /**
+     * 项目任务流转规则前缀
+     */
+    public static final String PROJECTRULE = "projectrule";
+    /**
+     * WebSocket前缀
+     */
+    public static final String WEBSOCKET = "webSocket";
 }
 

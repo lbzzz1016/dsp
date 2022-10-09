@@ -1,125 +1,49 @@
 package com.ruoyi.project.domain;
 
-import com.baomidou.mybatisplus.annotation.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.common.domain.BaseDomain;
+import lombok.*;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 
-import com.ruoyi.common.core.domain.BaseEntity;
-
-/**
- * 项目对象 project
- *
- * @author lbzzz
- * @date 2022-09-26
- */
+@TableName("team_project")
 @Data
-@EqualsAndHashCode(callSuper = true)
-@TableName("project")
-public class Project extends BaseEntity {
-
-    private static final long serialVersionUID=1L;
-
-    /**
-     * 
-     */
-    @TableId(value = "id")
+@ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Project  extends BaseDomain implements Serializable {
+    @TableId(type = IdType.AUTO)
     private Integer id;
-    /**
-     * 封面
-     */
     private String cover;
-    /**
-     * 名称
-     */
     private String name;
-    /**
-     * 编号
-     */
     private String code;
-    /**
-     * 描述
-     */
     private String description;
-    /**
-     * 访问控制l类型
-     */
-    private String accessControlType;
-    /**
-     * 可以访问项目的权限组（白名单）
-     */
-    private String whiteList;
-    /**
-     * 排序
-     */
+    private String access_control_type;
+    private String white_list;
     @TableField(exist = false)
-    private Integer order;
-    /**
-     * 删除标记
-     */
+    private Long order;
     private Integer deleted;
-    /**
-     * 项目类型
-     */
-    private String templateCode;
-    /**
-     * 进度
-     */
-    private BigDecimal schedule;
-    /**
-     * 组织id
-     */
-    private String organizationCode;
-    /**
-     * 删除时间
-     */
-    private String deletedTime;
-    /**
-     * 是否私有
-     */
+    private String template_code;
+    private Double schedule;
+    private String create_time;
+    private String organization_code;
+    private String deleted_time;
     @TableField("private")
     private Integer privated;
-    /**
-     * 项目前缀
-     */
     private String prefix;
-    /**
-     * 是否开启项目前缀
-     */
-    private Integer openPrefix;
-    /**
-     * 是否归档
-     */
+    private Integer open_prefix;
     private Integer archive;
-    /**
-     * 归档时间
-     */
-    private String archiveTime;
-    /**
-     * 是否开启任务开始时间
-     */
-    private Integer openBeginTime;
-    /**
-     * 是否开启新任务默认开启隐私模式
-     */
-    private Integer openTaskPrivate;
-    /**
-     * 看板风格
-     */
-    private String taskBoardTheme;
-    /**
-     * 项目开始日期
-     */
-    private String beginTime;
-    /**
-     * 项目截止日期
-     */
-    private String endTime;
-    /**
-     * 自动更新项目进度
-     */
-    private Integer autoUpdateSchedule;
+    private String archive_time;
+    private Integer open_begin_time;
+    private Integer open_task_private;
+    private String task_board_theme;
+    private String begin_time;
+    private String end_time;
+    private Integer auto_update_schedule;
 
     @TableField(exist = false)
     private Integer collected;
@@ -127,4 +51,5 @@ public class Project extends BaseEntity {
     private String owner_name;
     @TableField(exist = false)
     private String owner_avatar;
+
 }
