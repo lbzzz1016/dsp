@@ -17,7 +17,6 @@ import java.util.Map;
 @Mapper
 public interface ProjectMapper extends BaseMapper<Project> {
 
-
     List<String> selectProAuthNode(@Param("authorizeids") List<String> authorizeids);
 
     List<Map> selectOrgByMemCode(@Param("params") Map params);
@@ -27,7 +26,6 @@ public interface ProjectMapper extends BaseMapper<Project> {
     IPage<Map> getProjectInfoByMemCodeOrgCode(IPage<Map> page, @Param("params") Map params);
 
     IPage<Map> getProjectInfoByMemCodeOrgCodeCollection(IPage<Map> page, @Param("params") Map params);
-
 
     //根据templateCode获取任务模板名称
     List<String> getTaskStageTempNameByTemplateCode(@Param("templateCode") String templateCode);

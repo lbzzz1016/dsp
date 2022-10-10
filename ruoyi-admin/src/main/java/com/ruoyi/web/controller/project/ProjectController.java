@@ -63,9 +63,6 @@ public class ProjectController extends BaseController {
     private ProjectMemberService projectMemberService;
 
     @Autowired
-    private InviteLinkService inviteLinkService;
-
-    @Autowired
     private TaskStagesTempleteService taskStagesTempleteService;
     @Autowired
     private MemberAccountService memberAccountService;
@@ -242,34 +239,34 @@ public class ProjectController extends BaseController {
         return AjaxResult.success(i);
     }
 
-    /**
-     * 项目管理	我的项目 项目设置 项目删除（回收站）
-     * @param mmap
-     * @return
-     */
-    @PostMapping("/invite_link/save")
-    @ResponseBody
-    public AjaxResult inviteLinkSave(@RequestParam Map<String,Object> mmap)  throws Exception
-    {
-        Map loginMember = getLoginMember();
-        String inviteType = MapUtils.getString(mmap,"inviteType");
-        String sourceCode = MapUtils.getString(mmap,"sourceCode");
-        String memberCode = MapUtils.getString(loginMember,"memberCode");
-        Map inviteLink = inviteLinkService.getInviteLinkByInSoCr("project","sourceCode","memberCode");
-
-        if(MapUtils.isEmpty(inviteLink)){
-            InviteLink il = new InviteLink();
-            il.setCode(CommUtils.getUUID());
-            il.setCreate_by(memberCode);
-            il.setInvite_type("project");
-            il.setCreate_time(DateUtils.formatDateTime(new Date()));
-            il.setOver_time(DateUtils.formatDateTime(DateUtils.add(new Date(),5,1)));
-            il.setSource_code(sourceCode);
-            inviteLinkService.save(il);
-            return AjaxResult.success(il);
-        }
-        return AjaxResult.success(inviteLink);
-    }
+//    /**
+//     * 项目管理	我的项目 项目设置 项目删除（回收站）
+//     * @param mmap
+//     * @return
+//     */
+//    @PostMapping("/invite_link/save")
+//    @ResponseBody
+//    public AjaxResult inviteLinkSave(@RequestParam Map<String,Object> mmap)  throws Exception
+//    {
+//        Map loginMember = getLoginMember();
+//        String inviteType = MapUtils.getString(mmap,"inviteType");
+//        String sourceCode = MapUtils.getString(mmap,"sourceCode");
+//        String memberCode = MapUtils.getString(loginMember,"memberCode");
+//        Map inviteLink = inviteLinkService.getInviteLinkByInSoCr("project","sourceCode","memberCode");
+//
+//        if(MapUtils.isEmpty(inviteLink)){
+//            InviteLink il = new InviteLink();
+//            il.setCode(CommUtils.getUUID());
+//            il.setCreate_by(memberCode);
+//            il.setInvite_type("project");
+//            il.setCreate_time(DateUtils.formatDateTime(new Date()));
+//            il.setOver_time(DateUtils.formatDateTime(DateUtils.add(new Date(),5,1)));
+//            il.setSource_code(sourceCode);
+//            inviteLinkService.save(il);
+//            return AjaxResult.success(il);
+//        }
+//        return AjaxResult.success(inviteLink);
+//    }
 
     /**
      * 项目管理	我的项目 项目设置 项目删除（回收站）
