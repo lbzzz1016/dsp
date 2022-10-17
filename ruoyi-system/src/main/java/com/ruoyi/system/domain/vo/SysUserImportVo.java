@@ -57,6 +57,12 @@ public class SysUserImportVo implements Serializable {
     private String phonenumber;
 
     /**
+     * 工号
+     */
+    @ExcelProperty(value = "工号")
+    private String jobNumber;
+
+    /**
      * 用户性别
      */
     @ExcelProperty(value = "用户性别", converter = ExcelDictConvert.class)

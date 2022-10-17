@@ -51,6 +51,12 @@ public class SysUserExportVo implements Serializable {
     private String phonenumber;
 
     /**
+     * 工号
+     */
+    @ExcelProperty(value = "工号")
+    private String jobNumber;
+
+    /**
      * 用户性别
      */
     @ExcelProperty(value = "用户性别", converter = ExcelDictConvert.class)
@@ -87,5 +93,4 @@ public class SysUserExportVo implements Serializable {
      */
     @ExcelProperty(value = "部门负责人")
     private String leader;
-
 }

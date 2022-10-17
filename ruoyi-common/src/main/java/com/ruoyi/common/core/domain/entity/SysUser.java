@@ -140,6 +140,12 @@ public class SysUser extends BaseEntity {
     private String remark;
 
     /**
+     * 工号
+     */
+    @ApiModelProperty(value = "工号")
+    private String jobNumber;
+
+    /**
      * 部门对象
      */
     @ApiModelProperty(value = "部门对象")

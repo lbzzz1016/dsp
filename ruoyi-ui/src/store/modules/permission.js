@@ -127,6 +127,7 @@ export const loadView = (view) => {
   } else {
     // 使用 import 实现生产环境的路由懒加载
     return () => import(`@/views/${view}`)
+    //return (resolve) => require([`@/views/${view}`], resolve)
   }
 }
 

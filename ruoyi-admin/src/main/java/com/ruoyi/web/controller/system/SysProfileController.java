@@ -72,6 +72,10 @@ public class SysProfileController extends BaseController {
             && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(user))) {
             return R.fail("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
+        if (StringUtils.isNotEmpty(user.getJobNumber())
+            && UserConstants.NOT_UNIQUE.equals(userService.checkJobNumberUnique(user))) {
+            return R.fail("修改用户'" + user.getUserName() + "'失败，工号已存在");
+        }
         user.setUserId(getUserId());
         user.setUserName(null);
         user.setPassword(null);

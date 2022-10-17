@@ -84,4 +84,11 @@ public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, Sy
      */
     SysUser selectUserById(Long userId);
 
+    /**
+     * 通过工号查询用户
+     *
+     * @param jobNumber 工号
+     * @return 用户对象信息
+     */
+    SysUser selectUserByJobNumber(String jobNumber);
 }

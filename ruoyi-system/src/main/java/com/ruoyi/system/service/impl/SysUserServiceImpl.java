@@ -77,6 +77,7 @@ public class SysUserServiceImpl implements ISysUserService {
             .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
             .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())
             .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
+            .like(StringUtils.isNotBlank(user.getJobNumber()), "u.job_number", user.getJobNumber())
             .between(params.get("beginTime") != null && params.get("endTime") != null,
                 "u.create_time", params.get("beginTime"), params.get("endTime"))
             .and(ObjectUtil.isNotNull(user.getDeptId()), w -> {
@@ -103,7 +104,8 @@ public class SysUserServiceImpl implements ISysUserService {
             .eq(ObjectUtil.isNotNull(user.getRoleId()), "r.role_id", user.getRoleId())
             .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
             .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())
-            .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber());
+            .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
+            .like(StringUtils.isNotBlank(user.getJobNumber()), "u.job_number", user.getJobNumber());
         Page<SysUser> page = baseMapper.selectAllocatedList(pageQuery.build(), wrapper);
         return TableDataInfo.build(page);
     }
@@ -122,7 +124,8 @@ public class SysUserServiceImpl implements ISysUserService {
             .and(w -> w.ne("r.role_id", user.getRoleId()).or().isNull("r.role_id"))
             .notIn(CollUtil.isNotEmpty(userIds), "u.user_id", userIds)
             .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
-            .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber());
+            .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
+            .like(StringUtils.isNotBlank(user.getJobNumber()), "u.job_number", user.getJobNumber());
         Page<SysUser> page = baseMapper.selectUnallocatedList(pageQuery.build(), wrapper);
         return TableDataInfo.build(page);
     }
@@ -481,6 +484,35 @@ public class SysUserServiceImpl implements ISysUserService {
         // 删除用户与岗位表
         userPostMapper.delete(new LambdaQueryWrapper<SysUserPost>().in(SysUserPost::getUserId, ids));
         return baseMapper.deleteBatchIds(ids);
+    }
+
+
+    /**
+     * 通过工号查询用户
+     *
+     * @param jobNumber 工号
+     * @return 用户对象信息
+     */
+    @Override
+    public SysUser selectUserByJobNumber(String jobNumber) {
+        return baseMapper.selectUserByJobNumber(jobNumber);
+    }
+
+    /**
+     * 校验工号是否唯一
+     *
+     * @param user 用户信息
+     * @return
+     */
+    @Override
+    public String checkJobNumberUnique(SysUser user) {
+        boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysUser>()
+            .eq(SysUser::getJobNumber, user.getJobNumber())
+            .ne(ObjectUtil.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId()));
+        if (exist) {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
     }
 
 }

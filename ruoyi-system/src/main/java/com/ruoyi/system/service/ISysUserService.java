@@ -208,4 +208,19 @@ public interface ISysUserService {
      */
     int deleteUserByIds(Long[] userIds);
 
+    /**
+     * 通过工号查询用户
+     *
+     * @param jobNumber 工号
+     * @return 用户对象信息
+     */
+    SysUser selectUserByJobNumber(String jobNumber);
+
+    /**
+     * 校验工号是否唯一
+     *
+     * @param user 用户信息
+     * @return
+     */
+    String checkJobNumberUnique(SysUser user);
 }

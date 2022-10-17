@@ -24,6 +24,7 @@
         <result property="updateBy" column="update_by"/>
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
+        <result property="jobNumber" column="job_number"/>
         <association property="dept" column="dept_id" javaType="SysDept" resultMap="deptResult"/>
         <collection property="roles" javaType="java.util.List" resultMap="RoleResult"/>
     </resultMap>
@@ -65,6 +66,7 @@
                u.create_by,
                u.create_time,
                u.remark,
+               u.job_number,
                d.dept_id,
                d.parent_id,
                d.ancestors,
@@ -86,7 +88,7 @@
 
     <select id="selectPageUserList" resultMap="SysUserResult">
         select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex,
-        u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from
+        u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.job_number, d.dept_name, d.leader from
         sys_user u
         left join sys_dept d on u.dept_id = d.dept_id
         ${ew.getCustomSqlSegment}
@@ -94,14 +96,14 @@
 
     <select id="selectUserList" resultMap="SysUserResult">
         select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex,
-        u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from
+        u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u,job_number, d.dept_name, d.leader from
         sys_user u
         left join sys_dept d on u.dept_id = d.dept_id
         ${ew.getCustomSqlSegment}
     </select>
 
     <select id="selectAllocatedList" resultMap="SysUserResult">
-        select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
+        select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time, u.job_number
         from sys_user u
              left join sys_dept d on u.dept_id = d.dept_id
              left join sys_user_role sur on u.user_id = sur.user_id
@@ -110,7 +112,7 @@
     </select>
 
     <select id="selectUnallocatedList" resultMap="SysUserResult">
-        select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
+        select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time, u.job_number
         from sys_user u
              left join sys_dept d on u.dept_id = d.dept_id
              left join sys_user_role sur on u.user_id = sur.user_id
@@ -131,6 +133,11 @@
     <select id="selectUserById" parameterType="Long" resultMap="SysUserResult">
         <include refid="selectUserVo"/>
         where u.del_flag = '0' and u.user_id = #{userId}
+    </select>
+
+    <select id="selectUserByJobNumber" parameterType="String" resultMap="SysUserResult">
+        <include refid="selectUserVo"/>
+        where u.del_flag = '0' and u.job_number = #{jobNumber}
     </select>
 
 

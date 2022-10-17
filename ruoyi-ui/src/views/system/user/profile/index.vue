@@ -16,6 +16,10 @@
                 <div class="pull-right">{{ user.userName }}</div>
               </li>
               <li class="list-group-item">
+                <svg-icon icon-class="user" />工号
+                <div class="pull-right">{{ user.jobNumber }}</div>
+              </li>
+              <li class="list-group-item">
                 <svg-icon icon-class="phone" />手机号码
                 <div class="pull-right">{{ user.phonenumber }}</div>
               </li>
