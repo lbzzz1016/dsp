@@ -498,4 +498,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         queryWrapper.eq(SysUser::getCode, code);
         return baseMapper.selectOne(queryWrapper);
     }
+
+    /**
+     * 根据memberCode获取member信息
+     * @param memberCode
+     * @return
+     */
+    @Override
+    public Map getMemberMapByCode(String memberCode){
+        return baseMapper.selectMemberByCode(memberCode);
+    }
 }

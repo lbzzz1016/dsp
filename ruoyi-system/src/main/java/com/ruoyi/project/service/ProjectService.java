@@ -10,20 +10,20 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.AjaxResult;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.mapper.CommMapper;
 import com.ruoyi.common.utils.CommUtils;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.member.domain.Member;
 import com.ruoyi.member.domain.ProjectMember;
 import com.ruoyi.member.mapper.ProjectMemberMapper;
 import com.ruoyi.member.service.MemberAccountService;
-import com.ruoyi.member.service.MemberService;
 import com.ruoyi.member.service.ProjectMemberService;
 import com.ruoyi.project.domain.Project;
 import com.ruoyi.project.mapper.ProjectCollectionMapper;
 import com.ruoyi.project.mapper.ProjectMapper;
+import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.task.domain.Task;
 import com.ruoyi.task.domain.TaskStage;
 import com.ruoyi.task.domain.TaskStagesTemplete;
@@ -45,6 +45,7 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,9 +80,12 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
     @Autowired
     MemberAccountService memberAccountService;
 
-    @Lazy
+//    @Lazy
+//    @Autowired
+//    MemberService memberService;
+
     @Autowired
-    MemberService memberService;
+    ISysUserService userService;
 
     public List<String> selectProAuthNode(List<String> authorizeids) {
         return baseMapper.selectProAuthNode(authorizeids);
@@ -174,9 +178,10 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                 if(CollectionUtils.isEmpty(owner)){
                     continue;
                 }
-                Member member = memberService.lambdaQuery().eq(Member::getCode,owner.get(0).getMember_code()).one();
-                if(ObjectUtils.isNotEmpty(member)){
-                    map.put("owner_name",member.getName());
+                //Member member = memberService.lambdaQuery().eq(Member::getCode,owner.get(0).getMember_code()).one();
+                SysUser user = userService.lambdaQuery().eq(SysUser::getCode, owner.get(0).getMember_code()).one();
+                if(ObjectUtils.isNotEmpty(user)){
+                    map.put("owner_name",user.getNickName());
                 }
                 listResult.add(map);
             }
@@ -234,11 +239,11 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
             put("project_code",project.getCode());
         }});
         projectLogService.run(new HashMap(){{
-            put("member_code",projectMember.getMember_code());
-            put("source_code",project.getCode());
+            put("member_code", projectMember.getMember_code());
+            put("source_code", project.getCode());
             put("type","inviteMember");
-            put("to_member_code",projectMember.getMember_code());
-            put("project_code",project.getCode());
+            put("to_member_code", projectMember.getMember_code());
+            put("project_code", project.getCode());
         }});
         return baseMapper.getProjectById(project.getId());
     }
@@ -320,9 +325,12 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
             //该组织下的所有项目用户信息
             List<ProjectMember> allProjectList = projectMemberMapper.selectList(Wrappers.<ProjectMember>lambdaQuery().in(ProjectMember::getProject_code, proCodeList));
             if (CollUtil.isNotEmpty(allProjectList)) {
-                Map<String, String> memberCodeName = memberService.lambdaQuery().select(Member::getCode, Member::getName).in(Member::getCode, allProjectList
+                Map<String, String> memberCodeName = userService.lambdaQuery().select(SysUser::getCode, SysUser::getNickName).in(SysUser::getCode, allProjectList
                         .parallelStream().map(ProjectMember::getMember_code).collect(Collectors.toList())).list()
-                        .parallelStream().collect(Collectors.toMap(Member::getCode, Member::getName));
+                        .parallelStream().collect(Collectors.toMap(SysUser::getCode, SysUser::getNickName));
+//                Map<String, String> memberCodeName = memberService.lambdaQuery().select(Member::getCode, Member::getName).in(Member::getCode, allProjectList
+//                        .parallelStream().map(ProjectMember::getMember_code).collect(Collectors.toList())).list()
+//                        .parallelStream().collect(Collectors.toMap(Member::getCode, Member::getName));
                 Map<String, Long> topNum = new LinkedHashMap<>();
                 allProjectList.stream().collect(Collectors.groupingBy(ProjectMember::getMember_code, Collectors.counting()))
                         .entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
@@ -387,8 +395,10 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                 List<Task> memberTaskList = tasks.parallelStream().filter(o -> StrUtil.isNotEmpty(o.getAssign_to())).collect(Collectors.toList());
                 if (CollUtil.isNotEmpty(memberTaskList)) {
                     Set<String> memberCodes = memberTaskList.parallelStream().map(Task::getAssign_to).collect(Collectors.toSet());
-                    Map<String, String> memberCodeName = memberService.lambdaQuery().select(Member::getCode, Member::getName).in(Member::getCode, memberCodes)
-                            .list().parallelStream().collect(Collectors.toMap(Member::getCode, Member::getName));
+//                    Map<String, String> memberCodeName = memberService.lambdaQuery().select(Member::getCode, Member::getName).in(Member::getCode, memberCodes)
+//                            .list().parallelStream().collect(Collectors.toMap(Member::getCode, Member::getName));
+                    Map<String, String> memberCodeName = userService.lambdaQuery().select(SysUser::getCode, SysUser::getNickName).in(SysUser::getCode, memberCodes)
+                            .list().parallelStream().collect(Collectors.toMap(SysUser::getCode, SysUser::getNickName));
                     Map<String, Long> topTaskNum = new LinkedHashMap<>();
                     memberTaskList.stream().collect(Collectors.groupingBy(Task::getAssign_to, Collectors.counting()))
                             .entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
@@ -455,9 +465,12 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
             //该组织下的所有项目用户信息
             projectMemberList = projectMemberMapper.selectList(Wrappers.<ProjectMember>lambdaQuery().in(ProjectMember::getProject_code, proCodeList));
             if (CollUtil.isNotEmpty(projectMemberList)) {
-                memberCodeName = memberService.lambdaQuery().select(Member::getCode, Member::getName).in(Member::getCode, projectMemberList
-                        .parallelStream().map(ProjectMember::getMember_code).collect(Collectors.toList())).list()
-                        .parallelStream().collect(Collectors.toMap(Member::getCode, Member::getName));
+//                memberCodeName = memberService.lambdaQuery().select(Member::getCode, Member::getName).in(Member::getCode, projectMemberList
+//                        .parallelStream().map(ProjectMember::getMember_code).collect(Collectors.toList())).list()
+//                        .parallelStream().collect(Collectors.toMap(Member::getCode, Member::getName));
+                memberCodeName = userService.lambdaQuery().select(SysUser::getCode, SysUser::getNickName).in(SysUser::getCode, projectMemberList
+                    .parallelStream().map(ProjectMember::getMember_code).collect(Collectors.toList())).list()
+                    .parallelStream().collect(Collectors.toMap(SysUser::getCode, SysUser::getNickName));
             }
             //任务
             tasks = taskProjectService.lambdaQuery().in(Task::getProject_code, proCodeList).list();

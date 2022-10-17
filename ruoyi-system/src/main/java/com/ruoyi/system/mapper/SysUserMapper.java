@@ -8,8 +8,10 @@ import com.ruoyi.common.annotation.DataPermission;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.mapper.BaseMapperPlus;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户表 数据层
@@ -84,4 +86,6 @@ public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, Sy
      */
     SysUser selectUserById(Long userId);
 
+    @Select("SELECT * FROM team_member WHERE code = #{memberCode}")
+    Map selectMemberByCode(@Param("memberCode") String memberCode);
 }

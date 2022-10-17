@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.ruoyi.common.AjaxResult;
 import com.ruoyi.common.config.MProjectConfig;
 import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.helper.LoginHelper;
@@ -14,15 +15,14 @@ import com.ruoyi.common.utils.CommUtils;
 import com.ruoyi.common.utils.Constant;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.ServletUtils;
-import com.ruoyi.member.domain.Member;
 import com.ruoyi.member.domain.ProjectMember;
 import com.ruoyi.member.service.MemberAccountService;
-import com.ruoyi.member.service.MemberService;
 import com.ruoyi.member.service.ProjectMemberService;
 import com.ruoyi.org.service.OrgService;
 import com.ruoyi.project.domain.*;
 import com.ruoyi.project.mapper.ProjectLogMapper;
 import com.ruoyi.project.service.*;
+import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.task.domain.Task;
 import com.ruoyi.task.domain.TaskStagesTemplete;
 import com.ruoyi.task.service.TaskProjectService;
@@ -53,8 +53,8 @@ public class ProjectController extends BaseController {
     @Autowired
     private ProjectTemplateService projectTemplateService;
 
-    @Autowired
-    private MemberService memberService;
+//    @Autowired
+//    private MemberService memberService;
 
     @Autowired
     private ProjectCollectionService projectCollectionService;
@@ -68,6 +68,9 @@ public class ProjectController extends BaseController {
     private MemberAccountService memberAccountService;
     @Autowired
     private ProjectMenuService projectMenuService;
+
+    @Autowired
+    private ISysUserService userService;
 
     @Value("${mproject.downloadServer}")
     private String downloadServer;
@@ -219,7 +222,7 @@ public class ProjectController extends BaseController {
              if(ObjectUtil.isEmpty(multipartFile)){
                  throw new CustomException("请选择上传头像！");
              }
-             resMap = memberService.uploadAvatar(code,multipartFile.getOriginalFilename().toString(),multipartFile.getInputStream());
+             //resMap = memberService.uploadAvatar(code,multipartFile.getOriginalFilename().toString(),multipartFile.getInputStream());
          }
          return  AjaxResult.success(resMap);
     }
@@ -453,10 +456,11 @@ public class ProjectController extends BaseController {
         ProjectMember projectMember = projectMemberService.lambdaQuery().eq(ProjectMember::getProject_code,project.getCode())
                 .eq(ProjectMember::getIs_owner,1).one();
         if(ObjectUtils.isNotEmpty(projectMember)){
-            Member member = memberService.lambdaQuery().eq(Member::getCode,projectMember.getMember_code()).one();
-            if(ObjectUtils.isNotEmpty(member)){
-                project.setOwner_name(member.getName());
-                project.setOwner_avatar(member.getAvatar());
+            //Member member = memberService.lambdaQuery().eq(Member::getCode,projectMember.getMember_code()).one();
+            SysUser sysUser = userService.lambdaQuery().eq(SysUser::getCode, projectMember.getMember_code()).one();
+            if(ObjectUtils.isNotEmpty(sysUser)){
+                project.setOwner_name(sysUser.getNickName());
+                project.setOwner_avatar(sysUser.getAvatar());
             }
         }
         return AjaxResult.success(project);
@@ -503,11 +507,14 @@ public class ProjectController extends BaseController {
         String organizationCode = MapUtils.getString(mmap,"organizationCode","");
         String memberCode = MapUtils.getString(mmap,"memberCode","");
 
-        Member member = null;
+        //Member member = null;
+        SysUser member = null;
         if(StringUtils.isNotEmpty(memberCode)){
-            member = memberService.getMemberByCode(memberCode);
+            //member = memberService.getMemberByCode(memberCode);
+            member = userService.getUserByCode(memberCode);
         }else{
-            member = memberService.getMemberByCode(MapUtils.getString(loginMember,"memberCode"));
+            //member = memberService.getMemberByCode(MapUtils.getString(loginMember,"memberCode"));
+            member = userService.getUserByCode(MapUtils.getString(loginMember, "memberCode"));
         }
         if(ObjectUtils.isEmpty(member)){
             return AjaxResult.warn("参数有误");

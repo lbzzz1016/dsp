@@ -77,7 +77,7 @@ public class BaseController {
         LoginUser loginUser = LoginHelper.getLoginUser();
         Map<String, String> member = new HashMap<>(4);
         if (loginUser != null) {
-            member.put("memberCode", loginUser.getLoginId());
+            member.put("memberCode", loginUser.getCode());
             member.put("organizationCode", ServletUtils.getHeaderParam("organizationCode"));
         }
         //member.put("departmentCode","6v7be19pwman2fird04gqu53");

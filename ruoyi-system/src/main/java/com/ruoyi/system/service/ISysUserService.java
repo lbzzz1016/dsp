@@ -6,6 +6,7 @@ import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.page.TableDataInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户 业务层
@@ -215,4 +216,11 @@ public interface ISysUserService extends IService<SysUser> {
      * @return
      */
     SysUser getUserByCode(String code);
+
+    /**
+     * 根据memberCode获取member信息
+     * @param memberCode
+     * @return
+     */
+    Map getMemberMapByCode(String memberCode);
 }
