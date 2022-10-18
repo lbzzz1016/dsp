@@ -14,19 +14,19 @@ import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWra
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.AjaxResult;
 import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.mapper.CommMapper;
 import com.ruoyi.common.utils.CommUtils;
 import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.member.domain.Member;
-import com.ruoyi.member.service.MemberService;
 import com.ruoyi.project.domain.Project;
 import com.ruoyi.project.domain.ProjectLog;
 import com.ruoyi.project.service.CollectionTeamService;
 import com.ruoyi.project.service.ProjectLogService;
 import com.ruoyi.project.service.ProjectService;
 import com.ruoyi.project.service.ProjectVersionService;
+import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.task.domain.*;
 import com.ruoyi.task.mapper.TaskLikeMapper;
 import com.ruoyi.task.mapper.TaskMapper;
@@ -54,9 +54,9 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
 
     @Autowired
     CommMapper commMapper;
+
     @Autowired
     TaskLikeMapper taskLikeMapper;
-
 
     @Autowired
     ProjectLogService projectLogService;
@@ -64,6 +64,9 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
     @Lazy
     @Autowired
     TaskWorkflowService taskWorkflowService;
+
+    @Autowired
+    ISysUserService userService;
     
     public List<Map> tasks(Map param){
         String stageCode = MapUtils.getString(param,"stageCode","");
@@ -166,9 +169,10 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
                     if(ObjectUtil.isNotEmpty(MapUtils.getObject(taskMemberMap,assign_to))){
                         map.put("executor",MapUtils.getObject(taskMemberMap,assign_to));
                     }else {
-                        Member member = memberService.lambdaQuery().eq(Member::getCode,MapUtils.getString(map,"assign_to")).one();
+                        //Member member = memberService.lambdaQuery().eq(Member::getCode,MapUtils.getString(map,"assign_to")).one();
+                        SysUser member = userService.lambdaQuery().eq(SysUser::getCode, MapUtils.getString(map, "assign_to")).one();
                         executorMap = new HashMap();
-                        executorMap.put("name",member.getName());
+                        executorMap.put("name",member.getNickName());
                         executorMap.put("avatar",member.getAvatar());
                         map.put("executor",executor);
                         taskMemberMap.put(assign_to,executorMap);
@@ -398,8 +402,8 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
     private  TaskStageService taskStageService;
     @Autowired
     private ProjectService projectService;
-    @Autowired
-    private MemberService memberService;
+//    @Autowired
+//    private MemberService memberService;
 
     @Transactional
     public AjaxResult createTask(Task task, String pcode){
@@ -412,7 +416,8 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
             return AjaxResult.warn("该项目已失效");
         }
 
-        Member member = memberService.getMemberByCode(task.getAssign_to());
+        //Member member = memberService.getMemberByCode(task.getAssign_to());
+        SysUser member = userService.getUserByCode(task.getAssign_to());
         if(ObjectUtils.isEmpty(member)){
             return AjaxResult.warn("任务执行人有误");
         }
@@ -607,25 +612,25 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         return canRead;
     }
 
-    protected  Integer getLikedAttr(String code,String memberCode){
+    protected  Integer getLikedAttr(String code, String memberCode){
         Integer like = 0;
-        Map taskLike = baseMapper.selectTaskLike(code,memberCode);
+        Map taskLike = baseMapper.selectTaskLike(code, memberCode);
         if(MapUtils.isNotEmpty(taskLike)){
             like = 1;
         }
         return like;
     }
 
-    protected Integer getStaredAttr(String code,String memberCode){
+    protected Integer getStaredAttr(String code, String memberCode){
         Integer stared = 0;
-        Map taskStar = baseMapper.selectTaskStared(code,memberCode);
+        Map taskStar = baseMapper.selectTaskStared(code, memberCode);
         if(MapUtils.isNotEmpty(taskStar)){
             stared = 1;
         }
         return stared;
     }
-    public Integer getDateTaskTotalForProject(String projectCode,String beginTime,String endTime){
-        return baseMapper.selectDateTaskTotalForProject(projectCode,beginTime,endTime);
+    public Integer getDateTaskTotalForProject(String projectCode, String beginTime, String endTime){
+        return baseMapper.selectDateTaskTotalForProject(projectCode, beginTime, endTime);
     }
     public void sort(String stageCode,List<String> codes){
         if(CollectionUtils.isEmpty(codes)){
@@ -671,7 +676,8 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         TaskStage taskStage = taskStageService.getBaseMapper().selectOne(taskStageQW);
         task.put("executor",null);
         if(StringUtils.isNotEmpty(MapUtils.getString(task,"assign_to"))){
-            Member member = memberService.getMemberByCode(MapUtils.getString(task,"assign_to"));
+            //Member member = memberService.getMemberByCode(MapUtils.getString(task,"assign_to"));
+            SysUser member = userService.getUserByCode(MapUtils.getString(task, "assign_to"));
             task.put("executor",member);
         }
         if(StringUtils.isNotEmpty(MapUtils.getString(task,"pcode"))){
@@ -705,14 +711,15 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         List<Map> taskList = page.getRecords();
         if(CollectionUtils.isNotEmpty(taskList)){
             taskList.stream().forEach(map -> {
-                Member member = memberService.getMemberByCode(MapUtils.getString(map,"assign_to"));
+                //Member member = memberService.getMemberByCode(MapUtils.getString(map,"assign_to"));
+                SysUser member = userService.getUserByCode(MapUtils.getString(map, "assign_to"));
                 if(!ObjectUtils.isEmpty(member)){
                     map.put("executor",new HashMap(){{
-                        put("name",member.getName());
+                        put("name",member.getNickName());
                         put("avatar",member.getAvatar());
                     }});
                 }
-                map = buildTaskMap(map,memberCode);
+                map = buildTaskMap(map, memberCode);
                 result.add(map);
             });
         }
@@ -928,9 +935,10 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
                 .action_type("task").is_robot(isRobot).build();
         Task task = getTaskByCode(MapUtils.getString(data,"taskCode"));
         logData.setProject_code(task.getProject_code());
-        Member toMember = null;
+        SysUser toMember = null;
+
         if(StringUtils.isNotEmpty(MapUtils.getString(data,"toMemberCode"))){
-            toMember = memberService.getMemberByCode(MapUtils.getString(data,"toMemberCode"));
+            toMember = userService.getUserByCode(MapUtils.getString(data,"toMemberCode"));
         }
 //        Notify notifyData = Notify.builder().title("").content("")
 //                .type("message").action("task").terminal("project").source_code(task.getCode()).build();
@@ -994,7 +1002,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
                 break;
             case "assign":
                 icon = "user";
-                remark = "指派给了 "+toMember.getName();
+                remark = "指派给了 "+toMember.getNickName();
                 break;
             case "pri":
                 icon = "user";
@@ -1015,11 +1023,11 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
                 break;
             case "inviteMember":
                 icon = "user-add";
-                remark = "添加了参与者 "+toMember.getName();
+                remark = "添加了参与者 "+toMember.getNickName();
                 break;
             case "removeMember":
                 icon = "user-delete";
-                remark = "移除了参与者 "+toMember.getName();
+                remark = "移除了参与者 "+toMember.getNickName();
                 break;
             case "setBeginTime":
                 icon = "calendar";
@@ -1091,7 +1099,8 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         ArrayList<String> notifyActions = new ArrayList<String>(){{
             add("done");add("redo");add("assign");add("comment");
         }};
-        Member member = memberService.lambdaQuery().eq(Member::getCode,MapUtils.getString(data,"memberCode")).one();
+        //Member member = memberService.lambdaQuery().eq(Member::getCode,MapUtils.getString(data,"memberCode")).one();
+        SysUser member = userService.lambdaQuery().eq(SysUser::getCode, MapUtils.getString(data, "memberCode")).one();
         if(ObjectUtil.isNotEmpty(member)){
 //            notifyData.setTitle(member.getName()+": "+remark);
 //            notifyData.setContent(task.getName());
@@ -1176,9 +1185,11 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
     public void saveTaskList(String memberCode, List<Task> taskList, String projectCode) {
     	List<String> assNameList = taskList.parallelStream().map(Task::getAssign_to).distinct().collect(Collectors.toList());
         //用户
-    	Map<String, String> memberNameCode = memberService.lambdaQuery().select(Member::getCode, Member::getName).in(Member::getName, assNameList).list()
-    			.parallelStream().collect(Collectors.toMap(Member::getName, Member::getCode));
-        //任务列表
+//    	Map<String, String> memberNameCode = memberService.lambdaQuery().select(Member::getCode, Member::getName).in(Member::getName, assNameList).list()
+//    			.parallelStream().collect(Collectors.toMap(Member::getName, Member::getCode));
+        Map<String, String> memberNameCode = userService.lambdaQuery().select(SysUser::getCode, SysUser::getNickName).in(SysUser::getNickName, assNameList).list()
+                .parallelStream().collect(Collectors.toMap(SysUser::getNickName, SysUser::getCode));
+    	//任务列表
         Map<String, String> stageNameCode = taskStageService.lambdaQuery().select(TaskStage::getName, TaskStage::getCode).eq(TaskStage::getProject_code, projectCode).list()
                 .parallelStream().collect(Collectors.toMap(TaskStage::getName, TaskStage::getCode));
         //标签

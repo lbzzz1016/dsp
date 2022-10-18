@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.domain.BaseDomain;
-import com.ruoyi.member.domain.Member;
 import lombok.*;
 
 import java.io.Serializable;
@@ -34,8 +34,11 @@ public class ProjectLog  extends BaseDomain implements Serializable {
     private String icon;
     private Integer is_robot;
 
+//    @TableField(exist = false)
+//    private Member member;
+
     @TableField(exist = false)
-    private Member member;
+    private SysUser sysUser;
 
     public Integer getId() {
         return id;

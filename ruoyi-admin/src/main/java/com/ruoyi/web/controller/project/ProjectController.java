@@ -18,7 +18,6 @@ import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.member.domain.ProjectMember;
 import com.ruoyi.member.service.MemberAccountService;
 import com.ruoyi.member.service.ProjectMemberService;
-import com.ruoyi.org.service.OrgService;
 import com.ruoyi.project.domain.*;
 import com.ruoyi.project.mapper.ProjectLogMapper;
 import com.ruoyi.project.service.*;
@@ -43,9 +42,6 @@ import java.util.*;
 @RestController
 @RequestMapping("/project")
 public class ProjectController extends BaseController {
-
-    @Autowired
-    private OrgService orgService;
 
     @Autowired
     private ProjectService proService;

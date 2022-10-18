@@ -2,10 +2,10 @@ package com.ruoyi.task.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.mapper.CommMapper;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.member.domain.Member;
-import com.ruoyi.member.service.MemberService;
+import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.task.domain.TaskTag;
 import com.ruoyi.task.mapper.TaskTagMapper;
 import org.apache.commons.collections4.CollectionUtils;
@@ -36,8 +36,9 @@ public class  TaskTagService  extends ServiceImpl<TaskTagMapper, TaskTag> {
 
     @Autowired
     TaskProjectService taskProjectService;
+
     @Autowired
-    MemberService memberService;
+    ISysUserService userService;
 
     public IPage<Map> selectListByTaskTag(IPage<Map> page, String taskTagCode){
         String sql = String.format("select t.* from team_task_to_tag as tt join team_task as t on tt.task_code = t.code where tt.tag_code = '%s' order by t.id desc",taskTagCode);
@@ -51,8 +52,9 @@ public class  TaskTagService  extends ServiceImpl<TaskTagMapper, TaskTag> {
                 map.put("executor",null);
                 String assign_to = MapUtils.getString(map,"assign_to");
                 if(StringUtils.isNotEmpty(assign_to)){
-                    Member member = memberService.getMemberByCode(MapUtils.getString(map,"assign_to"));
-                    map.put("executor",member);
+                    //Member member = memberService.getMemberByCode(MapUtils.getString(map,"assign_to"));
+                    SysUser member = userService.getUserByCode(MapUtils.getString(map, "assign_to"));
+                    map.put("executor", member);
                 }
                 result.add(map);
             });

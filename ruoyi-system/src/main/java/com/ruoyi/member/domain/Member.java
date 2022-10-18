@@ -16,7 +16,7 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member  extends BaseDomain implements Serializable {
+public class Member extends BaseDomain implements Serializable {
 
     @TableId(type = IdType.AUTO)
     private Integer id;
