@@ -1,4 +1,4 @@
-package com.ruoyi.common.mapper;
+package com.ruoyi.commo.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Mapper;

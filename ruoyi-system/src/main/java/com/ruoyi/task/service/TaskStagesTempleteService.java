@@ -2,7 +2,7 @@ package com.ruoyi.task.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ruoyi.common.mapper.CommMapper;
+import com.ruoyi.commo.mapper.CommMapper;
 import com.ruoyi.task.domain.TaskStagesTemplete;
 import com.ruoyi.task.mapper.TaskStagesTempleteMapper;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,7 +3,7 @@ package com.ruoyi.task.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.mapper.CommMapper;
+import com.ruoyi.commo.mapper.CommMapper;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.task.domain.TaskTag;

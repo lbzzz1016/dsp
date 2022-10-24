@@ -187,4 +187,9 @@ public class SysUser extends BaseEntity {
         return UserConstants.ADMIN_ID.equals(this.userId);
     }
 
+    @TableField(exist = false)
+    private String orgCode;
+    @TableField(exist = false)
+    private String position;
+
 }

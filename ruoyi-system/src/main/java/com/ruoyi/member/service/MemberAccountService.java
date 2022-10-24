@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.exception.CustomException;
-import com.ruoyi.common.mapper.CommMapper;
+import com.ruoyi.commo.mapper.CommMapper;
 import com.ruoyi.common.utils.CommUtils;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -20,6 +20,7 @@ import com.ruoyi.system.service.ISysUserService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -129,6 +130,7 @@ public class MemberAccountService extends ServiceImpl<MemberAccountMapper, Membe
         return baseMapper.selectMemberAccountByMemCode(memCode);
     }
 
+    @Lazy
     @Autowired
     ISysUserService sysUserService;
     @Autowired

@@ -17,7 +17,7 @@ import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.helper.LoginHelper;
-import com.ruoyi.common.mapper.CommMapper;
+import com.ruoyi.commo.mapper.CommMapper;
 import com.ruoyi.common.utils.CommUtils;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.project.domain.Project;

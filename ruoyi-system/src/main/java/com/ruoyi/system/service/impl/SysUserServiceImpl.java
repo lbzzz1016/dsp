@@ -2,7 +2,9 @@ package com.ruoyi.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -10,6 +12,8 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.AjaxResult;
+import com.ruoyi.common.ResultCode;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.entity.SysDept;
@@ -20,7 +24,20 @@ import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.helper.DataBaseHelper;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.CommUtils;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.member.domain.Member;
+import com.ruoyi.member.domain.MemberAccount;
+import com.ruoyi.member.service.MemberAccountService;
+import com.ruoyi.member.service.MemberService;
+import com.ruoyi.org.domain.Organization;
+import com.ruoyi.org.service.OrganizationService;
+import com.ruoyi.project.domain.ProjectAuth;
+import com.ruoyi.project.domain.ProjectAuthNode;
+import com.ruoyi.project.domain.ProjectNode;
+import com.ruoyi.project.service.ProjectAuthNodeService;
+import com.ruoyi.project.service.ProjectAuthService;
+import com.ruoyi.project.service.ProjectNodeService;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
 import com.ruoyi.system.domain.SysUserRole;
@@ -28,9 +45,12 @@ import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -286,6 +306,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         insertUserPost(user);
         // 新增用户与角色管理
         insertUserRole(user);
+        register(user.getEmail(), user.getUserName(), user.getNickName(), user.getPassword(), user.getPhonenumber(), user.getCode());
         return rows;
     }
 
@@ -300,6 +321,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         user.setCode(CommUtils.getUUID());
         user.setCreateBy(user.getUserName());
         user.setUpdateBy(user.getUserName());
+        register(user.getEmail(), user.getUserName(), user.getNickName(), user.getPassword(), user.getPhonenumber(), user.getCode());
         return baseMapper.insert(user) > 0;
     }
 
@@ -507,5 +529,69 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public Map getMemberMapByCode(String memberCode){
         return baseMapper.selectMemberByCode(memberCode);
+    }
+
+    @Autowired
+    private MemberService memberService;
+    @Autowired
+    private MemberAccountService memberAccountService;
+    @Autowired
+    private ProjectAuthService projectAuthService;
+    @Autowired
+    private ProjectAuthNodeService projectAuthNodeService;
+    @Autowired
+    private ProjectNodeService projectNodeService;
+    @Autowired
+    private OrganizationService organizationService;
+
+    @Transactional(rollbackFor = Exception.class)
+    public AjaxResult register(String email, String name, String nickName, String password, String mobile, String code) {
+        List<Member> list = memberService.lambdaQuery().list();
+        List<String> accountList = list.parallelStream().map(Member::getAccount).distinct().collect(Collectors.toList());
+        Member member = list.parallelStream().filter(o -> StrUtil.equals(email, o.getEmail())).findAny().orElse(null);
+        if (member == null) {
+            //用户
+            Member saveMember = Member.builder().code(code).account(name).password(password).name(nickName).mobile(mobile)
+                .create_time(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
+                .status(1).email(email).build();
+            //组织
+            Organization saveOrganization = Organization.builder().name(name + "的个人项目").owner_code(code)
+                .create_time(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
+                .personal(1).code(IdUtil.fastSimpleUUID()).build();
+            //组织角色
+            ProjectAuth auth1 = ProjectAuth.builder().title("管理员").status(1).sort(0).desc("管理员")
+                .create_at(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
+                .organization_code(saveOrganization.getCode()).type("admin").build();
+            ProjectAuth auth2 = ProjectAuth.builder().title("用户").status(1).sort(1).desc("用户")
+                .create_at(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
+                .organization_code(saveOrganization.getCode()).type("member").is_default(1).build();
+            boolean saveAuth1 = projectAuthService.save(auth1);
+            boolean saveAuth2 = projectAuthService.save(auth2);
+            log.info("创建管理员：{}，创建用户：{}", saveAuth1, saveAuth2);
+            //组织账户
+            MemberAccount saveMemberAccount = MemberAccount.builder().code(IdUtil.fastSimpleUUID()).member_code(saveMember.getCode())
+                .organization_code(saveOrganization.getCode()).authorize(auth1.getId().toString()).is_owner(1).name(name).mobile(mobile).email(email)
+                .create_time(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
+                .status(1).avatar(saveMember.getAvatar()).build();
+            //获取权限节点
+            List<ProjectNode> adminNode = projectNodeService.lambdaQuery().list();
+            List<ProjectNode> memberNode = adminNode.parallelStream().filter(o -> o.getNode().contains("project/notify") ||
+                o.getNode().contains("project/project") || o.getNode().contains("project/task")).collect(Collectors.toList());
+            //角色和节点集合
+            List<ProjectAuthNode> saveAuthNode = new ArrayList<>();
+            adminNode.forEach(o -> {
+                saveAuthNode.add(ProjectAuthNode.builder().auth(auth2.getId()).node(o.getNode()).build());
+            });
+            memberNode.forEach(o -> {
+                saveAuthNode.add(ProjectAuthNode.builder().auth(auth1.getId()).node(o.getNode()).build());
+            });
+            boolean b = memberService.save(saveMember);
+            boolean b1 = organizationService.save(saveOrganization);
+            boolean b2 = projectAuthNodeService.saveBatch(saveAuthNode);
+            boolean b3 = memberAccountService.save(saveMemberAccount);
+            log.info("新建用户：{}，新建组织：{}，新建角色节点：{}，组织用户关系：{}", b, b1, b2, b3);
+            return AjaxResult.success();
+        }
+        return new AjaxResult(ResultCode.EMAIL_USED);
     }
 }

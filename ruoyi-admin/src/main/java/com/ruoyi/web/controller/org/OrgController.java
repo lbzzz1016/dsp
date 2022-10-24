@@ -47,80 +47,80 @@ public class OrgController   extends BaseController {
     @Autowired
     private DepartmentMemberService departmentMemberService;
 
-    /**
-     * 新增保存部门
-     * @param mmap
-     * @return
-     */
-    @PostMapping("/department/save")
-    @ResponseBody
-    public AjaxResult departmentSave(@RequestParam Map<String,Object> mmap)
-    {
-        Map loginMember = getLoginMember();
-        String organizationCode = MapUtils.getString(loginMember,"organizationCode");
-        String departmentCode = MapUtils.getString(mmap,"departmentCode");
-        String parentDepartmentCode = MapUtils.getString(mmap,"parentDepartmentCode");
-        String name = MapUtils.getString(mmap,"name");
-        if(StringUtils.isEmpty(name)){
-            return AjaxResult.warn("请填写部门名称");
-        }
-        Department dep = Department.builder().code(CommUtils.getUUID()).create_time(DateUtils.formatDateTime(new Date()))
-                .name(name).organization_code(organizationCode).pcode(parentDepartmentCode).build();
-        boolean result = departmentService.save(dep);
-        if(result){
-            return AjaxResult.success(dep);
-        }
-        return AjaxResult.warn("操作失败，请稍候再试！");
+//    /**
+//     * 新增保存部门
+//     * @param mmap
+//     * @return
+//     */
+//    @PostMapping("/department/save")
+//    @ResponseBody
+//    public AjaxResult departmentSave(@RequestParam Map<String,Object> mmap)
+//    {
+//        Map loginMember = getLoginMember();
+//        String organizationCode = MapUtils.getString(loginMember,"organizationCode");
+//        String departmentCode = MapUtils.getString(mmap,"departmentCode");
+//        String parentDepartmentCode = MapUtils.getString(mmap,"parentDepartmentCode");
+//        String name = MapUtils.getString(mmap,"name");
+//        if(StringUtils.isEmpty(name)){
+//            return AjaxResult.warn("请填写部门名称");
+//        }
+//        Department dep = Department.builder().code(CommUtils.getUUID()).create_time(DateUtils.formatDateTime(new Date()))
+//                .name(name).organization_code(organizationCode).pcode(parentDepartmentCode).build();
+//        boolean result = departmentService.save(dep);
+//        if(result){
+//            return AjaxResult.success(dep);
+//        }
+//        return AjaxResult.warn("操作失败，请稍候再试！");
+//
+//    }
 
-    }
 
+//    @PostMapping("/department/index")
+//    @ResponseBody
+//    public AjaxResult getDepartment(@RequestParam Map<String,Object> mmap)
+//    {
+//        Map loginMember = getLoginMember();
+//        String organizationCode = MapUtils.getString(loginMember,"organizationCode");
+//        String pCode = MapUtils.getString(mmap,"pcode","");
+//        IPage<Map> ipage = departmentService.getDepartmentByOrgCodeAndPCode(Constant.createPage(mmap),organizationCode,pCode);
+//        return AjaxResult.success(Constant.createPageResultMap(ipage));
+//    }
 
-    @PostMapping("/department/index")
-    @ResponseBody
-    public AjaxResult getDepartment(@RequestParam Map<String,Object> mmap)
-    {
-        Map loginMember = getLoginMember();
-        String organizationCode = MapUtils.getString(loginMember,"organizationCode");
-        String pCode = MapUtils.getString(mmap,"pcode","");
-        IPage<Map> ipage = departmentService.getDepartmentByOrgCodeAndPCode(Constant.createPage(mmap),organizationCode,pCode);
-        return AjaxResult.success(Constant.createPageResultMap(ipage));
-    }
-
-    @PostMapping("/department/read")
-    @ResponseBody
-    public AjaxResult departmentRead(@RequestParam Map<String,Object> mmap)
-    {
-        String departmentCode = MapUtils.getString(mmap,"departmentCode");
-        Map deptMap = departmentService.getDepartmentByCode(departmentCode);
-
-        Map resultData = CommUtils.getMapField(deptMap,new String[]{ "code","organization_code","name","sort","pcode","icon","create_time","path"});
-
-        return new AjaxResult(AjaxResult.Type.SUCCESS, "", resultData);
-
-    }
-    @PostMapping("/department/delete")
-    @ResponseBody
-    public AjaxResult departmentDelete(@RequestParam Map<String,Object> mmap)
-    {
-        String departmentCode = MapUtils.getString(mmap,"departmentCode");
-        Integer resultData = departmentService.delDepartmentByCodes(new ArrayList<String>(){{add(departmentCode);}});
-        return new AjaxResult(AjaxResult.Type.SUCCESS, "", resultData);
-
-    }
-    @PostMapping("/department/edit")
-    @ResponseBody
-    public AjaxResult departmentEdit(@RequestParam Map<String,Object> mmap)
-    {
-        String departmentCode = MapUtils.getString(mmap,"departmentCode");
-        String parentDepartmentCode = MapUtils.getString(mmap,"parentDepartmentCode");
-        String name = MapUtils.getString(mmap,"name");
-        Map depMap = departmentService.getDepartmentByCode(departmentCode);
-        Department dep = new Department();
-        dep.setId(MapUtils.getInteger(depMap,"id"));
-        dep.setName(name);
-        boolean resultData = departmentService.updateById(dep);
-        return new AjaxResult(AjaxResult.Type.SUCCESS, "", resultData);
-    }
+//    @PostMapping("/department/read")
+//    @ResponseBody
+//    public AjaxResult departmentRead(@RequestParam Map<String,Object> mmap)
+//    {
+//        String departmentCode = MapUtils.getString(mmap,"departmentCode");
+//        Map deptMap = departmentService.getDepartmentByCode(departmentCode);
+//
+//        Map resultData = CommUtils.getMapField(deptMap,new String[]{ "code","organization_code","name","sort","pcode","icon","create_time","path"});
+//
+//        return new AjaxResult(AjaxResult.Type.SUCCESS, "", resultData);
+//
+//    }
+//    @PostMapping("/department/delete")
+//    @ResponseBody
+//    public AjaxResult departmentDelete(@RequestParam Map<String,Object> mmap)
+//    {
+//        String departmentCode = MapUtils.getString(mmap,"departmentCode");
+//        Integer resultData = departmentService.delDepartmentByCodes(new ArrayList<String>(){{add(departmentCode);}});
+//        return new AjaxResult(AjaxResult.Type.SUCCESS, "", resultData);
+//
+//    }
+//    @PostMapping("/department/edit")
+//    @ResponseBody
+//    public AjaxResult departmentEdit(@RequestParam Map<String,Object> mmap)
+//    {
+//        String departmentCode = MapUtils.getString(mmap,"departmentCode");
+//        String parentDepartmentCode = MapUtils.getString(mmap,"parentDepartmentCode");
+//        String name = MapUtils.getString(mmap,"name");
+//        Map depMap = departmentService.getDepartmentByCode(departmentCode);
+//        Department dep = new Department();
+//        dep.setId(MapUtils.getInteger(depMap,"id"));
+//        dep.setName(name);
+//        boolean resultData = departmentService.updateById(dep);
+//        return new AjaxResult(AjaxResult.Type.SUCCESS, "", resultData);
+//    }
 
 
     @PostMapping("/organization/_getOrgList")

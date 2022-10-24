@@ -3,7 +3,7 @@ package com.ruoyi.project.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ruoyi.common.mapper.CommMapper;
+import com.ruoyi.commo.mapper.CommMapper;
 import com.ruoyi.project.domain.ProjectTemplate;
 import com.ruoyi.project.mapper.ProjectTemplateMapper;
 import com.ruoyi.task.domain.TaskStagesTemplete;

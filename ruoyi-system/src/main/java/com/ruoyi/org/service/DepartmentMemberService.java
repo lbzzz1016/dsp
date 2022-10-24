@@ -105,7 +105,7 @@ public class DepartmentMemberService extends ServiceImpl<DepartmentMemberMapper,
                     //if(ObjectUtils.isEmpty(member)){
                     String account = ListUtils.getValue(rowlist,5,String.class);
                     if(!account.matches("[_0-9a-zA-Z]+")){
-                        throw new CustomException("账户"+account+"不合法，登录账户必须以英文、数字和下划线'_'组合！");
+                        throw new CustomException("账户" + account + "不合法，登录账户必须以英文、数字和下划线'_'组合！");
                     }
                     Member tempMember = memberService.lambdaQuery().eq(Member::getAccount,account).one();
                     if(ObjectUtil.isNotEmpty(tempMember)){
