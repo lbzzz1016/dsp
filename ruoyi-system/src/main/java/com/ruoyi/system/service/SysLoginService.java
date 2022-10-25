@@ -22,14 +22,21 @@ import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.redis.RedisUtils;
+import com.ruoyi.member.domain.MemberAccount;
+import com.ruoyi.member.service.MemberAccountService;
+import com.ruoyi.org.domain.Organization;
+import com.ruoyi.org.service.OrganizationService;
+import com.ruoyi.project.domain.ProjectAuthNode;
+import com.ruoyi.project.service.ProjectAuthNodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
-import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * 登录校验方法
@@ -45,6 +52,9 @@ public class SysLoginService {
     private final ISysConfigService configService;
     private final LogininforService asyncService;
     private final SysPermissionService permissionService;
+    private final MemberAccountService memberAccountService;
+    private final OrganizationService organizationService;
+    private final ProjectAuthNodeService projectAuthNodeService;
 
     /**
      * 登录验证
@@ -73,6 +83,45 @@ public class SysLoginService {
         recordLoginInfo(user.getUserId(), username);
         return StpUtil.getTokenValue();
     }
+
+
+    public Map<String, Object> loginV2(String username, String password, String code, String uuid) {
+        HttpServletRequest request = ServletUtils.getRequest();
+        boolean captchaOnOff = configService.selectCaptchaOnOff();
+        // 验证码开关
+        if (captchaOnOff) {
+            validateCaptcha(username, code, uuid, request);
+        }
+        SysUser user = loadUserByUsername(username);
+        checkLogin(LoginType.PASSWORD, username, () -> !BCrypt.checkpw(password, user.getPassword()));
+        // 此处可根据登录用户的数据不同 自行创建 loginUser
+        LoginUser loginUser = buildLoginUser(user);
+        // 生成token
+        LoginHelper.loginByDevice(loginUser, DeviceType.PC);
+        asyncService.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"), request);
+        recordLoginInfo(user.getUserId(), username);
+
+
+        String userCode = user.getCode();
+        List<MemberAccount> list = memberAccountService.lambdaQuery().eq(MemberAccount::getMember_code, userCode).list();
+        //user.setMemberAccountList(list);
+        Set<String> authSet = list.stream().map(MemberAccount::getAuthorize).collect(Collectors.toSet());
+        List<ProjectAuthNode> projectAuthNodeList = projectAuthNodeService.lambdaQuery().in(ProjectAuthNode::getAuth, authSet).list();
+        list.forEach(memberAccount -> {
+            List<String> nodeList = projectAuthNodeList.parallelStream().filter(auth -> Objects.equals(auth.getAuth().toString(), memberAccount.getAuthorize()))
+                .map(ProjectAuthNode::getNode).collect(Collectors.toList());
+            memberAccount.setNodeList(nodeList);
+        });
+
+        Set<String> collect = list.stream().map(MemberAccount::getOrganization_code).collect(Collectors.toSet());
+        List<Organization> organizationList = organizationService.lambdaQuery().in(Organization::getCode, collect).list();
+        Map<String, Object> resultMap = new HashMap<>(8);
+        resultMap.put("member", user);
+        resultMap.put("organizationList", organizationList);
+        resultMap.put("token", StpUtil.getTokenValue());
+        return resultMap;
+    }
+
 
     public String smsLogin(String phonenumber, String smsCode) {
         // 通过手机号查找用户

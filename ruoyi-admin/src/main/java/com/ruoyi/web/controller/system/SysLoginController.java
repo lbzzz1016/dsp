@@ -58,9 +58,11 @@ public class SysLoginController {
     public R<Map<String, Object>> login(@Validated @RequestBody LoginBody loginBody) {
         Map<String, Object> ajax = new HashMap<>();
         // 生成令牌
-        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
-            loginBody.getUuid());
-        ajax.put(Constants.TOKEN, token);
+//        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
+//            loginBody.getUuid());
+//        ajax.put(Constants.TOKEN, token);
+        ajax = loginService.loginV2(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
+              loginBody.getUuid());
         return R.ok(ajax);
     }
 
