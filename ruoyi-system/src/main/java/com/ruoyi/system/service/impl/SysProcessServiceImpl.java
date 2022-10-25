@@ -86,6 +86,7 @@ public class SysProcessServiceImpl implements ISysProcessService {
         lqw.eq(bo.getEndTime() != null, SysProcess::getEndTime, bo.getEndTime());
         lqw.eq(StringUtils.isNotBlank(bo.getProcessHours()), SysProcess::getProcessHours, bo.getProcessHours());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), SysProcess::getStatus, bo.getStatus());
+        lqw.orderByDesc(SysProcess::getCreateTime);
         return lqw;
     }
 
