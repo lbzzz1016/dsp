@@ -41,7 +41,7 @@ public class TaskStageService  extends ServiceImpl<TaskStageMapper, TaskStage> {
         if(ObjectUtils.isEmpty(taskStage)){
             throw new CustomException("该列表不存在！");
         }
-        List<Task> tasks = taskProjectService.lambdaQuery().eq(Task::getStage_code,code).eq(Task::getDeleted,0).list();
+        List<Task> tasks = taskProjectService.lambdaQuery().eq(Task::getStageCode,code).eq(Task::getDeleted,0).list();
         if(!CollectionUtils.isEmpty(tasks)){
             throw new CustomException("请先清空此列表上的任务，然后再删除这个列表！");
         }

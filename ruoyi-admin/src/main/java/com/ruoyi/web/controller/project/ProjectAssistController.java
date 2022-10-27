@@ -230,8 +230,8 @@ public class ProjectAssistController extends BaseController {
             return AjaxResult.warn("该任务已被失效");
         }
         if(StringUtils.isNotEmpty(MapUtils.getString(taskMap,"version_code"))){
-            task.setVersion_code("");
-            task.setFeatures_code("");
+            task.setVersionCode("");
+            task.setFeaturesCode("");
             task = projectVersionService.removeVersionTask(task,MapUtils.getString(loginMember,"memberCode"),MapUtils.getString(taskMap,"version_code"));
         }
         return AjaxResult.success(task);
@@ -533,7 +533,7 @@ public class ProjectAssistController extends BaseController {
         }
         com.ruoyi.task.domain.File projectFile = new com.ruoyi.task.domain.File();
         projectFile.setId(MapUtils.getInteger(fileMap,"id"));
-        projectFile.setDeleted(1);projectFile.setDeleted_time(DateUtils.formatDateTime(new Date()));
+        projectFile.setDeleted(1);projectFile.setDeletedTime(DateUtils.formatDateTime(new Date()));
         return AjaxResult.success(fileService.updateById(projectFile));
     }
     /**
@@ -570,12 +570,12 @@ public class ProjectAssistController extends BaseController {
             put("deleted",deleted);
         }};
         IPage<com.ruoyi.task.domain.File> page_ = Constant.createPage(new Page<com.ruoyi.task.domain.File>(),mmap);
-        page_=fileService.lambdaQuery().eq(com.ruoyi.task.domain.File::getProject_code,projectCode).eq(com.ruoyi.task.domain.File::getDeleted,0).page(page_);
+        page_=fileService.lambdaQuery().eq(com.ruoyi.task.domain.File::getProjectCode,projectCode).eq(com.ruoyi.task.domain.File::getDeleted,0).page(page_);
         List<com.ruoyi.task.domain.File> resultList = new ArrayList<>();
         for(int i=0;page_ !=null && page_.getRecords() !=null && i<page_.getRecords().size();i++){
             com.ruoyi.task.domain.File f = page_.getRecords().get(i);
             //Member member = memberService.lambdaQuery().eq(Member::getCode,f.getCreate_by()).one();
-            SysUser member = userService.lambdaQuery().eq(SysUser::getCode, f.getCreate_by()).one();
+            SysUser member = userService.lambdaQuery().eq(SysUser::getCode, f.getCreateBy()).one();
             f.setCreatorName(member.getNickName());
             f.setFullName(f.getTitle()+"."+f.getExtension());
             resultList.add(f);
@@ -674,23 +674,23 @@ public class ProjectAssistController extends BaseController {
             	File newFile  = new File(file_url, uploadFileName);
             	tempFile.renameTo(newFile);
                 com.ruoyi.task.domain.File file = com.ruoyi.task.domain.File.builder().fsize(fileSize)
-                        .path_name(file_url+uploadFileName)
-                        .file_url(downloadServer+downloadUrl)
+                        .pathName(file_url+uploadFileName)
+                        .fileUrl(downloadServer+downloadUrl)
                         .title(originFileName.substring(0,originFileName.lastIndexOf(".")))
-                        .file_type("text/plain")
-                        .create_time(DateUtils.getTime())
+                        .fileType("text/plain")
+                        .createTime(DateUtils.getTime())
                         .code(uuid)
-                        .organization_code(orgCode)
-                        .project_code(projectCode)
-                        .create_by(memberCode)
+                        .organizationCode(orgCode)
+                        .projectCode(projectCode)
+                        .createBy(memberCode)
                         .deleted(0)
                         .downloads(0l)
-                        .task_code(taskCode)
+                        .taskCode(taskCode)
                         .extension(originFileName.substring(originFileName.lastIndexOf(".")+1)).build();
                 Project project = fileService.uploadFiles(file,memberCode,projectCode);
                 Map result = new HashMap();
-                result.put("key",file.getPath_name());
-                result.put("url",file.getFile_url());
+                result.put("key",file.getPathName());
+                result.put("url",file.getFileUrl());
                 result.put("projectName",project.getName());
                 return AjaxResult.success(result);
             }else {

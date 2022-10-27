@@ -60,8 +60,8 @@ public class TaskMemberService  extends ServiceImpl<TaskMemberMapper, TaskMember
         if(StringUtils.isNotEmpty(memberCode)){
             TaskMember hasJoined = lambdaQuery().eq(TaskMember::getMember_code,memberCode).eq(TaskMember::getTask_code,taskCode).one();
             if(!ObjectUtils.isEmpty(hasJoined)){
-                taskProjectService.lambdaUpdate().set(Task::getAssign_to,memberCode).eq(Task::getCode,taskCode).update();
-                taskWorkflowService.queryRule(task.getProject_code(), task.getStage_code(), task.getCode(), memberCode, 3);
+                taskProjectService.lambdaUpdate().set(Task::getAssignTo,memberCode).eq(Task::getCode,taskCode).update();
+                taskWorkflowService.queryRule(task.getProjectCode(), task.getStageCode(), task.getCode(), memberCode, 3);
                 
                 lambdaUpdate().set(TaskMember::getIs_executor,1).eq(TaskMember::getTask_code,taskCode).eq(TaskMember::getMember_code,memberCode).update();
                 String logType ="assign";
@@ -76,7 +76,7 @@ public class TaskMemberService  extends ServiceImpl<TaskMemberMapper, TaskMember
             }
         }
         if(StringUtils.isEmpty(memberCode)){
-            taskProjectService.lambdaUpdate().set(Task::getAssign_to,memberCode).eq(Task::getCode,taskCode).update();
+            taskProjectService.lambdaUpdate().set(Task::getAssignTo,memberCode).eq(Task::getCode,taskCode).update();
             if(!fromCreate){
                 if(ObjectUtil.isNotEmpty(taskExecutor)){
                     taskProjectService.taskHook(LoginHelper.getLoginUser().getCode(),taskCode,"removeExecutor",taskExecutor.getMember_code(),0,
@@ -91,7 +91,7 @@ public class TaskMemberService  extends ServiceImpl<TaskMemberMapper, TaskMember
                 is_executor(isExecutor).is_owner(isOwner).join_time(DateUtils.getTime()).build();
         save(taskMember);
         if(isExecutor>0){
-            taskProjectService.lambdaUpdate().eq(Task::getCode,taskCode).set(Task::getAssign_to,memberCode).update();
+            taskProjectService.lambdaUpdate().eq(Task::getCode,taskCode).set(Task::getAssignTo,memberCode).update();
             if(LoginHelper.getLoginUser().getCode().equals(memberCode)){
                 taskProjectService.taskHook(LoginHelper.getLoginUser().getCode(),taskCode,"claim","",0,
                         "","","",new HashMap(){{
@@ -105,7 +105,7 @@ public class TaskMemberService  extends ServiceImpl<TaskMemberMapper, TaskMember
             }
         }
         if(StringUtils.isNotEmpty(memberCode)){
-            Project project = projectService.lambdaQuery().eq(Project::getCode,task.getProject_code()).one();
+            Project project = projectService.lambdaQuery().eq(Project::getCode,task.getProjectCode()).one();
             projectMemberService.inviteMember(memberCode,project==null?"":project.getCode(),0);
         }
         return taskMember;
@@ -124,7 +124,7 @@ public class TaskMemberService  extends ServiceImpl<TaskMemberMapper, TaskMember
         List<String> memberCodesList = new ArrayList<>();
         if(memberCodes.indexOf("all") != -1){
             isAll = true;
-            List<ProjectMember> list= projectMemberService.lambdaQuery().eq(ProjectMember::getProjectCode,task.getProject_code()).list();
+            List<ProjectMember> list= projectMemberService.lambdaQuery().eq(ProjectMember::getProjectCode,task.getProjectCode()).list();
             if(CollectionUtil.isNotEmpty(list)){
                 list.forEach(projectMember -> {
                     memberCodesList.add(projectMember.getMemberCode());
@@ -149,7 +149,7 @@ public class TaskMemberService  extends ServiceImpl<TaskMemberMapper, TaskMember
                 if(ObjectUtil.isNotEmpty(hasJoined)){
                     if(!finalIsAll){
                         if(hasJoined.getIs_executor()>0){
-                            taskProjectService.lambdaUpdate().eq(Task::getCode,taskCode).set(Task::getAssign_to,"").update();
+                            taskProjectService.lambdaUpdate().eq(Task::getCode,taskCode).set(Task::getAssignTo,"").update();
                             taskProjectService.taskHook(LoginHelper.getLoginUser().getCode(),taskCode,"removeExecutor",memberCode,0,
                                     "","","",null,null);
                         }

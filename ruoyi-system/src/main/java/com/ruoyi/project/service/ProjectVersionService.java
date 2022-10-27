@@ -100,8 +100,8 @@ public class ProjectVersionService  extends ServiceImpl<ProjectVersionMapper, Pr
     public Task addVersionTask(Map taskMap, Map versionMap) throws Exception {
         String versionCode = MapUtils.getString(versionMap,"code","0");
         Task task = BeanCopyUtils.mapToBean(taskMap,Task.class);
-        task.setVersion_code(versionCode);
-        task.setFeatures_code(MapUtils.getString(versionMap,"features_code"));
+        task.setVersionCode(versionCode);
+        task.setFeaturesCode(MapUtils.getString(versionMap,"features_code"));
         taskProjectService.updateById(task);
         updateSchedule(versionCode);
         return task;
@@ -110,8 +110,8 @@ public class ProjectVersionService  extends ServiceImpl<ProjectVersionMapper, Pr
     @Transactional
     public Task removeVersionTask(Task task,String memberCode,String versionCode){
         if(StringUtils.isNotEmpty(versionCode)){
-            task.setVersion_code("");
-            task.setFeatures_code("");
+            task.setVersionCode("");
+            task.setFeaturesCode("");
             taskProjectService.updateById(task);
             updateSchedule(versionCode);
             run(new HashMap(){{

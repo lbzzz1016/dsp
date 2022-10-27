@@ -166,21 +166,21 @@ public class TaskWorkflowService extends ServiceImpl<TaskWorkflowMapper, TaskWor
                 List<TaskWorkflowRule> ruleList = o.getWorkflowRuleList();
                 TaskWorkflowRule rule03 = ruleList.stream().filter(o1 -> o1.getSort() == 3).findFirst().orElse(null);
                 if (rule03 != null && rule03.getAction() == 3) {
-                    taskWrapper.set(Task::getAssign_to, rule03.getObject_code());
+                    taskWrapper.set(Task::getAssignTo, rule03.getObject_code());
                     if (StrUtil.isNotEmpty(rule03.getObject_code())) {
                     	//updateTaskMember(taskCode, rule03.getObject_code());
                     }
                 } else if (rule03 != null) {
-                    taskWrapper.set(Task::getStage_code, rule03.getObject_code());
+                    taskWrapper.set(Task::getStageCode, rule03.getObject_code());
                 }
                 TaskWorkflowRule rule04 = ruleList.stream().filter(o1 -> o1.getSort() == 4).findFirst().orElse(null);
                 TaskWorkflowRule rule05 = ruleList.stream().filter(o1 -> o1.getSort() == 5).findFirst().orElse(null);
                 if (rule03 != null && rule04 != null && StrUtil.isNotEmpty(rule04.getObject_code())) {
                     if (rule03.getAction() == 3) {
-                        taskWrapper.set(Task::getStage_code, rule04.getObject_code());
+                        taskWrapper.set(Task::getStageCode, rule04.getObject_code());
                     }
                     if (rule03.getAction() == 0) {
-                        taskWrapper.set(Task::getAssign_to, rule04.getObject_code());
+                        taskWrapper.set(Task::getAssignTo, rule04.getObject_code());
                         if (StrUtil.isNotEmpty(rule04.getObject_code())) {
                         	//updateTaskMember(taskCode, rule04.getObject_code());
                         }

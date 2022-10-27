@@ -68,14 +68,14 @@ public class TaskFileController extends BaseController {
         String memberCode = (String) loginMember.get("memberCode");
         if (CollUtil.isNotEmpty(listInfo)) {
             for (List<Object> obj : listInfo) {
-                Task task = Task.builder().project_code(projectCode).code(IdUtil.fastSimpleUUID())
+                Task task = Task.builder().projectCode(projectCode).code(IdUtil.fastSimpleUUID())
                 		.name(String.valueOf(obj.get(0))).pName(String.valueOf(obj.get(1)))
-                        .stage_code((String) obj.get(2))
-                        .assign_to((String) obj.get(3))
-                        .begin_time((String) obj.get(4)).end_time((String) obj.get(5))
+                        .stageCode((String) obj.get(2))
+                        .assignTo((String) obj.get(3))
+                        .beginTime((String) obj.get(4)).endTime((String) obj.get(5))
                         .description((String) obj.get(6))
                         .priText((String) obj.get(7))
-                        .task_tag((String) obj.get(8)).build();
+                        .taskTag((String) obj.get(8)).build();
                 taskList.add(task);
             }
             taskProjectService.saveTaskList(memberCode, taskList, projectCode);

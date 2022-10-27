@@ -130,7 +130,7 @@ public class ProjectController extends BaseController {
         }
 
 
-        List<Task> listTask = taskProjectService.lambdaQuery().eq(Task::getDeleted,0).eq(Task::getProject_code,projectCode).list();
+        List<Task> listTask = taskProjectService.lambdaQuery().eq(Task::getDeleted,0).eq(Task::getProjectCode,projectCode).list();
         if(CollectionUtils.isEmpty(listTask)){
             listTask = new ArrayList<Task>();
         }
@@ -146,7 +146,7 @@ public class ProjectController extends BaseController {
         final Integer[] expireToday={0};
         final Integer[]  doneOverdue= {0};
         listTask.stream().forEach(task -> {
-            if(StrUtil.isEmpty(task.getAssign_to())){
+            if(StrUtil.isEmpty(task.getAssignTo())){
                 toBeAssign[0]++;
             }
             if(ObjectUtil.isNotEmpty(task.getDone()) && task.getDone()>0){
@@ -154,15 +154,15 @@ public class ProjectController extends BaseController {
             }else{
                 unDone[0] ++;
             }
-            if(StrUtil.isNotEmpty(task.getEnd_time())){
+            if(StrUtil.isNotEmpty(task.getEndTime())){
                 if(ObjectUtil.isNotEmpty(task.getDone()) && task.getDone()==0){
-                    if(task.getEnd_time().compareTo(tomorrow) == -1 && task.getEnd_time().compareTo(today) >=0){
+                    if(task.getEndTime().compareTo(tomorrow) == -1 && task.getEndTime().compareTo(today) >=0){
                         doneOverdue[0] ++;
                     }
-                    if(-1 == task.getEnd_time().compareTo(nowTime)){
+                    if(-1 == task.getEndTime().compareTo(nowTime)){
                         overdue[0]++;
                     }
-                    String endTime = StrUtil.isNotEmpty(task.getEnd_time())&&task.getEnd_time().length()>=10?task.getEnd_time().substring(0,10):"";
+                    String endTime = StrUtil.isNotEmpty(task.getEndTime())&&task.getEndTime().length()>=10?task.getEndTime().substring(0,10):"";
                     if(endTime.compareTo(DateUtils.format("yyyy-MM-dd",now)) == 0){
                         expireToday[0] ++;
                     }
@@ -170,7 +170,7 @@ public class ProjectController extends BaseController {
                     List<ProjectLog> logList = projectLogService.lambdaQuery().eq(ProjectLog::getAction_type,"task")
                             .eq(ProjectLog::getSource_code,task.getCode()).eq(ProjectLog::getType,"done").list();
                     if(!CollectionUtils.isEmpty(logList)){
-                        if(task.getEnd_time().compareTo(logList.get(0).getCreate_time()) == -1){
+                        if(task.getEndTime().compareTo(logList.get(0).getCreate_time()) == -1){
                             doneOverdue[0]++;
                         }
                     }

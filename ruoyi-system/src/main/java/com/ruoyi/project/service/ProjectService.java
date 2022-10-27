@@ -371,7 +371,7 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
             weekSchedule = lastWeekSchedule == 0 ? 0 : (int) ((projectSchedule - lastWeekSchedule) * 100 / lastWeekSchedule);
             daySchedule = yesterdaySchedule == 0 ? 0 : (int) ((projectSchedule - yesterdaySchedule) * 100 / yesterdaySchedule);
             //任务
-            List<Task> tasks = taskProjectService.lambdaQuery().in(Task::getProject_code, proCodeList).list();
+            List<Task> tasks = taskProjectService.lambdaQuery().in(Task::getProjectCode, proCodeList).list();
 
             LocalDate date1 = LocalDate.of(now.getYear(), Month.JANUARY, 1) ;
             if (CollUtil.isNotEmpty(tasks)) {
@@ -379,8 +379,8 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                 while (date1.getMonthValue() <= now.getMonthValue()) {
                     Map<String, Object> map = new HashMap<>(4);
                     LocalDate finalDate = date1;
-                    long count = tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreate_time())).filter(o -> {
-                    	LocalDate create = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                    long count = tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreateTime())).filter(o -> {
+                    	LocalDate create = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                     	return create.getMonthValue() == finalDate.getMonthValue() && create.getYear() == finalDate.getYear();
                     }).count();
 //                    if (date1.getMonthValue() == now.getMonthValue()) {
@@ -391,15 +391,15 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                     taskList.add(map);
                     date1 = date1.plusMonths(1);
                 }
-                List<Task> memberTaskList = tasks.parallelStream().filter(o -> StrUtil.isNotEmpty(o.getAssign_to())).collect(Collectors.toList());
+                List<Task> memberTaskList = tasks.parallelStream().filter(o -> StrUtil.isNotEmpty(o.getAssignTo())).collect(Collectors.toList());
                 if (CollUtil.isNotEmpty(memberTaskList)) {
-                    Set<String> memberCodes = memberTaskList.parallelStream().map(Task::getAssign_to).collect(Collectors.toSet());
+                    Set<String> memberCodes = memberTaskList.parallelStream().map(Task::getAssignTo).collect(Collectors.toSet());
 //                    Map<String, String> memberCodeName = memberService.lambdaQuery().select(Member::getCode, Member::getName).in(Member::getCode, memberCodes)
 //                            .list().parallelStream().collect(Collectors.toMap(Member::getCode, Member::getName));
                     Map<String, String> memberCodeName = userService.lambdaQuery().select(SysUser::getCode, SysUser::getNickName).in(SysUser::getCode, memberCodes)
                             .list().parallelStream().collect(Collectors.toMap(SysUser::getCode, SysUser::getNickName));
                     Map<String, Long> topTaskNum = new LinkedHashMap<>();
-                    memberTaskList.stream().collect(Collectors.groupingBy(Task::getAssign_to, Collectors.counting()))
+                    memberTaskList.stream().collect(Collectors.groupingBy(Task::getAssignTo, Collectors.counting()))
                             .entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                             .forEachOrdered(x -> topTaskNum.put(x.getKey(), x.getValue()));
                     topTaskNum.forEach((key, val) -> {
@@ -409,24 +409,24 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                         taskTop.add(map);
                     });
                 }
-                nowTaskCount = (int) tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreate_time())).filter(o -> {
-                	LocalDateTime create = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                nowTaskCount = (int) tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreateTime())).filter(o -> {
+                	LocalDateTime create = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
                 	return create.equals(now);
                 }).count();
                 //逾期任务 逾期率
-                taskOverdueCount = (int) tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getEnd_time())).filter(o -> {
-                    LocalDateTime end = LocalDateTime.parse(o.getEnd_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                taskOverdueCount = (int) tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getEndTime())).filter(o -> {
+                    LocalDateTime end = LocalDateTime.parse(o.getEndTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
                     return end.isBefore(now) && o.getDone() == 0;
                 }).count();
                 taskOverduePercent = taskOverdueCount * 100 / taskCount;
                 //周同比  日同比
-                int taskWeekCount = (int) tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getEnd_time())).filter(o -> {
-                    LocalDateTime end = LocalDateTime.parse(o.getEnd_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                int taskWeekCount = (int) tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getEndTime())).filter(o -> {
+                    LocalDateTime end = LocalDateTime.parse(o.getEndTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
                     return end.isBefore(lastWeek) && o.getDone() == 0;
                 }).count();
                 weekRatio = taskWeekCount == 0 ? 0 : (taskOverdueCount - taskWeekCount) * 100 / taskWeekCount;
-                int taskDayCount = (int) tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getEnd_time())).filter(o -> {
-                    LocalDateTime end = LocalDateTime.parse(o.getEnd_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                int taskDayCount = (int) tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getEndTime())).filter(o -> {
+                    LocalDateTime end = LocalDateTime.parse(o.getEndTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
                     return end.isBefore(yesterday) && o.getDone() == 0;
                 }).count();
                 dayRatio = taskDayCount == 0 ? 0 : (taskOverdueCount - taskDayCount) * 100 / taskDayCount;
@@ -472,7 +472,7 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                     .parallelStream().collect(Collectors.toMap(SysUser::getCode, SysUser::getNickName));
             }
             //任务
-            tasks = taskProjectService.lambdaQuery().in(Task::getProject_code, proCodeList).list();
+            tasks = taskProjectService.lambdaQuery().in(Task::getProjectCode, proCodeList).list();
         }
         return buildInfo(dateType, startDate, endDate, projects, tasks, projectMemberList, memberCodeName);
     }
@@ -515,8 +515,8 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                     }
                     //任务数
                     Map<String, Object> taskMap = new HashMap<>(4);
-                    long taskCount = tasks == null ? 0 : tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreate_time())).filter(o -> {
-                        LocalDate create = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                    long taskCount = tasks == null ? 0 : tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreateTime())).filter(o -> {
+                        LocalDate create = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                         return create.equals(now);
                     }).count();
                     taskMap.put("日期", "今日");
@@ -555,8 +555,8 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                         projectList.add(map);
                         //任务数
                         Map<String, Object> taskMap = new HashMap<>(4);
-                        long taskCount = tasks == null ? 0 : tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreate_time())).filter(o -> {
-                            LocalDate create = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                        long taskCount = tasks == null ? 0 : tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreateTime())).filter(o -> {
+                            LocalDate create = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                             return create.equals(now);
                         }).count();
                         taskMap.put("日期", day);
@@ -596,8 +596,8 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                         projectList.add(map);
                         //任务数
                         Map<String, Object> taskMap = new HashMap<>(4);
-                        long taskCount = tasks == null ? 0 : tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreate_time())).filter(o -> {
-                            LocalDate create = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                        long taskCount = tasks == null ? 0 : tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreateTime())).filter(o -> {
+                            LocalDate create = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                             return create.equals(finalBeginDate);
                         }).count();
                         taskMap.put("日期", beginDate.getDayOfMonth() + "日");
@@ -637,8 +637,8 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                         projectList.add(map);
                         //任务数
                         Map<String, Object> taskMap = new HashMap<>(4);
-                        long taskCount = tasks == null ? 0 : tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreate_time())).filter(o -> {
-                            LocalDate create = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                        long taskCount = tasks == null ? 0 : tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreateTime())).filter(o -> {
+                            LocalDate create = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                             return create.getMonthValue() == finalBeginDate.getMonthValue() && create.getYear() == finalBeginDate.getYear();
                         }).count();
                         taskMap.put("日期", beginDate.getMonthValue() + "月");
@@ -684,8 +684,8 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                 projectList.add(map);
                 //任务数
                 Map<String, Object> taskMap = new HashMap<>(4);
-                long taskCount = tasks == null ? 0 : tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreate_time())).filter(o -> {
-                    LocalDate create = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                long taskCount = tasks == null ? 0 : tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreateTime())).filter(o -> {
+                    LocalDate create = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                     return create.equals(finalBeginDate);
                 }).count();
                 taskMap.put("日期", beginDate.getMonthValue() + "-" + beginDate.getDayOfMonth());
@@ -710,10 +710,10 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
             }
         }
         //任务排行
-        List<Task> memberTaskList = tasks == null ? null : tasks.parallelStream().filter(o -> StrUtil.isNotEmpty(o.getAssign_to())).collect(Collectors.toList());
+        List<Task> memberTaskList = tasks == null ? null : tasks.parallelStream().filter(o -> StrUtil.isNotEmpty(o.getAssignTo())).collect(Collectors.toList());
         if (CollUtil.isNotEmpty(memberTaskList)) {
             Map<String, Long> taskTopNum = new LinkedHashMap<>();
-            memberTaskList.stream().collect(Collectors.groupingBy(Task::getAssign_to, Collectors.counting()))
+            memberTaskList.stream().collect(Collectors.groupingBy(Task::getAssignTo, Collectors.counting()))
                     .entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                     .forEachOrdered(x -> taskTopNum.put(x.getKey(), x.getValue()));
             taskTopNum.forEach((key, val) -> {
@@ -736,10 +736,10 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
         List<Task> taskList = null;
         if (list != null) {
             List<String> codes = list.parallelStream().map(Project::getCode).collect(Collectors.toList());
-            taskList = taskProjectService.lambdaQuery().select(Task::getCode, Task::getName, Task::getPri, Task::getEnd_time).ne(Task::getExecute_status, "closed")
-                    .eq(Task::getDeleted, 0).eq(Task::getDone, 0).in(Task::getProject_code, codes).list();
+            taskList = taskProjectService.lambdaQuery().select(Task::getCode, Task::getName, Task::getPri, Task::getEndTime).ne(Task::getExecuteStatus, "closed")
+                    .eq(Task::getDeleted, 0).eq(Task::getDone, 0).in(Task::getProjectCode, codes).list();
             if (taskList != null) {
-            	taskList = taskList.stream().filter(o -> o.getPri() != null && o.getEnd_time() != null).sorted(Comparator.comparing(Task::getEnd_time, Comparator.reverseOrder())).sorted(Comparator.comparing(Task::getPri, Comparator.reverseOrder())).collect(Collectors.toList());
+            	taskList = taskList.stream().filter(o -> o.getPri() != null && o.getEndTime() != null).sorted(Comparator.comparing(Task::getEndTime, Comparator.reverseOrder())).sorted(Comparator.comparing(Task::getPri, Comparator.reverseOrder())).collect(Collectors.toList());
             }
         }
         return taskList;

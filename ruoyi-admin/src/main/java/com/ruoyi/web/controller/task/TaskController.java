@@ -421,8 +421,8 @@ public class TaskController  extends BaseController {
             return AjaxResult.warn("请填写任务标题");
         }
         Task  task = new Task();
-        task.setStage_code(stage_code);
-        task.setProject_code(project_code);
+        task.setStageCode(stage_code);
+        task.setProjectCode(project_code);
         if(StringUtils.isNotEmpty(pcode)){
             Map parentTask = taskProjectService.getTaskMapByCode(pcode);
             if(MapUtils.isEmpty(parentTask)){
@@ -434,15 +434,15 @@ public class TaskController  extends BaseController {
             if(MapUtils.getInteger(parentTask,"done",-1) == 1){
                 return AjaxResult.warn("父任务已完成，无法添加新的子任务");
             }
-            task.setProject_code(MapUtils.getString(parentTask,"project_code"));
-            task.setStage_code(MapUtils.getString(parentTask,"stage_code"));
+            task.setProjectCode(MapUtils.getString(parentTask,"project_code"));
+            task.setStageCode(MapUtils.getString(parentTask,"stage_code"));
             task.setPcode(pcode);
         }
-        task.setAssign_to(assign_to);
-        task.setCreate_by(MapUtils.getString(loginMember,"memberCode"));
+        task.setAssignTo(assign_to);
+        task.setCreateBy(MapUtils.getString(loginMember,"memberCode"));
         task.setDescription("");
-        task.setBegin_time("");
-        task.setEnd_time("");
+        task.setBeginTime("");
+        task.setEndTime("");
         task.setName(name);
         return taskProjectService.createTask(task,pcode);
     }
@@ -911,7 +911,7 @@ public class TaskController  extends BaseController {
         String taskCode = MapUtils.getString(mmap,"taskCode");
         if( 0==private_ || 1==private_){
             Task task = taskProjectService.getTaskByCode(taskCode);
-            taskProjectService.edit(Task.builder().id(task.getId()).code(taskCode).project_code(task.getProject_code())
+            taskProjectService.edit(Task.builder().id(task.getId()).code(taskCode).projectCode(task.getProjectCode())
                     .privated(private_).build(),MapUtils.getString(getLoginMember(),"memberCode"));
         }
         return  AjaxResult.success();

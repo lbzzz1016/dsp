@@ -246,21 +246,21 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
             type="status";
         }
         if(null != begin_time){
-            luw = luw.set(Task::getBegin_time,begin_time);updateMark = true;
+            luw = luw.set(Task::getBeginTime,begin_time);updateMark = true;
             type="setBeginTime";
             if("".equals(begin_time)){
                 type="clearBeginTime";
             }
         }
         if(null != end_time){
-            luw = luw.set(Task::getEnd_time,end_time);updateMark = true;
+            luw = luw.set(Task::getEndTime,end_time);updateMark = true;
             type="setEndTime";
             if("".equals(end_time)){
                 type="clearEndTime";
             }
         }
         if(null != work_time){
-            luw = luw.set(Task::getWork_time,work_time);updateMark = true;
+            luw = luw.set(Task::getWorkTime,work_time);updateMark = true;
             type="setWorkTime";
         }
 
@@ -287,7 +287,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
     }
     public List<Map> getTaskByProjectCodeAndDel(String projectCode,Integer deleted){
         LambdaQueryWrapper<Task> taskQW = new LambdaQueryWrapper<>();
-        taskQW.eq(Task::getProject_code, projectCode);
+        taskQW.eq(Task::getProjectCode, projectCode);
         taskQW.eq(Task::getDeleted,deleted);
         return baseMapper.selectTaskByProjectCodeAndDel(projectCode,deleted);
     }
@@ -330,15 +330,15 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         if(ObjectUtils.isEmpty(taskStage)){
             throw new CustomException("任务列表不存在！");
         }
-        List<Task> tasks = lambdaQuery().eq(Task::getStage_code,stageCode).eq(Task::getDeleted,0).list();
+        List<Task> tasks = lambdaQuery().eq(Task::getStageCode,stageCode).eq(Task::getDeleted,0).list();
         if(CollectionUtils.isNotEmpty(tasks)){
             for(Task task:tasks){
                 taskHook(LoginHelper.getLoginUser().getCode(),task.getCode(),"recycle","",0,
                         "","","",null,null);
             }
         }
-        lambdaUpdate().eq(Task::getStage_code,stageCode).eq(Task::getDeleted,0)
-                .set(Task::getDeleted,1).set(Task::getDeleted_time,DateUtils.getTime())
+        lambdaUpdate().eq(Task::getStageCode,stageCode).eq(Task::getDeleted,0)
+                .set(Task::getDeleted,1).set(Task::getDeletedTime,DateUtils.getTime())
                 .update();
     }
 
@@ -407,17 +407,17 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
 
     @Transactional
     public AjaxResult createTask(Task task, String pcode){
-        TaskStage ts = taskStageService.getTaskStageByCode(task.getStage_code());
+        TaskStage ts = taskStageService.getTaskStageByCode(task.getStageCode());
         if(ObjectUtils.isEmpty(ts)){
             return AjaxResult.warn("该任务列表无效");
         }
-        Project project = projectService.getProjectByCodeNotDel(task.getProject_code());
+        Project project = projectService.getProjectByCodeNotDel(task.getProjectCode());
         if(ObjectUtils.isEmpty(project)){
             return AjaxResult.warn("该项目已失效");
         }
 
         //Member member = memberService.getMemberByCode(task.getAssign_to());
-        SysUser member = userService.getUserByCode(task.getAssign_to());
+        SysUser member = userService.getUserByCode(task.getAssignTo());
         if(ObjectUtils.isEmpty(member)){
             return AjaxResult.warn("任务执行人有误");
         }
@@ -433,12 +433,12 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
             if(MapUtils.getInteger(parentTask,"done",-1) == 1){
                 return AjaxResult.warn("父任务已完成，无法添加新的子任务");
             }
-            task.setProject_code(MapUtils.getString(parentTask,"project_code"));
-            task.setStage_code(MapUtils.getString(parentTask,"stage_code"));
+            task.setProjectCode(MapUtils.getString(parentTask,"project_code"));
+            task.setStageCode(MapUtils.getString(parentTask,"stage_code"));
             task.setPcode(pcode);
         }
 
-        Integer maxIdNum = baseMapper.selectMaxIdNumByProjectCode(task.getProject_code());
+        Integer maxIdNum = baseMapper.selectMaxIdNumByProjectCode(task.getProjectCode());
         String path = "";
         if(maxIdNum == null)maxIdNum = 0;
         if(!ObjectUtils.isEmpty(parentTask)){
@@ -450,7 +450,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
             }
             path = MapUtils.getString(parentTask,"code")+parentPath;
         }
-        task.setCreate_time(DateUtils.getTime());
+        task.setCreateTime(DateUtils.getTime());
         task.setCode(CommUtils.getUUID());
         task.setPath(path);
         task.setPri(0);
@@ -459,7 +459,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         }else{
             task.setPrivated(1);
         }
-        task.setId_num(maxIdNum+1);
+        task.setIdNum(maxIdNum+1);
         int i = baseMapper.insert(task);
         taskHook(LoginHelper.getLoginUser().getCode(),task.getCode(),"create","",0,
                 "","","",null,null);
@@ -473,21 +473,21 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         String logType = "inviteMember";
         Integer isExecutor = 0;
 
-        if(StringUtils.isNotEmpty(task.getAssign_to())){
-            if(task.getAssign_to().equals(LoginHelper.getLoginUser().getCode())){
+        if(StringUtils.isNotEmpty(task.getAssignTo())){
+            if(task.getAssignTo().equals(LoginHelper.getLoginUser().getCode())){
                 logType="claim";
                 isExecutor=1;
             }
-            taskMemberService.inviteMember(task.getAssign_to(),task.getCode(),1,isExecutor,false,false);
+            taskMemberService.inviteMember(task.getAssignTo(),task.getCode(),1,isExecutor,false,false);
         }
-        if(StringUtils.isEmpty(task.getAssign_to()) || isExecutor==1){
-            taskMemberService.inviteMember(task.getAssign_to(),task.getCode(),0,1,false,false);
+        if(StringUtils.isEmpty(task.getAssignTo()) || isExecutor==1){
+            taskMemberService.inviteMember(task.getAssignTo(),task.getCode(),0,1,false,false);
         }
 
         if(i>0){
             Map taskMap = baseMapper.selectTaskByCode(task.getCode());
-            taskWorkflowService.queryRule(task.getProject_code(), task.getStage_code(), task.getCode(), null, 0);
-            return AjaxResult.success(buildTaskMap(taskMap,task.getCreate_by()));
+            taskWorkflowService.queryRule(task.getProjectCode(), task.getStageCode(), task.getCode(), null, 0);
+            return AjaxResult.success(buildTaskMap(taskMap,task.getCreateBy()));
         }
         return AjaxResult.warn("保存失败！");
     }
@@ -639,8 +639,8 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         TaskStage taskStage= taskStageService.lambdaQuery().eq(TaskStage::getCode,stageCode).one();
         for(int i=0;i<codes.size();i++){
             Task task = lambdaQuery().eq(Task::getCode,codes.get(i)).one();
-            lambdaUpdate().set(Task::getSort,i).set(Task::getStage_code,stageCode).eq(Task::getCode,codes.get(i)).update();
-            if(!stageCode.equals(task.getStage_code())){
+            lambdaUpdate().set(Task::getSort,i).set(Task::getStageCode,stageCode).eq(Task::getCode,codes.get(i)).update();
+            if(!stageCode.equals(task.getStageCode())){
                 taskHook(LoginHelper.getLoginUser().getCode(),codes.get(i),"move","",0,
                         "","","",new HashMap(){{
                             put("stageName",taskStage.getName());
@@ -785,7 +785,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
     public void  recycle(String taskCode,String memberCode){
         Task task = getTaskByCode(taskCode);
         task.setDeleted(1);
-        task.setDeleted_time(DateUtils.getTime());
+        task.setDeletedTime(DateUtils.getTime());
         updateById(task);
         taskHook(memberCode,taskCode,"recycle","",0,
                 "","","",null,null);
@@ -829,26 +829,26 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         if(!ObjectUtils.isEmpty(task.getStatus())){
             type = "status";
         }
-        if(StringUtils.isNotEmpty(task.getBegin_time())){
+        if(StringUtils.isNotEmpty(task.getBeginTime())){
             type = "setBeginTime";
         }
-        if("".equals(task.getBegin_time())){
+        if("".equals(task.getBeginTime())){
             type = "clearBeginTime";
         }
-        if(StringUtils.isNotEmpty(task.getEnd_time())){
+        if(StringUtils.isNotEmpty(task.getEndTime())){
             type = "setEndTime";
         }
-        if("".equals(task.getEnd_time())){
+        if("".equals(task.getEndTime())){
             type = "clearEndTime";
         }
-        if(!ObjectUtils.isEmpty(task.getWork_time()) && task.getWork_time()>0){
+        if(!ObjectUtils.isEmpty(task.getWorkTime()) && task.getWorkTime()>0){
             type = "setWorkTime";
         }
         if(StringUtils.isNotEmpty(type)){
             String finalType = type;
             projectLogService.run(new HashMap(){{
                 put("member_code",memberCode);
-                put("source_code",task.getProject_code());
+                put("source_code",task.getProjectCode());
                 put("type", finalType);
                 put("is_comment",0);
             }});
@@ -934,7 +934,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
                 .code(CommUtils.getUUID())
                 .action_type("task").is_robot(isRobot).build();
         Task task = getTaskByCode(MapUtils.getString(data,"taskCode"));
-        logData.setProject_code(task.getProject_code());
+        logData.setProject_code(task.getProjectCode());
         SysUser toMember = null;
 
         if(StringUtils.isNotEmpty(MapUtils.getString(data,"toMemberCode"))){
@@ -973,15 +973,15 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
             case "done":
                 icon = "check";
                 remark = "完成了任务 ";
-                if (StringUtils.isNotEmpty(task.getVersion_code()) && !"0".equals(task.getVersion_code())) {
-                    projectVersionService.updateSchedule(task.getVersion_code());
+                if (StringUtils.isNotEmpty(task.getVersionCode()) && !"0".equals(task.getVersionCode())) {
+                    projectVersionService.updateSchedule(task.getVersionCode());
                 }
                 break;
             case "redo":
                 icon = "border";
                 remark = "重做了任务 ";
-                if (StringUtils.isNotEmpty(task.getVersion_code()) && !"0".equals(task.getVersion_code())) {
-                    projectVersionService.updateSchedule(task.getVersion_code());
+                if (StringUtils.isNotEmpty(task.getVersionCode()) && !"0".equals(task.getVersionCode())) {
+                    projectVersionService.updateSchedule(task.getVersionCode());
                 }
                 break;
             case "createChild":
@@ -1018,7 +1018,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
                 break;
             case "changeState":
                 icon = "edit";
-                TaskStage taskStage = taskStageService.getTaskStageByCode(task.getStage_code());
+                TaskStage taskStage = taskStageService.getTaskStageByCode(task.getStageCode());
                 remark = "将任务移动到 "+taskStage.getName();
                 break;
             case "inviteMember":
@@ -1031,7 +1031,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
                 break;
             case "setBeginTime":
                 icon = "calendar";
-                remark = "更新开始时间为 "+task.getBegin_time();
+                remark = "更新开始时间为 "+task.getBeginTime();
                 break;
             case "clearBeginTime":
                 icon = "calendar";
@@ -1039,7 +1039,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
                 break;
             case "setEndTime":
                 icon = "calendar";
-                remark = "更新截止时间为 "+ task.getEnd_time();
+                remark = "更新截止时间为 "+ task.getEndTime();
                 break;
             case "clearEndTime":
                 icon = "calendar";
@@ -1055,7 +1055,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
                 break;
             case "setWorkTime":
                 icon = "clock-circle";
-                remark = "更新预估工时为 "+task.getWork_time();
+                remark = "更新预估工时为 "+task.getWorkTime();
                 break;
             case "linkFile":
                 icon = "link";
@@ -1183,7 +1183,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
 
     @Transactional(rollbackFor = Exception.class)
     public void saveTaskList(String memberCode, List<Task> taskList, String projectCode) {
-    	List<String> assNameList = taskList.parallelStream().map(Task::getAssign_to).distinct().collect(Collectors.toList());
+    	List<String> assNameList = taskList.parallelStream().map(Task::getAssignTo).distinct().collect(Collectors.toList());
         //用户
 //    	Map<String, String> memberNameCode = memberService.lambdaQuery().select(Member::getCode, Member::getName).in(Member::getName, assNameList).list()
 //    			.parallelStream().collect(Collectors.toMap(Member::getName, Member::getCode));
@@ -1194,7 +1194,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
                 .parallelStream().collect(Collectors.toMap(TaskStage::getName, TaskStage::getCode));
         //标签
         StringBuffer tagStr = new StringBuffer();
-        taskList.forEach(o -> tagStr.append(o.getTask_tag()).append(";"));
+        taskList.forEach(o -> tagStr.append(o.getTaskTag()).append(";"));
         List<TaskTag> taskTagList = taskTagService.lambdaQuery().eq(TaskTag::getProject_code, projectCode).list();
         List<String> collect = taskTagList.parallelStream().map(TaskTag::getName).collect(Collectors.toList());
         Map<String, String> tagNameCode = taskTagList.parallelStream().collect(Collectors.toMap(TaskTag::getName, TaskTag::getCode));
@@ -1215,8 +1215,8 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         //新增的标签与任务关系
         List<TaskToTag> saveTaskToTagList = new ArrayList<>();
         taskList.forEach(o -> {
-        	o.setCreate_by(memberCode);
-        	o.setCreate_time(formatDate);
+        	o.setCreateBy(memberCode);
+        	o.setCreateTime(formatDate);
             if (StrUtil.isNotEmpty(o.getPriText())) {
                 switch (o.getPriText()) {
                     case Constants.GENERAL_STR:
@@ -1234,17 +1234,17 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
             } else {
                 o.setPri(Constants.GENERAL);
             }
-            o.setAssign_to(memberNameCode.get(o.getAssign_to()));
-            if (StrUtil.isNotEmpty(o.getTask_tag())) {
-                String[] split = o.getTask_tag().split(";");
+            o.setAssignTo(memberNameCode.get(o.getAssignTo()));
+            if (StrUtil.isNotEmpty(o.getTaskTag())) {
+                String[] split = o.getTaskTag().split(";");
                 for (String s : split) {
                     saveTaskToTagList.add(TaskToTag.builder().code(IdUtil.fastSimpleUUID()).tag_code(tagNameCode.get(s)).task_code(o.getCode())
                             .create_time(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS))).build());
                 }
             }
-            String s = stageNameCode.get(o.getStage_code());
+            String s = stageNameCode.get(o.getStageCode());
             if (StrUtil.isNotEmpty(s)) {
-                o.setStage_code(s);
+                o.setStageCode(s);
             } else {
                 throw new CustomException("任务列表存在错误！");
             }

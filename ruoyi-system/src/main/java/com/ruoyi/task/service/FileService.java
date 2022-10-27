@@ -56,12 +56,12 @@ public class FileService  extends ServiceImpl<FileMapper, File> {
     TaskProjectService taskProjectService;
     @Transactional
     public Project uploadFiles(File file, String memberCode, String projectCode){
-        file.setProject_code(projectCode);
-        file.setCreate_by(memberCode);
-        if(StringUtils.isNotEmpty(file.getTask_code())){
+        file.setProjectCode(projectCode);
+        file.setCreateBy(memberCode);
+        if(StringUtils.isNotEmpty(file.getTaskCode())){
 
             SourceLink sourceLink = SourceLink.builder().source_type("file").code(CommUtils.getUUID()).
-                    create_by(memberCode).organization_code(file.getOrganization_code()).link_code(file.getTask_code())
+                    create_by(memberCode).organization_code(file.getOrganizationCode()).link_code(file.getTaskCode())
                     .link_type("task").source_code(file.getCode()).source_type("file").sort(0).build();
             sourceLinkMapper.insert(sourceLink);
         }
@@ -81,10 +81,10 @@ public class FileService  extends ServiceImpl<FileMapper, File> {
             put("to_member_code","");
             put("content","");
             put("type","uploadFile");
-            put("source_code",file.getTask_code());
+            put("source_code",file.getTaskCode());
             put("member_code",memberCode);
             put("action_type","task");
-            put("url",file.getFile_url());
+            put("url",file.getFileUrl());
             put("title",file.getTitle());
             put("project_code",projectCode);
         }});

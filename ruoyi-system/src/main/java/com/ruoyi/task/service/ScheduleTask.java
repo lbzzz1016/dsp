@@ -62,7 +62,7 @@ public class ScheduleTask {
                 for (int i = -9; i <= -1; i++) {
                     LocalDate now = LocalDate.now().plusDays(i);
                     LocalDate date = now.plusDays(-1);
-                    List<Task> list = taskProjectService.lambdaQuery().eq(Task::getDeleted, 0).eq(Task::getProject_code, pro).lt(Task::getCreate_time, now).list();
+                    List<Task> list = taskProjectService.lambdaQuery().eq(Task::getDeleted, 0).eq(Task::getProjectCode, pro).lt(Task::getCreateTime, now).list();
                     Map<String, Object> map = new HashMap<>(8);
                     int task = 0;
                     int undoneTask = 0;
@@ -71,14 +71,14 @@ public class ScheduleTask {
                         task = list.size();
                         undoneTask = (int) list.stream().filter(o -> o.getDone() == 0).count();
                         baseLineList = (int) list.stream().filter(o -> o.getDone() == 0).filter(o -> {
-                            if (StrUtil.isEmpty(o.getEnd_time())) {
-                                if (StrUtil.isNotEmpty(o.getCreate_time())) {
-                                    LocalDate create = LocalDate.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                            if (StrUtil.isEmpty(o.getEndTime())) {
+                                if (StrUtil.isNotEmpty(o.getCreateTime())) {
+                                    LocalDate create = LocalDate.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
                                     return create.plusDays(5).isAfter(now);
                                 }
                                 return true;
                             } else {
-                                LocalDate end = LocalDate.parse(o.getEnd_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                                LocalDate end = LocalDate.parse(o.getEndTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
                                 return end.plusDays(-1).isBefore(now);
                             }
                         }).count();
