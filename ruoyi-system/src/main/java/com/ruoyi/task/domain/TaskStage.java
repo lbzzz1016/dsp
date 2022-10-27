@@ -21,10 +21,10 @@ public class TaskStage extends BaseDomain implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String name;
-    private String project_code;
+    private String projectCode;
     private Integer sort;
     private String description;
-    private String create_time;
+    private String createTime;
     private String code;
     private Integer deleted;
 

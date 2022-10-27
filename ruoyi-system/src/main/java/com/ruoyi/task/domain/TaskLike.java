@@ -18,7 +18,7 @@ public class TaskLike extends BaseDomain implements Serializable {
 
     @TableId(type = IdType.AUTO)
     private Long id;
-    private String task_code;
-    private String member_code;
-    private String create_time;
+    private String taskCode;
+    private String memberCode;
+    private String createTime;
 }

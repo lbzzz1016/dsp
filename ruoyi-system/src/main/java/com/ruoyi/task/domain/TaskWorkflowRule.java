@@ -24,13 +24,13 @@ public class TaskWorkflowRule   extends BaseDomain implements Serializable {
     * 规则类型，0：任务分组，1：人员，2：条件
     */    
     private Integer type;
-    private String object_code;
+    private String objectCode;
     /**
     * 场景。0：增加任务，1：被完成，2：被重做，3：设置执行人，（4：截止时间，5：优先级）
     */
     private Integer action;    
-    private String create_time;
-    private String update_time;
-    private String workflow_code;
+    private String createTime;
+    private String updateTime;
+    private String workflowCode;
     private Integer sort;
 }

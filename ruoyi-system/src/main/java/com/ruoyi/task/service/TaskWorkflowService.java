@@ -54,8 +54,8 @@ public class TaskWorkflowService extends ServiceImpl<TaskWorkflowMapper, TaskWor
     @Transactional(rollbackFor = Exception.class)
     public boolean save(String orgCode, String projectCode, String taskWorkflowName, JSONObject rules) {
         String flowCode = IdUtil.fastSimpleUUID();
-        TaskWorkflow taskWorkflow = TaskWorkflow.builder().organization_code(orgCode).project_code(projectCode).code(flowCode)
-                .name(taskWorkflowName).create_time(DateUtils.getTime()).update_time(DateUtils.getTime()).build();
+        TaskWorkflow taskWorkflow = TaskWorkflow.builder().organizationCode(orgCode).projectCode(projectCode).code(flowCode)
+                .name(taskWorkflowName).createTime(DateUtils.getTime()).updateTime(DateUtils.getTime()).build();
         boolean save = save(taskWorkflow);
         boolean saveRules = saveRules(flowCode, rules);
         //redisCache.deleteObject(Constants.PROJECTRULE + projectCode);
@@ -68,12 +68,12 @@ public class TaskWorkflowService extends ServiceImpl<TaskWorkflowMapper, TaskWor
     }
 
     private boolean saveRules(String flowCode, JSONObject rules) {
-        TaskWorkflowRule.TaskWorkflowRuleBuilder ruleBuild = TaskWorkflowRule.builder().workflow_code(flowCode)
-                .create_time(DateUtils.getTime()).update_time(DateUtils.getTime());
+        TaskWorkflowRule.TaskWorkflowRuleBuilder ruleBuild = TaskWorkflowRule.builder().workflowCode(flowCode)
+                .createTime(DateUtils.getTime()).updateTime(DateUtils.getTime());
         String firstObj = (String) rules.get("firstObj");
         if (StrUtil.isNotEmpty(firstObj)) {
             List<TaskWorkflowRule> list = new ArrayList<>();
-            TaskWorkflowRule rule01 = ruleBuild.code(IdUtil.fastSimpleUUID()).sort(1).type(0).action(0).object_code(firstObj).build();
+            TaskWorkflowRule rule01 = ruleBuild.code(IdUtil.fastSimpleUUID()).sort(1).type(0).action(0).objectCode(firstObj).build();
             list.add(rule01);
             JSONObject object02 = rules.getJSONObject("firstAction");
             buildRule(list, object02, ruleBuild, 2, 0);
@@ -103,7 +103,7 @@ public class TaskWorkflowService extends ServiceImpl<TaskWorkflowMapper, TaskWor
         TaskWorkflowRule build;
         if (flag == 1) {
             Integer val = (Integer) object.get("value");
-            build = ruleBuild.code(IdUtil.fastSimpleUUID()).type(3).action(val).object_code(null).sort(sort).build();
+            build = ruleBuild.code(IdUtil.fastSimpleUUID()).type(3).action(val).objectCode(null).sort(sort).build();
         } else {
             if (action == 3) {
                 ruleBuild.type(1);
@@ -116,18 +116,18 @@ public class TaskWorkflowService extends ServiceImpl<TaskWorkflowMapper, TaskWor
                     return false;
                 }
             }
-            build = ruleBuild.code(IdUtil.fastSimpleUUID()).action(action).object_code(val).sort(sort).build();
+            build = ruleBuild.code(IdUtil.fastSimpleUUID()).action(action).objectCode(val).sort(sort).build();
         }
         return list.add(build);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public boolean update(String taskWorkflowCode, String taskWorkflowName, JSONObject rules) {
-        boolean update = lambdaUpdate().set(TaskWorkflow::getName, taskWorkflowName).set(TaskWorkflow::getUpdate_time, DateUtils.getTime())
+        boolean update = lambdaUpdate().set(TaskWorkflow::getName, taskWorkflowName).set(TaskWorkflow::getUpdateTime, DateUtils.getTime())
                 .eq(TaskWorkflow::getCode, taskWorkflowCode).update();
-        boolean remove = taskWorkflowRuleService.remove(Wrappers.<TaskWorkflowRule>lambdaQuery().eq(TaskWorkflowRule::getWorkflow_code, taskWorkflowCode));
+        boolean remove = taskWorkflowRuleService.remove(Wrappers.<TaskWorkflowRule>lambdaQuery().eq(TaskWorkflowRule::getWorkflowCode, taskWorkflowCode));
         boolean saveRules = saveRules(taskWorkflowCode, rules);
-        TaskWorkflow one = lambdaQuery().select(TaskWorkflow::getProject_code).eq(TaskWorkflow::getCode, taskWorkflowCode).one();
+        TaskWorkflow one = lambdaQuery().select(TaskWorkflow::getProjectCode).eq(TaskWorkflow::getCode, taskWorkflowCode).one();
         if (one != null) {
             //redisCache.deleteObject(Constants.PROJECTRULE + one.getProject_code());
         }
@@ -141,8 +141,8 @@ public class TaskWorkflowService extends ServiceImpl<TaskWorkflowMapper, TaskWor
 
     public boolean delete(String taskWorkflowCode) {
         boolean remove = remove(Wrappers.<TaskWorkflow>lambdaQuery().eq(TaskWorkflow::getCode, taskWorkflowCode));
-        boolean removeRule = taskWorkflowRuleService.remove(Wrappers.<TaskWorkflowRule>lambdaQuery().eq(TaskWorkflowRule::getWorkflow_code, taskWorkflowCode));
-        TaskWorkflow one = lambdaQuery().select(TaskWorkflow::getProject_code).eq(TaskWorkflow::getCode, taskWorkflowCode).one();
+        boolean removeRule = taskWorkflowRuleService.remove(Wrappers.<TaskWorkflowRule>lambdaQuery().eq(TaskWorkflowRule::getWorkflowCode, taskWorkflowCode));
+        TaskWorkflow one = lambdaQuery().select(TaskWorkflow::getProjectCode).eq(TaskWorkflow::getCode, taskWorkflowCode).one();
         if (one != null) {
             //redisCache.deleteObject(Constants.PROJECTRULE + one.getProject_code());
         }
@@ -166,26 +166,26 @@ public class TaskWorkflowService extends ServiceImpl<TaskWorkflowMapper, TaskWor
                 List<TaskWorkflowRule> ruleList = o.getWorkflowRuleList();
                 TaskWorkflowRule rule03 = ruleList.stream().filter(o1 -> o1.getSort() == 3).findFirst().orElse(null);
                 if (rule03 != null && rule03.getAction() == 3) {
-                    taskWrapper.set(Task::getAssignTo, rule03.getObject_code());
-                    if (StrUtil.isNotEmpty(rule03.getObject_code())) {
+                    taskWrapper.set(Task::getAssignTo, rule03.getObjectCode());
+                    if (StrUtil.isNotEmpty(rule03.getObjectCode())) {
                     	//updateTaskMember(taskCode, rule03.getObject_code());
                     }
                 } else if (rule03 != null) {
-                    taskWrapper.set(Task::getStageCode, rule03.getObject_code());
+                    taskWrapper.set(Task::getStageCode, rule03.getObjectCode());
                 }
                 TaskWorkflowRule rule04 = ruleList.stream().filter(o1 -> o1.getSort() == 4).findFirst().orElse(null);
                 TaskWorkflowRule rule05 = ruleList.stream().filter(o1 -> o1.getSort() == 5).findFirst().orElse(null);
-                if (rule03 != null && rule04 != null && StrUtil.isNotEmpty(rule04.getObject_code())) {
+                if (rule03 != null && rule04 != null && StrUtil.isNotEmpty(rule04.getObjectCode())) {
                     if (rule03.getAction() == 3) {
-                        taskWrapper.set(Task::getStageCode, rule04.getObject_code());
+                        taskWrapper.set(Task::getStageCode, rule04.getObjectCode());
                     }
                     if (rule03.getAction() == 0) {
-                        taskWrapper.set(Task::getAssignTo, rule04.getObject_code());
-                        if (StrUtil.isNotEmpty(rule04.getObject_code())) {
+                        taskWrapper.set(Task::getAssignTo, rule04.getObjectCode());
+                        if (StrUtil.isNotEmpty(rule04.getObjectCode())) {
                         	//updateTaskMember(taskCode, rule04.getObject_code());
                         }
                     }
-                } else if (rule04 != null && StrUtil.isEmpty(rule04.getObject_code())) {
+                } else if (rule04 != null && StrUtil.isEmpty(rule04.getObjectCode())) {
                     rule05 = rule04;
                 }
                 if (rule05 != null) {
@@ -220,7 +220,7 @@ public class TaskWorkflowService extends ServiceImpl<TaskWorkflowMapper, TaskWor
             boolean flag = false;
             for (TaskWorkflowRule rule : workflowRuleList) {
                 if (rule.getSort() == 1) {
-                    if (StrUtil.equals(rule.getObject_code(), stageCode)) {
+                    if (StrUtil.equals(rule.getObjectCode(), stageCode)) {
                         flag = true;
                     } else {
                         flag = false;
@@ -230,7 +230,7 @@ public class TaskWorkflowService extends ServiceImpl<TaskWorkflowMapper, TaskWor
                 if (rule.getSort() == 2) {
                     if (action.equals(rule.getAction())) {
                         if (action == 3) {
-                            if (StrUtil.equals(memberCode, rule.getObject_code())) {
+                            if (StrUtil.equals(memberCode, rule.getObjectCode())) {
                                 flag = true;
                             } else {
                                 flag = false;
@@ -256,12 +256,12 @@ public class TaskWorkflowService extends ServiceImpl<TaskWorkflowMapper, TaskWor
     private List<TaskWorkflow> getTaskWorkFlow(String projectCode) {
         List<TaskWorkflow> list = new ArrayList<>();//redisCache.getCacheObject(Constants.PROJECTRULE + projectCode);
         if (CollUtil.isEmpty(list)) {
-            list = lambdaQuery().eq(TaskWorkflow::getProject_code, projectCode).list();
+            list = lambdaQuery().eq(TaskWorkflow::getProjectCode, projectCode).list();
             if (CollUtil.isNotEmpty(list)) {
                 List<String> codeList = list.parallelStream().map(TaskWorkflow::getCode).collect(Collectors.toList());
-                List<TaskWorkflowRule> rules = taskWorkflowRuleService.lambdaQuery().in(TaskWorkflowRule::getWorkflow_code, codeList).list();
+                List<TaskWorkflowRule> rules = taskWorkflowRuleService.lambdaQuery().in(TaskWorkflowRule::getWorkflowCode, codeList).list();
                 if (CollUtil.isNotEmpty(rules)) {
-                    Map<String, List<TaskWorkflowRule>> collect = rules.stream().collect(Collectors.groupingBy(TaskWorkflowRule::getWorkflow_code));
+                    Map<String, List<TaskWorkflowRule>> collect = rules.stream().collect(Collectors.groupingBy(TaskWorkflowRule::getWorkflowCode));
                     list.forEach(o -> {
                         o.setWorkflowRuleList(collect.get(o.getCode()));
                     });

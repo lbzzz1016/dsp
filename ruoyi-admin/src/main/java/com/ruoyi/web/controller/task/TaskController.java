@@ -358,11 +358,11 @@ public class TaskController  extends BaseController {
         TaskWorkTime taskWorkTime = new TaskWorkTime();
         taskWorkTime.setId(MapUtils.getInteger(taskWorkTimeMap,"id"));
         taskWorkTime.setCode(code);
-        taskWorkTime.setBegin_time(beginTime);
+        taskWorkTime.setBeginTime(beginTime);
         taskWorkTime.setContent(content);
-        taskWorkTime.setCreate_time(MapUtils.getString(taskWorkTimeMap,"create_time"));
-        taskWorkTime.setMember_code(MapUtils.getString(taskWorkTimeMap,"memberCode"));
-        taskWorkTime.setNum(num);taskWorkTime.setTask_code(taskCode);
+        taskWorkTime.setCreateTime(MapUtils.getString(taskWorkTimeMap,"create_time"));
+        taskWorkTime.setMemberCode(MapUtils.getString(taskWorkTimeMap,"memberCode"));
+        taskWorkTime.setNum(num);taskWorkTime.setTaskCode(taskCode);
         return AjaxResult.success(taskWorkTimeService.updateById(taskWorkTime));
     }
 
@@ -383,11 +383,12 @@ public class TaskController  extends BaseController {
 
         TaskWorkTime taskWorkTime = new TaskWorkTime();
         taskWorkTime.setCode(CommUtils.getUUID());
-        taskWorkTime.setBegin_time(beginTime);
+        taskWorkTime.setBeginTime(beginTime);
         taskWorkTime.setContent(content);
-        taskWorkTime.setCreate_time(DateUtils.formatDateTime(new Date()));
-        taskWorkTime.setMember_code(MapUtils.getString(getLoginMember(),"memberCode"));
-        taskWorkTime.setNum(num);taskWorkTime.setTask_code(taskCode);
+        taskWorkTime.setCreateTime(DateUtils.formatDateTime(new Date()));
+        taskWorkTime.setMemberCode(MapUtils.getString(getLoginMember(),"memberCode"));
+        taskWorkTime.setNum(num);
+        taskWorkTime.setTaskCode(taskCode);
         return AjaxResult.success(taskWorkTimeService.save(taskWorkTime));
     }
     @PostMapping("/task/assignTask")
@@ -458,8 +459,8 @@ public class TaskController  extends BaseController {
         String taskCode = MapUtils.getString(mmap, "taskCode");
         String tagCode = MapUtils.getString(mmap, "tagCode");
         TaskToTag taskToTag = new TaskToTag();
-        taskToTag.setTask_code(taskCode);taskToTag.setTag_code(tagCode);
-        taskToTag.setCreate_time(DateUtils.formatDateTime(new Date()));
+        taskToTag.setTaskCode(taskCode);taskToTag.setTagCode(tagCode);
+        taskToTag.setCreateTime(DateUtils.formatDateTime(new Date()));
         taskToTag.setCode(CommUtils.getUUID());
         Map taskToTagMap = taskToTagService.getTaskToTagByTagCodeAndTaskCode(tagCode,taskCode);
         boolean bo = true;
@@ -486,9 +487,9 @@ public class TaskController  extends BaseController {
 
         Map taskTagMap = taskTagService.getTaskTagByCode(tagCode);
         TaskTag taskTag = new TaskTag();
-        taskTag.setCreate_time(MapUtils.getString(taskTagMap,"create_time"));
+        taskTag.setCreateTime(MapUtils.getString(taskTagMap,"create_time"));
         taskTag.setName(name); taskTag.setColor(color);
-        taskTag.setProject_code(MapUtils.getString(taskTagMap,"project_code"));
+        taskTag.setProjectCode(MapUtils.getString(taskTagMap,"project_code"));
         taskTag.setCode(tagCode);taskTag.setId(MapUtils.getInteger(taskTagMap,"id"));
         boolean bo = taskTagService.updateById(taskTag);
         return AjaxResult.success(bo);
@@ -513,9 +514,9 @@ public class TaskController  extends BaseController {
             return AjaxResult.warn("该标签已存在");
         }
         TaskTag taskTag = new TaskTag();
-        taskTag.setCode(CommUtils.getUUID());taskTag.setProject_code(projectCode);
+        taskTag.setCode(CommUtils.getUUID());taskTag.setProjectCode(projectCode);
         taskTag.setColor(color);taskTag.setName(name);
-        taskTag.setCreate_time(DateUtils.formatDateTime(new Date()));
+        taskTag.setCreateTime(DateUtils.formatDateTime(new Date()));
         taskTagService.save(taskTag);
         return AjaxResult.success(taskTag);
     }
@@ -700,8 +701,8 @@ public class TaskController  extends BaseController {
         if(ObjectUtils.isEmpty(project)){
             return AjaxResult.warn("该项目已失效！");
         }
-        TaskStage taskStage=TaskStage.builder().create_time(DateUtils.getTime()).code(CommUtils.getUUID())
-                .project_code(projectCode).name(StringUtils.trim(name)).tasksLoading(false)
+        TaskStage taskStage=TaskStage.builder().createTime(DateUtils.getTime()).code(CommUtils.getUUID())
+                .projectCode(projectCode).name(StringUtils.trim(name)).tasksLoading(false)
                 .fixedCreator(false).showTaskCard(false).tasks(new ArrayList()).build();
         taskStageService.save(taskStage);
         taskStage.setSort(taskStage.getId());

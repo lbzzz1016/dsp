@@ -83,8 +83,8 @@ public class TaskStageController extends BaseController {
         if(StringUtils.isEmpty(name)){
             return AjaxResult.warn("请填写任务名称");
         }
-        TaskStagesTemplete tst = TaskStagesTemplete.builder().code(CommUtils.getUUID()).create_time(DateUtils.getTime())
-                .name(name).sort(sort).project_template_code(template_code).build();
+        TaskStagesTemplete tst = TaskStagesTemplete.builder().code(CommUtils.getUUID()).createTime(DateUtils.getTime())
+                .name(name).sort(sort).projectTemplateCode(template_code).build();
         boolean result = taskStagesTempleteService.save(tst);
         if(result){
             return AjaxResult.success("添加成功",tst);

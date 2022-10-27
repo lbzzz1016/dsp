@@ -19,8 +19,8 @@ public class TaskStagesTemplete extends BaseDomain implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String name;
-    private String project_template_code;
-    private String create_time;
+    private String projectTemplateCode;
+    private String createTime;
     private Integer sort;
     private String code;
 }

@@ -734,14 +734,14 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         LambdaUpdateWrapper<TaskLike> taskLikeUW = new LambdaUpdateWrapper<TaskLike>();
         if(0==likeData) {
             like = like-1;
-            taskLikeUW.eq(TaskLike::getMember_code,memberCode);
-            taskLikeUW.eq(TaskLike::getTask_code,code);
+            taskLikeUW.eq(TaskLike::getMemberCode,memberCode);
+            taskLikeUW.eq(TaskLike::getTaskCode,code);
             taskLikeMapper.delete(taskLikeUW);
         }
         if(1==likeData) {
             like = like+1;
-            taskLikeMapper.insert(TaskLike.builder().create_time(DateUtils.getTime())
-                    .member_code(memberCode).task_code(code).build());
+            taskLikeMapper.insert(TaskLike.builder().createTime(DateUtils.getTime())
+                    .memberCode(memberCode).taskCode(code).build());
         }
         baseMapper.updateTaskLike(like,code);
     }
@@ -761,8 +761,8 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         }
         lambdaUpdate().eq(Task::getCode,taskCode).remove();
         lambdaUpdate().eq(Task::getPcode,taskCode).remove();
-        taskMemberService.lambdaUpdate().eq(TaskMember::getTask_code,taskCode).remove();
-        taskLikeMapper.delete(Wrappers.<TaskLike>lambdaUpdate().eq(TaskLike::getTask_code,taskCode));
+        taskMemberService.lambdaUpdate().eq(TaskMember::getTaskCode,taskCode).remove();
+        taskLikeMapper.delete(Wrappers.<TaskLike>lambdaUpdate().eq(TaskLike::getTaskCode,taskCode));
         projectLogService.lambdaUpdate().eq(ProjectLog::getSource_code,taskCode).eq(ProjectLog::getAction_type,"task").remove();
     }
 
@@ -1121,10 +1121,10 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
                     }
                 }
             }else{
-                List<TaskMember> taskMemberList = taskMemberService.lambdaQuery().eq(TaskMember::getTask_code,task.getCode()).list();
+                List<TaskMember> taskMemberList = taskMemberService.lambdaQuery().eq(TaskMember::getTaskCode,task.getCode()).list();
                 if(CollectionUtils.isNotEmpty(taskMemberList)){
                     for(TaskMember taskMember:taskMemberList){
-                        taskMembers.add(taskMember.getMember_code());
+                        taskMembers.add(taskMember.getMemberCode());
                     }
                 }
             }
@@ -1190,12 +1190,12 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         Map<String, String> memberNameCode = userService.lambdaQuery().select(SysUser::getCode, SysUser::getNickName).in(SysUser::getNickName, assNameList).list()
                 .parallelStream().collect(Collectors.toMap(SysUser::getNickName, SysUser::getCode));
     	//任务列表
-        Map<String, String> stageNameCode = taskStageService.lambdaQuery().select(TaskStage::getName, TaskStage::getCode).eq(TaskStage::getProject_code, projectCode).list()
+        Map<String, String> stageNameCode = taskStageService.lambdaQuery().select(TaskStage::getName, TaskStage::getCode).eq(TaskStage::getProjectCode, projectCode).list()
                 .parallelStream().collect(Collectors.toMap(TaskStage::getName, TaskStage::getCode));
         //标签
         StringBuffer tagStr = new StringBuffer();
         taskList.forEach(o -> tagStr.append(o.getTaskTag()).append(";"));
-        List<TaskTag> taskTagList = taskTagService.lambdaQuery().eq(TaskTag::getProject_code, projectCode).list();
+        List<TaskTag> taskTagList = taskTagService.lambdaQuery().eq(TaskTag::getProjectCode, projectCode).list();
         List<String> collect = taskTagList.parallelStream().map(TaskTag::getName).collect(Collectors.toList());
         Map<String, String> tagNameCode = taskTagList.parallelStream().collect(Collectors.toMap(TaskTag::getName, TaskTag::getCode));
         List<String> newTagList = Arrays.asList(tagStr.toString().split(";")).parallelStream().distinct().
@@ -1207,8 +1207,8 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         newTagList.forEach(o -> {
             String uuid = IdUtil.fastSimpleUUID();
             tagNameCode.put(o, uuid);
-            TaskTag taskTag = TaskTag.builder().code(uuid).name(o).project_code(projectCode)
-                    .create_time(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
+            TaskTag taskTag = TaskTag.builder().code(uuid).name(o).projectCode(projectCode)
+                    .createTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
                     .color(colors[RandomUtil.randomInt(0, 6)]).build();
             saveTaskTagList.add(taskTag);
         });
@@ -1238,8 +1238,8 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
             if (StrUtil.isNotEmpty(o.getTaskTag())) {
                 String[] split = o.getTaskTag().split(";");
                 for (String s : split) {
-                    saveTaskToTagList.add(TaskToTag.builder().code(IdUtil.fastSimpleUUID()).tag_code(tagNameCode.get(s)).task_code(o.getCode())
-                            .create_time(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS))).build());
+                    saveTaskToTagList.add(TaskToTag.builder().code(IdUtil.fastSimpleUUID()).tagCode(tagNameCode.get(s)).taskCode(o.getCode())
+                            .createTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS))).build());
                 }
             }
             String s = stageNameCode.get(o.getStageCode());

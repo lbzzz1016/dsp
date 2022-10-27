@@ -20,11 +20,11 @@ public class TaskWorkTime  extends BaseDomain implements Serializable {
 
     @TableId(type = IdType.AUTO)
     private Integer id;
-    private String task_code;
-    private String member_code;
-    private String create_time;
+    private String taskCode;
+    private String memberCode;
+    private String createTime;
     private String content;
-    private String begin_time;
+    private String beginTime;
     private Integer num;
     private String code;
 }

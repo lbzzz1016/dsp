@@ -18,9 +18,9 @@ public class TaskMember  extends BaseDomain implements Serializable {
 
     @TableId(type = IdType.AUTO)
     private Integer id;
-    private String task_code;
-    private Integer is_executor;
-    private String member_code;
-    private String join_time;
-    private Integer is_owner;
+    private String taskCode;
+    private Integer isExecutor;
+    private String memberCode;
+    private String joinTime;
+    private Integer isOwner;
 }

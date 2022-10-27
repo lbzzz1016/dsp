@@ -215,9 +215,9 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
         tsts.stream().forEach(t->{
             TaskStage taskStage = new TaskStage();
             taskStage.setCode(CommUtils.getUUID());
-            taskStage.setProject_code(project.getCode());
+            taskStage.setProjectCode(project.getCode());
             taskStage.setName(t.getName());
-            taskStage.setCreate_time(DateUtil.formatDateTime(new Date()));
+            taskStage.setCreateTime(DateUtil.formatDateTime(new Date()));
             taskStage.setSort(i.get());
             taskStageMapper.insert(taskStage);
             i.set(i.get() + 1);

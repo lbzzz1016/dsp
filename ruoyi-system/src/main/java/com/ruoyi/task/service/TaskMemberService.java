@@ -50,20 +50,20 @@ public class TaskMemberService  extends ServiceImpl<TaskMemberMapper, TaskMember
         if(ObjectUtils.isEmpty(task)){
             throw new CustomException("任务已失效！");
         }
-        TaskMember taskExecutor = lambdaQuery().eq(TaskMember::getIs_executor,1).eq(TaskMember::getTask_code,taskCode).one();
-        if(null != taskExecutor && taskExecutor.getMember_code().equals(memberCode)){
+        TaskMember taskExecutor = lambdaQuery().eq(TaskMember::getIsExecutor,1).eq(TaskMember::getTaskCode,taskCode).one();
+        if(null != taskExecutor && taskExecutor.getMemberCode().equals(memberCode)){
             return new TaskMember();
         }
         if(isExecutor>0){
-            lambdaUpdate().set(TaskMember::getIs_executor,0).eq(TaskMember::getTask_code,taskCode).update();
+            lambdaUpdate().set(TaskMember::getIsExecutor,0).eq(TaskMember::getTaskCode,taskCode).update();
         }
         if(StringUtils.isNotEmpty(memberCode)){
-            TaskMember hasJoined = lambdaQuery().eq(TaskMember::getMember_code,memberCode).eq(TaskMember::getTask_code,taskCode).one();
+            TaskMember hasJoined = lambdaQuery().eq(TaskMember::getMemberCode,memberCode).eq(TaskMember::getTaskCode,taskCode).one();
             if(!ObjectUtils.isEmpty(hasJoined)){
                 taskProjectService.lambdaUpdate().set(Task::getAssignTo,memberCode).eq(Task::getCode,taskCode).update();
                 taskWorkflowService.queryRule(task.getProjectCode(), task.getStageCode(), task.getCode(), memberCode, 3);
                 
-                lambdaUpdate().set(TaskMember::getIs_executor,1).eq(TaskMember::getTask_code,taskCode).eq(TaskMember::getMember_code,memberCode).update();
+                lambdaUpdate().set(TaskMember::getIsExecutor,1).eq(TaskMember::getTaskCode,taskCode).eq(TaskMember::getMemberCode,memberCode).update();
                 String logType ="assign";
                 if(LoginHelper.getLoginUser().getCode().equals(memberCode)){
                     logType="claim";
@@ -79,7 +79,7 @@ public class TaskMemberService  extends ServiceImpl<TaskMemberMapper, TaskMember
             taskProjectService.lambdaUpdate().set(Task::getAssignTo,memberCode).eq(Task::getCode,taskCode).update();
             if(!fromCreate){
                 if(ObjectUtil.isNotEmpty(taskExecutor)){
-                    taskProjectService.taskHook(LoginHelper.getLoginUser().getCode(),taskCode,"removeExecutor",taskExecutor.getMember_code(),0,
+                    taskProjectService.taskHook(LoginHelper.getLoginUser().getCode(),taskCode,"removeExecutor",taskExecutor.getMemberCode(),0,
                             "","","",new HashMap(){{
                                 put("is_robot",isRobot);
                             }},null);
@@ -87,8 +87,8 @@ public class TaskMemberService  extends ServiceImpl<TaskMemberMapper, TaskMember
             }
             return new TaskMember();
         }
-        TaskMember taskMember = TaskMember.builder().member_code(memberCode).task_code(taskCode).
-                is_executor(isExecutor).is_owner(isOwner).join_time(DateUtils.getTime()).build();
+        TaskMember taskMember = TaskMember.builder().memberCode(memberCode).taskCode(taskCode).
+                isExecutor(isExecutor).isOwner(isOwner).joinTime(DateUtils.getTime()).build();
         save(taskMember);
         if(isExecutor>0){
             taskProjectService.lambdaUpdate().eq(Task::getCode,taskCode).set(Task::getAssignTo,memberCode).update();
@@ -139,27 +139,27 @@ public class TaskMemberService  extends ServiceImpl<TaskMemberMapper, TaskMember
                 }
             }
         }
-        TaskMember taskMember = lambdaQuery().eq(TaskMember::getIs_owner,1)
-                .eq(TaskMember::getTask_code,taskCode).one();
+        TaskMember taskMember = lambdaQuery().eq(TaskMember::getIsOwner,1)
+                .eq(TaskMember::getTaskCode,taskCode).one();
         boolean finalIsAll = isAll;
         memberCodesList.forEach(memberCode ->{
-            if(!memberCode.equals(taskMember.getMember_code())){
-                TaskMember hasJoined = lambdaQuery().eq(TaskMember::getMember_code,memberCode)
-                        .eq(TaskMember::getTask_code,taskCode).one();
+            if(!memberCode.equals(taskMember.getMemberCode())){
+                TaskMember hasJoined = lambdaQuery().eq(TaskMember::getMemberCode,memberCode)
+                        .eq(TaskMember::getTaskCode,taskCode).one();
                 if(ObjectUtil.isNotEmpty(hasJoined)){
                     if(!finalIsAll){
-                        if(hasJoined.getIs_executor()>0){
+                        if(hasJoined.getIsExecutor()>0){
                             taskProjectService.lambdaUpdate().eq(Task::getCode,taskCode).set(Task::getAssignTo,"").update();
                             taskProjectService.taskHook(LoginHelper.getLoginUser().getCode(),taskCode,"removeExecutor",memberCode,0,
                                     "","","",null,null);
                         }
-                        lambdaUpdate().eq(TaskMember::getTask_code,taskCode).eq(TaskMember::getMember_code,memberCode).remove();
+                        lambdaUpdate().eq(TaskMember::getTaskCode,taskCode).eq(TaskMember::getMemberCode,memberCode).remove();
                         taskProjectService.taskHook(LoginHelper.getLoginUser().getCode(),taskCode,"removeMember",memberCode,0,
                                 "","","",null,null);
                     }
                 }else{
-                    TaskMember saveTaskMember = TaskMember.builder().member_code(memberCode)
-                            .task_code(taskCode).is_executor(0).join_time(DateUtils.getTime()).build();
+                    TaskMember saveTaskMember = TaskMember.builder().memberCode(memberCode)
+                            .taskCode(taskCode).isExecutor(0).joinTime(DateUtils.getTime()).build();
                     save(saveTaskMember);
                     taskProjectService.taskHook(LoginHelper.getLoginUser().getCode(),taskCode,"inviteMember",memberCode,0,
                             "","","",null,null);

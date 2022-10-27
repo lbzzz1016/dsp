@@ -18,7 +18,7 @@ public class TaskToTag extends BaseDomain implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String code;
-    private String task_code;
-    private String tag_code;
-    private String create_time;
+    private String taskCode;
+    private String tagCode;
+    private String createTime;
 }

@@ -789,12 +789,12 @@ public class ProjectController extends BaseController {
         TaskStagesTemplete tst2 = new TaskStagesTemplete();
         TaskStagesTemplete tst3 = new TaskStagesTemplete();
         List<TaskStagesTemplete> listTst = new ArrayList();
-        tst1.setCode(CommUtils.getUUID());tst1.setCreate_time(DateUtils.formatDateTime(new Date()));tst1.setName("待处理");
-        tst1.setProject_template_code(pt.getCode());tst1.setSort(0);listTst.add(tst1);
-        tst2.setCode(CommUtils.getUUID());tst2.setCreate_time(DateUtils.formatDateTime(new Date()));tst2.setName("进行中");
-        tst2.setProject_template_code(pt.getCode());tst2.setSort(0);listTst.add(tst2);
-        tst3.setCode(CommUtils.getUUID());tst3.setCreate_time(DateUtils.formatDateTime(new Date()));tst3.setName("已完成");
-        tst3.setProject_template_code(pt.getCode());tst3.setSort(0);listTst.add(tst3);
+        tst1.setCode(CommUtils.getUUID());tst1.setCreateTime(DateUtils.formatDateTime(new Date()));tst1.setName("待处理");
+        tst1.setProjectTemplateCode(pt.getCode());tst1.setSort(0);listTst.add(tst1);
+        tst2.setCode(CommUtils.getUUID());tst2.setCreateTime(DateUtils.formatDateTime(new Date()));tst2.setName("进行中");
+        tst2.setProjectTemplateCode(pt.getCode());tst2.setSort(0);listTst.add(tst2);
+        tst3.setCode(CommUtils.getUUID());tst3.setCreateTime(DateUtils.formatDateTime(new Date()));tst3.setName("已完成");
+        tst3.setProjectTemplateCode(pt.getCode());tst3.setSort(0);listTst.add(tst3);
 
         //boolean bo = projectTemplateService.save(pt);
         //boolean bo1 = taskStagesTempleteService.saveBatch(listTst);

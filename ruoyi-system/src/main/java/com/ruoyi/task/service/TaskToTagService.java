@@ -22,7 +22,7 @@ public class TaskToTagService   extends ServiceImpl<TaskToTagMapper, TaskToTag> 
 
     public List<TaskToTag> getTaskToTagsByTaskCode(String taskCode){
         LambdaQueryWrapper<TaskToTag> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(TaskToTag::getTask_code, taskCode);
+        queryWrapper.eq(TaskToTag::getTaskCode, taskCode);
         return baseMapper.selectList(queryWrapper);
     }
 }
