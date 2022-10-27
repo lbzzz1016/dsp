@@ -552,7 +552,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (member == null) {
             //用户
             Member saveMember = Member.builder().code(code).account(name).password(password).name(nickName).mobile(mobile)
-                .create_time(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
+                .createTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
                 .status(1).email(email).build();
             //组织
             Organization saveOrganization = Organization.builder().name(name + "的个人项目").owner_code(code)

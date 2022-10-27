@@ -17,9 +17,9 @@ import java.io.Serializable;
 public class ProjectMember  extends BaseDomain implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
-    private String project_code;
-    private String member_code;
-    private String join_time;
-    private Integer is_owner;
+    private String projectCode;
+    private String memberCode;
+    private String joinTime;
+    private Integer isOwner;
     private String authorize;
 }

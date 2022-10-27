@@ -124,10 +124,10 @@ public class TaskMemberService  extends ServiceImpl<TaskMemberMapper, TaskMember
         List<String> memberCodesList = new ArrayList<>();
         if(memberCodes.indexOf("all") != -1){
             isAll = true;
-            List<ProjectMember> list= projectMemberService.lambdaQuery().eq(ProjectMember::getProject_code,task.getProject_code()).list();
+            List<ProjectMember> list= projectMemberService.lambdaQuery().eq(ProjectMember::getProjectCode,task.getProject_code()).list();
             if(CollectionUtil.isNotEmpty(list)){
                 list.forEach(projectMember -> {
-                    memberCodesList.add(projectMember.getMember_code());
+                    memberCodesList.add(projectMember.getMemberCode());
                 });
             }
         }else{

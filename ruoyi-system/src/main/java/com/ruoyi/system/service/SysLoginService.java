@@ -22,8 +22,10 @@ import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.redis.RedisUtils;
+import com.ruoyi.member.domain.Member;
 import com.ruoyi.member.domain.MemberAccount;
 import com.ruoyi.member.service.MemberAccountService;
+import com.ruoyi.member.service.MemberService;
 import com.ruoyi.org.domain.Organization;
 import com.ruoyi.org.service.OrganizationService;
 import com.ruoyi.project.domain.ProjectAuthNode;
@@ -62,6 +64,9 @@ public class SysLoginService {
     private MemberAccountService memberAccountService;
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private MemberService memberService;
+
     /**
      * 登录验证
      *
@@ -99,19 +104,20 @@ public class SysLoginService {
             validateCaptcha(username, code, uuid, request);
         }
         SysUser user = loadUserByUsername(username);
+        String userCode = user.getCode();
+        Member member = memberService.getMemberByCode(userCode);
         checkLogin(LoginType.PASSWORD, username, () -> !BCrypt.checkpw(password, user.getPassword()));
         // 此处可根据登录用户的数据不同 自行创建 loginUser
         LoginUser loginUser = buildLoginUser(user);
         // 生成token
         LoginHelper.loginByDevice(loginUser, DeviceType.PC);
+
         asyncService.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"), request);
         recordLoginInfo(user.getUserId(), username);
 
-
-        String userCode = user.getCode();
         List<MemberAccount> list = memberAccountService.selectMemberAccountList(userCode);
 //        List<MemberAccount> list = memberAccountService.lambdaQuery().eq(MemberAccount::getMember_code, userCode).list();
-        //user.setMemberAccountList(list);
+        member.setMemberAccountList(list);
         Set<String> authSet = list.stream().map(MemberAccount::getAuthorize).collect(Collectors.toSet());
         List<ProjectAuthNode> projectAuthNodeList = projectAuthNodeService.lambdaQuery().in(ProjectAuthNode::getAuth, authSet).list();
         list.forEach(memberAccount -> {
@@ -123,7 +129,7 @@ public class SysLoginService {
         Set<String> collect = list.stream().map(MemberAccount::getOrganizationCode).collect(Collectors.toSet());
         List<Organization> organizationList = organizationService.lambdaQuery().in(Organization::getCode, collect).list();
         Map<String, Object> resultMap = new HashMap<>(8);
-        resultMap.put("member", user);
+        resultMap.put("member", member);
         resultMap.put("organizationList", organizationList);
         resultMap.put("token", StpUtil.getTokenValue());
         return resultMap;

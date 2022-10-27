@@ -173,12 +173,12 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                     map.put("collected",1);
                 }
                 //String memberName = projectMemberMapper.selectMemberNameByProjectMember(MapUtils.getString(map,"code"),memberCode);
-                List<ProjectMember> owner = projectMemberService.lambdaQuery().eq(ProjectMember::getProject_code,MapUtils.getString(map,"code")).eq(ProjectMember::getIs_owner,1).list();
+                List<ProjectMember> owner = projectMemberService.lambdaQuery().eq(ProjectMember::getProjectCode,MapUtils.getString(map,"code")).eq(ProjectMember::getIsOwner,1).list();
                 if(CollectionUtils.isEmpty(owner)){
                     continue;
                 }
                 //Member member = memberService.lambdaQuery().eq(Member::getCode,owner.get(0).getMember_code()).one();
-                SysUser user = userService.lambdaQuery().eq(SysUser::getCode, owner.get(0).getMember_code()).one();
+                SysUser user = userService.lambdaQuery().eq(SysUser::getCode, owner.get(0).getMemberCode()).one();
                 if(ObjectUtils.isNotEmpty(user)){
                     map.put("owner_name",user.getNickName());
                 }
@@ -224,24 +224,24 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
         });
         //项目成员
         ProjectMember projectMember = new ProjectMember();
-        projectMember.setProject_code(project.getCode());
-        projectMember.setIs_owner(1);
-        projectMember.setJoin_time(DateUtil.formatDateTime(new Date()));
-        projectMember.setMember_code(LoginHelper.getLoginUser().getCode());
+        projectMember.setProjectCode(project.getCode());
+        projectMember.setIsOwner(1);
+        projectMember.setJoinTime(DateUtil.formatDateTime(new Date()));
+        projectMember.setMemberCode(LoginHelper.getLoginUser().getCode());
         projectMemberMapper.insert(projectMember);
         //保存项目信息
         save(project);
         projectLogService.run(new HashMap(){{
-            put("member_code",projectMember.getMember_code());
+            put("member_code",projectMember.getMemberCode());
             put("source_code",project.getCode());
             put("type","create");
             put("project_code",project.getCode());
         }});
         projectLogService.run(new HashMap(){{
-            put("member_code", projectMember.getMember_code());
+            put("member_code", projectMember.getMemberCode());
             put("source_code", project.getCode());
             put("type","inviteMember");
-            put("to_member_code", projectMember.getMember_code());
+            put("to_member_code", projectMember.getMemberCode());
             put("project_code", project.getCode());
         }});
         return baseMapper.getProjectById(project.getId());
@@ -322,16 +322,16 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
         if (CollUtil.isNotEmpty(list)) {
             List<String> proCodeList = list.parallelStream().map(Project::getCode).collect(Collectors.toList());
             //该组织下的所有项目用户信息
-            List<ProjectMember> allProjectList = projectMemberMapper.selectList(Wrappers.<ProjectMember>lambdaQuery().in(ProjectMember::getProject_code, proCodeList));
+            List<ProjectMember> allProjectList = projectMemberMapper.selectList(Wrappers.<ProjectMember>lambdaQuery().in(ProjectMember::getProjectCode, proCodeList));
             if (CollUtil.isNotEmpty(allProjectList)) {
                 Map<String, String> memberCodeName = userService.lambdaQuery().select(SysUser::getCode, SysUser::getNickName).in(SysUser::getCode, allProjectList
-                        .parallelStream().map(ProjectMember::getMember_code).collect(Collectors.toList())).list()
+                        .parallelStream().map(ProjectMember::getMemberCode).collect(Collectors.toList())).list()
                         .parallelStream().collect(Collectors.toMap(SysUser::getCode, SysUser::getNickName));
 //                Map<String, String> memberCodeName = memberService.lambdaQuery().select(Member::getCode, Member::getName).in(Member::getCode, allProjectList
 //                        .parallelStream().map(ProjectMember::getMember_code).collect(Collectors.toList())).list()
 //                        .parallelStream().collect(Collectors.toMap(Member::getCode, Member::getName));
                 Map<String, Long> topNum = new LinkedHashMap<>();
-                allProjectList.stream().collect(Collectors.groupingBy(ProjectMember::getMember_code, Collectors.counting()))
+                allProjectList.stream().collect(Collectors.groupingBy(ProjectMember::getMemberCode, Collectors.counting()))
                         .entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                         .forEachOrdered(x -> topNum.put(x.getKey(), x.getValue()));
                 topNum.forEach((key, val) -> {
@@ -462,13 +462,13 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
         if (CollUtil.isNotEmpty(projects)) {
             List<String> proCodeList = projects.parallelStream().map(Project::getCode).collect(Collectors.toList());
             //该组织下的所有项目用户信息
-            projectMemberList = projectMemberMapper.selectList(Wrappers.<ProjectMember>lambdaQuery().in(ProjectMember::getProject_code, proCodeList));
+            projectMemberList = projectMemberMapper.selectList(Wrappers.<ProjectMember>lambdaQuery().in(ProjectMember::getProjectCode, proCodeList));
             if (CollUtil.isNotEmpty(projectMemberList)) {
 //                memberCodeName = memberService.lambdaQuery().select(Member::getCode, Member::getName).in(Member::getCode, projectMemberList
 //                        .parallelStream().map(ProjectMember::getMember_code).collect(Collectors.toList())).list()
 //                        .parallelStream().collect(Collectors.toMap(Member::getCode, Member::getName));
                 memberCodeName = userService.lambdaQuery().select(SysUser::getCode, SysUser::getNickName).in(SysUser::getCode, projectMemberList
-                    .parallelStream().map(ProjectMember::getMember_code).collect(Collectors.toList())).list()
+                    .parallelStream().map(ProjectMember::getMemberCode).collect(Collectors.toList())).list()
                     .parallelStream().collect(Collectors.toMap(SysUser::getCode, SysUser::getNickName));
             }
             //任务
@@ -500,10 +500,10 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                     //项目排行
                     Map<String, Long> topNum = new LinkedHashMap<>();
                     if (projectMemberList != null) {
-                        projectMemberList.stream().filter(o -> StrUtil.isNotEmpty(o.getJoin_time())).filter(o -> {
-                            LocalDate join = LocalDateTime.parse(o.getJoin_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                        projectMemberList.stream().filter(o -> StrUtil.isNotEmpty(o.getJoinTime())).filter(o -> {
+                            LocalDate join = LocalDateTime.parse(o.getJoinTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                             return join.equals(now);
-                        }).collect(Collectors.groupingBy(ProjectMember::getMember_code, Collectors.counting()))
+                        }).collect(Collectors.groupingBy(ProjectMember::getMemberCode, Collectors.counting()))
                                 .entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                                 .forEachOrdered(x -> topNum.put(x.getKey(), x.getValue()));
                         topNum.forEach((key, val) -> {
@@ -566,10 +566,10 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                     }
                     Map<String, Long> topNum = new LinkedHashMap<>();
                     if (projectMemberList != null) {
-                        projectMemberList.stream().filter(o -> StrUtil.isNotEmpty(o.getJoin_time())).filter(o -> {
-                            LocalDate join = LocalDateTime.parse(o.getJoin_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                        projectMemberList.stream().filter(o -> StrUtil.isNotEmpty(o.getJoinTime())).filter(o -> {
+                            LocalDate join = LocalDateTime.parse(o.getJoinTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                             return join.isAfter(finalBeginDate1.plusDays(-1)) && join.isBefore(now.plusDays(1));
-                        }).collect(Collectors.groupingBy(ProjectMember::getMember_code, Collectors.counting()))
+                        }).collect(Collectors.groupingBy(ProjectMember::getMemberCode, Collectors.counting()))
                                 .entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                                 .forEachOrdered(x -> topNum.put(x.getKey(), x.getValue()));
                         topNum.forEach((key, val) -> {
@@ -607,10 +607,10 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                     }
                     Map<String, Long> topNum = new LinkedHashMap<>();
                     if (projectMemberList != null) {
-                        projectMemberList.stream().filter(o -> StrUtil.isNotEmpty(o.getJoin_time())).filter(o -> {
-                            LocalDate join = LocalDateTime.parse(o.getJoin_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                        projectMemberList.stream().filter(o -> StrUtil.isNotEmpty(o.getJoinTime())).filter(o -> {
+                            LocalDate join = LocalDateTime.parse(o.getJoinTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                             return join.getMonthValue() == finalBeginDate1.getMonthValue() && join.getYear() == finalBeginDate1.getYear();
-                        }).collect(Collectors.groupingBy(ProjectMember::getMember_code, Collectors.counting()))
+                        }).collect(Collectors.groupingBy(ProjectMember::getMemberCode, Collectors.counting()))
                                 .entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                                 .forEachOrdered(x -> topNum.put(x.getKey(), x.getValue()));
                         topNum.forEach((key, val) -> {
@@ -648,10 +648,10 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                     }
                     Map<String, Long> topNum = new LinkedHashMap<>();
                     if (projectMemberList != null) {
-                        projectMemberList.stream().filter(o -> StrUtil.isNotEmpty(o.getJoin_time())).filter(o -> {
-                            LocalDate join = LocalDateTime.parse(o.getJoin_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                        projectMemberList.stream().filter(o -> StrUtil.isNotEmpty(o.getJoinTime())).filter(o -> {
+                            LocalDate join = LocalDateTime.parse(o.getJoinTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                             return join.getYear() == finalBeginDate1.getYear();
-                        }).collect(Collectors.groupingBy(ProjectMember::getMember_code, Collectors.counting()))
+                        }).collect(Collectors.groupingBy(ProjectMember::getMemberCode, Collectors.counting()))
                                 .entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                                 .forEachOrdered(x -> topNum.put(x.getKey(), x.getValue()));
                         topNum.forEach((key, val) -> {
@@ -695,10 +695,10 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
             }
             Map<String, Long> topNum = new LinkedHashMap<>();
             if (projectMemberList != null) {
-                projectMemberList.stream().filter(o -> StrUtil.isNotEmpty(o.getJoin_time())).filter(o -> {
-                    LocalDate join = LocalDateTime.parse(o.getJoin_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                projectMemberList.stream().filter(o -> StrUtil.isNotEmpty(o.getJoinTime())).filter(o -> {
+                    LocalDate join = LocalDateTime.parse(o.getJoinTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                     return join.isAfter(finalBeginDate1.plusDays(-1)) && join.isBefore(finalDate1.plusDays(1));
-                }).collect(Collectors.groupingBy(ProjectMember::getMember_code, Collectors.counting()))
+                }).collect(Collectors.groupingBy(ProjectMember::getMemberCode, Collectors.counting()))
                         .entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                         .forEachOrdered(x -> topNum.put(x.getKey(), x.getValue()));
                 topNum.forEach((key, val) -> {

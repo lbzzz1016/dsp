@@ -338,12 +338,12 @@ public class ProjectController extends BaseController {
         if(ObjectUtils.isEmpty(project)){
             throw new CustomException("项目不存在");
         }
-        ProjectMember projectMember = projectMemberService.lambdaQuery().eq(ProjectMember::getProject_code,projectCode)
-                .eq(ProjectMember::getMember_code, LoginHelper.getLoginUser().getCode()).one();
+        ProjectMember projectMember = projectMemberService.lambdaQuery().eq(ProjectMember::getProjectCode,projectCode)
+                .eq(ProjectMember::getMemberCode, LoginHelper.getLoginUser().getCode()).one();
         if(ObjectUtils.isEmpty(projectMember)){
             throw new CustomException("你不是该项目成员");
         }
-        if(projectMember.getIs_owner()>0){
+        if(projectMember.getIsOwner()>0){
             throw new CustomException("创建者不能退出项目");
         }
         return AjaxResult.success(projectMemberService.removeById(projectMember.getId()));
@@ -449,11 +449,11 @@ public class ProjectController extends BaseController {
         if(ObjectUtils.isNotEmpty(projectCollection)){
             project.setCollected(1);
         }
-        ProjectMember projectMember = projectMemberService.lambdaQuery().eq(ProjectMember::getProject_code,project.getCode())
-                .eq(ProjectMember::getIs_owner,1).one();
+        ProjectMember projectMember = projectMemberService.lambdaQuery().eq(ProjectMember::getProjectCode,project.getCode())
+                .eq(ProjectMember::getIsOwner,1).one();
         if(ObjectUtils.isNotEmpty(projectMember)){
             //Member member = memberService.lambdaQuery().eq(Member::getCode,projectMember.getMember_code()).one();
-            SysUser sysUser = userService.lambdaQuery().eq(SysUser::getCode, projectMember.getMember_code()).one();
+            SysUser sysUser = userService.lambdaQuery().eq(SysUser::getCode, projectMember.getMemberCode()).one();
             if(ObjectUtils.isNotEmpty(sysUser)){
                 project.setOwner_name(sysUser.getNickName());
                 project.setOwner_avatar(sysUser.getAvatar());

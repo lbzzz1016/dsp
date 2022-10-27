@@ -162,7 +162,7 @@ public class MemberService extends ServiceImpl<MemberMapper, Member> {
 
     @Transactional
     public MemberAccount createMember(Member member){
-        member.setCreate_time(DateUtils.getTime());
+        member.setCreateTime(DateUtils.getTime());
         save(member);
         return organizationService.createOrganization(member);
     }

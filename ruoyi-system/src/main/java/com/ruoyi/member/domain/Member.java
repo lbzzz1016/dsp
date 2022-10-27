@@ -25,9 +25,9 @@ public class Member extends BaseDomain implements Serializable {
     private String name;
     private String mobile;
     private String realname;
-    private String create_time;
+    private String createTime;
     private Integer status;
-    private String last_login_time;
+    private String lastLoginTime;
     private String sex;
     private String avatar;
     private String idcard;
@@ -38,9 +38,9 @@ public class Member extends BaseDomain implements Serializable {
     private String description;
     private String email;
     private String code;
-    private String dingtalk_openid;
-    private String dingtalk_unionid;
-    private String dingtalk_userid;
+    private String dingtalkOpenid;
+    private String dingtalkUnionid;
+    private String dingtalkUserid;
 
     @TableField(exist = false)
     private String orgCode;

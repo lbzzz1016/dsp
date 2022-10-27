@@ -44,15 +44,15 @@ public class ProjectMemberService extends ServiceImpl<ProjectMemberMapper, Proje
         IPage<Map> ipage = new Page();
         ipage.setCurrent(projectMember.getCurrent());
         ipage.setSize(projectMember.getSize());
-        IPage<Map> mapIPage = baseMapper.getProjectMemberByProjectCode(ipage,projectMember.getProject_code());
+        IPage<Map> mapIPage = baseMapper.getProjectMemberByProjectCode(ipage,projectMember.getProjectCode());
         return mapIPage;
     }
 
     //根据项目编号和用户编号确定是否是项目成员
     public boolean isProjectMember(String projectCode, String memberCode){
         //List<Map> list = baseMapper.getProjectMemberByProjectCodeAndMemberCode(projectCode,memberCode);
-        List<ProjectMember> list = lambdaQuery().eq(ProjectMember::getMember_code,memberCode)
-                .eq(ProjectMember::getProject_code,projectCode).list();
+        List<ProjectMember> list = lambdaQuery().eq(ProjectMember::getMemberCode,memberCode)
+                .eq(ProjectMember::getProjectCode,projectCode).list();
         if(!CollectionUtils.isEmpty(list)){
             return true;
         }
@@ -69,15 +69,15 @@ public class ProjectMemberService extends ServiceImpl<ProjectMemberMapper, Proje
         if(ObjectUtil.isEmpty(project)){
             throw new CustomException("该项目已失效！");
         }
-        ProjectMember projectMember = lambdaQuery().eq(ProjectMember::getMember_code,memberCode)
-                .eq(ProjectMember::getProject_code,projectCode)
+        ProjectMember projectMember = lambdaQuery().eq(ProjectMember::getMemberCode,memberCode)
+                .eq(ProjectMember::getProjectCode,projectCode)
                 .one();
         if(ObjectUtil.isNotEmpty(projectMember)){
             return projectMember;
         }
-        projectMember = ProjectMember.builder().member_code(memberCode).
-                project_code(projectCode).is_owner(isOwner).
-                join_time(DateUtils.getTime()).build();
+        projectMember = ProjectMember.builder().memberCode(memberCode).
+                projectCode(projectCode).isOwner(isOwner).
+                joinTime(DateUtils.getTime()).build();
         save(projectMember);
         memberAccountService.inviteMember(MemberAccount.builder().memberCode(memberCode).
                 organizationCode(project.getOrganization_code()).build());
@@ -96,8 +96,8 @@ public class ProjectMemberService extends ServiceImpl<ProjectMemberMapper, Proje
     @Transactional
     public Integer removeMember(String memberCode, Project project){
         LambdaQueryWrapper<ProjectMember> lambdaQueryWrapper=new LambdaQueryWrapper<ProjectMember>();
-        lambdaQueryWrapper.eq(ProjectMember::getProject_code,project.getCode());
-        lambdaQueryWrapper.eq(ProjectMember::getMember_code,memberCode);
+        lambdaQueryWrapper.eq(ProjectMember::getProjectCode,project.getCode());
+        lambdaQueryWrapper.eq(ProjectMember::getMemberCode,memberCode);
         Integer result = baseMapper.delete(lambdaQueryWrapper);
         projectLogService.run(new HashMap(){{
             put("member_code",memberCode);
