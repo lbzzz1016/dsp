@@ -22,16 +22,16 @@ public class MemberAccount extends BaseDomain implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String code;
-    private String member_code;
-    private String organization_code;
-    private String department_code;
+    private String memberCode;
+    private String organizationCode;
+    private String departmentCode;
     private String authorize;
-    private Integer is_owner;
+    private Integer isOwner;
     private String name;
     private String mobile;
     private String email;
-    private String create_time;
-    private String last_login_time;
+    private String createTime;
+    private String lastLoginTime;
     private Integer status;
     private String description;
     private String avatar;

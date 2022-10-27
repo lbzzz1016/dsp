@@ -117,7 +117,7 @@ public class MemberService extends ServiceImpl<MemberMapper, Member> {
             resMap.put("base_url", base_url);
             resMap.put("url",downloadServer+downloadUrl);
             resMap.put("filename", uploadFileName);
-            memberAccountService.lambdaUpdate().eq(MemberAccount::getMember_code,memberCode)
+            memberAccountService.lambdaUpdate().eq(MemberAccount::getMemberCode,memberCode)
                     .set(MemberAccount::getAvatar,downloadServer+downloadUrl).update();
             lambdaUpdate().eq(Member::getCode,memberCode).set(Member::getAvatar,downloadServer+downloadUrl).update();
 
@@ -133,9 +133,9 @@ public class MemberService extends ServiceImpl<MemberMapper, Member> {
     }
 
     public List<Organization> getOrgList(String memberCode){
-        List<MemberAccount> list = memberAccountService.lambdaQuery().select(MemberAccount::getOrganization_code).eq(MemberAccount::getMember_code, memberCode).list();
+        List<MemberAccount> list = memberAccountService.lambdaQuery().select(MemberAccount::getOrganizationCode).eq(MemberAccount::getMemberCode, memberCode).list();
         if (CollUtil.isNotEmpty(list)) {
-            List<String> orgList = list.parallelStream().map(MemberAccount::getOrganization_code).collect(Collectors.toList());
+            List<String> orgList = list.parallelStream().map(MemberAccount::getOrganizationCode).collect(Collectors.toList());
             return organizationMapper.selectList(Wrappers.<Organization>lambdaQuery().in(Organization::getCode, orgList));
         } else {
             throw new CustomException("此用户没有组织，请先添加到某组织");

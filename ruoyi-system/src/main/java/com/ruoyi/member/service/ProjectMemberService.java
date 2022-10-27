@@ -79,8 +79,8 @@ public class ProjectMemberService extends ServiceImpl<ProjectMemberMapper, Proje
                 project_code(projectCode).is_owner(isOwner).
                 join_time(DateUtils.getTime()).build();
         save(projectMember);
-        memberAccountService.inviteMember(MemberAccount.builder().member_code(memberCode).
-                organization_code(project.getOrganization_code()).build());
+        memberAccountService.inviteMember(MemberAccount.builder().memberCode(memberCode).
+                organizationCode(project.getOrganization_code()).build());
 
         projectLogService.run(new HashMap(){{
             put("member_code",memberCode);

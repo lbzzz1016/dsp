@@ -16,6 +16,7 @@ import com.ruoyi.member.mapper.MemberAccountMapper;
 import com.ruoyi.project.domain.ProjectAuth;
 import com.ruoyi.project.mapper.ProjectAuthMapper;
 import com.ruoyi.project.mapper.ProjectMapper;
+import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.service.ISysUserService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -138,30 +139,35 @@ public class MemberAccountService extends ServiceImpl<MemberAccountMapper, Membe
 
     public MemberAccount inviteMember(MemberAccount memberAccount){
 
-        MemberAccount hasJoined =lambdaQuery().eq(MemberAccount::getMember_code,memberAccount.getMember_code())
-                .eq(MemberAccount::getOrganization_code,memberAccount.getOrganization_code()).one();
+        MemberAccount hasJoined =lambdaQuery().eq(MemberAccount::getMemberCode,memberAccount.getMemberCode())
+                .eq(MemberAccount::getOrganizationCode,memberAccount.getOrganizationCode()).one();
         if(ObjectUtils.isNotEmpty(hasJoined) && ObjectUtils.isNotEmpty(hasJoined.getId())){
             return memberAccount;
         }
-        SysUser memberDate = sysUserService.lambdaQuery().eq(SysUser::getCode,memberAccount.getMember_code())
+        SysUser memberDate = sysUserService.lambdaQuery().eq(SysUser::getCode,memberAccount.getMemberCode())
                 .one();
         if(ObjectUtil.isEmpty(memberDate)){
             throw new CustomException("该用户不存在");
         }
         LambdaQueryWrapper<ProjectAuth> projectAuthWQ = new LambdaQueryWrapper<>();
-        projectAuthWQ.eq(ProjectAuth::getOrganization_code,memberAccount.getOrganization_code());
+        projectAuthWQ.eq(ProjectAuth::getOrganization_code,memberAccount.getOrganizationCode());
         projectAuthWQ.eq(ProjectAuth::getIs_default,1);
         ProjectAuth pa = projectAuthMapper.selectOne(projectAuthWQ);
         if(ObjectUtils.isNotEmpty(pa)){
             memberAccount.setAuthorize(String.valueOf(pa.getId()));
         }
         memberAccount.setCode(CommUtils.getUUID());
-        memberAccount.setIs_owner(0);
+        memberAccount.setIsOwner(0);
         memberAccount.setStatus(1);
-        memberAccount.setCreate_time(DateUtils.getTime());
+        memberAccount.setCreateTime(DateUtils.getTime());
         memberAccount.setName(memberDate.getNickName());
         memberAccount.setEmail(memberDate.getEmail());
         save(memberAccount);
         return memberAccount;
+    }
+
+    public List<MemberAccount> selectMemberAccountList(String code) {
+        return baseMapper.selectList(new LambdaQueryWrapper<MemberAccount>()
+            .like(StringUtils.isNotBlank(code), MemberAccount::getMemberCode, code));
     }
 }

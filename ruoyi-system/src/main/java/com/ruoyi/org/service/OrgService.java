@@ -64,9 +64,9 @@ public class OrgService{
                     .like(Member::getName, keyword).or().eq(Member::getEmail, keyword).list();
             if (CollUtil.isNotEmpty(memberList)) {
                 List<String> memberCodeList = memberList.parallelStream().map(Member::getCode).collect(Collectors.toList());
-                Map<String, MemberAccount> memberMap = memberAccountService.lambdaQuery().in(MemberAccount::getMember_code, memberCodeList)
-                        .eq(MemberAccount::getOrganization_code, organizationcode).list()
-                        .parallelStream().collect(Collectors.toMap(MemberAccount::getMember_code, o -> o));
+                Map<String, MemberAccount> memberMap = memberAccountService.lambdaQuery().in(MemberAccount::getMemberCode, memberCodeList)
+                        .eq(MemberAccount::getOrganizationCode, organizationcode).list()
+                        .parallelStream().collect(Collectors.toMap(MemberAccount::getMemberCode, o -> o));
                 List<MemberVo> memberVoList = new ArrayList<>();
                 memberList.forEach(o -> {
                     MemberVo memberVo;
@@ -81,14 +81,14 @@ public class OrgService{
                 return memberVoList;
             }
         } else {
-            List<MemberAccount> memberAccountList = memberAccountService.lambdaQuery().eq(MemberAccount::getOrganization_code, organizationcode)
+            List<MemberAccount> memberAccountList = memberAccountService.lambdaQuery().eq(MemberAccount::getOrganizationCode, organizationcode)
                     .like(MemberAccount::getName, keyword).or().eq(MemberAccount::getEmail, keyword).list();
             List<MemberVo> memberVoList = new ArrayList<>();
             memberAccountList.forEach(o -> {
                 MemberVo memberVo;
                 MemberVo.MemberVoBuilder voBuilder = MemberVo.builder().name(o.getName()).accountCode(o.getCode()).avatar(o.getAvatar()).email(o.getEmail());
                 
-                if (StrUtil.isNotEmpty(o.getDepartment_code()) && o.getDepartment_code().contains(departmentCode)) {
+                if (StrUtil.isNotEmpty(o.getDepartmentCode()) && o.getDepartmentCode().contains(departmentCode)) {
                     memberVo = voBuilder.joined(true).build();
                 } else {
                     memberVo = voBuilder.joined(false).build();
@@ -106,21 +106,21 @@ public class OrgService{
             Department department = departmentService.lambdaQuery().eq(Department::getCode, departmentCode).one();
             MemberAccount one = memberAccountService.lambdaQuery().eq(MemberAccount::getCode, accountCode).one();
             DepartmentMember saveDepartMember = DepartmentMember.builder().code(IdUtil.fastSimpleUUID()).department_code(departmentCode).organization_code(organizationcode)
-                    .account_code(accountCode).is_owner(one.getIs_owner()).is_principal(one.getIs_owner()).authorize(one.getAuthorize())
+                    .account_code(accountCode).is_owner(one.getIsOwner()).is_principal(one.getIsOwner()).authorize(one.getAuthorize())
                     .join_time(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS))).build();
             boolean save = departmentMemberService.save(saveDepartMember);
-            String depCode = StrUtil.isNotEmpty(one.getDepartment_code()) ? one.getDepartment_code() + "," + department.getCode() : department.getCode();
+            String depCode = StrUtil.isNotEmpty(one.getDepartmentCode()) ? one.getDepartmentCode() + "," + department.getCode() : department.getCode();
             String depStr = StrUtil.isNotEmpty(one.getDepartment()) ? one.getDepartment() + "-" + department.getName() : department.getName();
-            boolean update = memberAccountService.lambdaUpdate().set(MemberAccount::getDepartment, depStr).set(MemberAccount::getDepartment_code, depCode).eq(MemberAccount::getCode, accountCode).update();
+            boolean update = memberAccountService.lambdaUpdate().set(MemberAccount::getDepartment, depStr).set(MemberAccount::getDepartmentCode, depCode).eq(MemberAccount::getCode, accountCode).update();
             log.info("保存新部门：{}，更新用户信息：{}", save, update);
             return null;
         } else {
             ProjectAuth projectAuth = projectAuthService.lambdaQuery().select(ProjectAuth::getId).eq(ProjectAuth::getOrganization_code, organizationcode)
                     .eq(ProjectAuth::getIs_default, "1").one();
             Member one = memberService.lambdaQuery().eq(Member::getCode, accountCode).one();
-            MemberAccount saveMemberAccount = MemberAccount.builder().code(IdUtil.fastSimpleUUID()).member_code(accountCode).organization_code(organizationcode)
+            MemberAccount saveMemberAccount = MemberAccount.builder().code(IdUtil.fastSimpleUUID()).memberCode(accountCode).organizationCode(organizationcode)
                     .authorize(projectAuth.getId().toString()).name(one.getName()).mobile(one.getMobile()).email(one.getEmail()).avatar(one.getAvatar())
-                    .status(1).create_time(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS))).build();
+                    .status(1).createTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS))).build();
             boolean save = memberAccountService.save(saveMemberAccount);
             log.info("添加用户到组织：{}", save);
             return null;
@@ -131,7 +131,7 @@ public class OrgService{
     @Transactional(rollbackFor = Exception.class)
     public Object removeMember(String organizationcode, String accountCode, String departmentCode) {
         MemberAccount one = memberAccountService.lambdaQuery().eq(MemberAccount::getCode, accountCode).one();
-        List<String> depList = Arrays.stream(one.getDepartment_code().split(",")).collect(Collectors.toList());
+        List<String> depList = Arrays.stream(one.getDepartmentCode().split(",")).collect(Collectors.toList());
 //        for (String str : depList) {
 //            if (StrUtil.equals(str, departmentCode)) {
 //                depList.remove(str);
@@ -148,7 +148,7 @@ public class OrgService{
         }
         boolean remove = departmentMemberService.remove(Wrappers.<DepartmentMember>lambdaQuery().eq(DepartmentMember::getAccount_code, accountCode)
                 .eq(DepartmentMember::getDepartment_code, departmentCode).eq(DepartmentMember::getOrganization_code, organizationcode));
-        boolean update = memberAccountService.lambdaUpdate().set(MemberAccount::getDepartment, depStr).set(MemberAccount::getDepartment_code, depCode).eq(MemberAccount::getCode, accountCode).update();
+        boolean update = memberAccountService.lambdaUpdate().set(MemberAccount::getDepartment, depStr).set(MemberAccount::getDepartmentCode, depCode).eq(MemberAccount::getCode, accountCode).update();
         log.info("移除部门：{}，更新用户信息：{}", remove, update);
         return null;
     }

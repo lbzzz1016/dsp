@@ -30,6 +30,7 @@ import com.ruoyi.project.domain.ProjectAuthNode;
 import com.ruoyi.project.service.ProjectAuthNodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,10 +53,15 @@ public class SysLoginService {
     private final ISysConfigService configService;
     private final LogininforService asyncService;
     private final SysPermissionService permissionService;
-    private final MemberAccountService memberAccountService;
-    private final OrganizationService organizationService;
-    private final ProjectAuthNodeService projectAuthNodeService;
-
+//    private final MemberAccountService memberAccountService;
+//    private final OrganizationService organizationService;
+//    private final ProjectAuthNodeService projectAuthNodeService;
+    @Autowired
+    private ProjectAuthNodeService projectAuthNodeService;
+    @Autowired
+    private MemberAccountService memberAccountService;
+    @Autowired
+    private OrganizationService organizationService;
     /**
      * 登录验证
      *
@@ -103,7 +109,8 @@ public class SysLoginService {
 
 
         String userCode = user.getCode();
-        List<MemberAccount> list = memberAccountService.lambdaQuery().eq(MemberAccount::getMember_code, userCode).list();
+        List<MemberAccount> list = memberAccountService.selectMemberAccountList(userCode);
+//        List<MemberAccount> list = memberAccountService.lambdaQuery().eq(MemberAccount::getMember_code, userCode).list();
         //user.setMemberAccountList(list);
         Set<String> authSet = list.stream().map(MemberAccount::getAuthorize).collect(Collectors.toSet());
         List<ProjectAuthNode> projectAuthNodeList = projectAuthNodeService.lambdaQuery().in(ProjectAuthNode::getAuth, authSet).list();
@@ -113,7 +120,7 @@ public class SysLoginService {
             memberAccount.setNodeList(nodeList);
         });
 
-        Set<String> collect = list.stream().map(MemberAccount::getOrganization_code).collect(Collectors.toSet());
+        Set<String> collect = list.stream().map(MemberAccount::getOrganizationCode).collect(Collectors.toSet());
         List<Organization> organizationList = organizationService.lambdaQuery().in(Organization::getCode, collect).list();
         Map<String, Object> resultMap = new HashMap<>(8);
         resultMap.put("member", user);

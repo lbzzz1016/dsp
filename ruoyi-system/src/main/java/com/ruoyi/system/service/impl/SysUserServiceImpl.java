@@ -569,9 +569,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             boolean saveAuth2 = projectAuthService.save(auth2);
             log.info("创建管理员：{}，创建用户：{}", saveAuth1, saveAuth2);
             //组织账户
-            MemberAccount saveMemberAccount = MemberAccount.builder().code(IdUtil.fastSimpleUUID()).member_code(saveMember.getCode())
-                .organization_code(saveOrganization.getCode()).authorize(auth1.getId().toString()).is_owner(1).name(name).mobile(mobile).email(email)
-                .create_time(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
+            MemberAccount saveMemberAccount = MemberAccount.builder().code(IdUtil.fastSimpleUUID()).memberCode(saveMember.getCode())
+                .organizationCode(saveOrganization.getCode()).authorize(auth1.getId().toString()).isOwner(1).name(name).mobile(mobile).email(email)
+                .createTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
                 .status(1).avatar(saveMember.getAvatar()).build();
             //获取权限节点
             List<ProjectNode> adminNode = projectNodeService.lambdaQuery().list();

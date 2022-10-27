@@ -69,7 +69,7 @@ public class DepartmentMemberService extends ServiceImpl<DepartmentMemberMapper,
             }
             return ma;
         }else{
-            return memberAccountService.inviteMember(MemberAccount.builder().member_code(accountCode).organization_code(orgCode).build());
+            return memberAccountService.inviteMember(MemberAccount.builder().memberCode(accountCode).organizationCode(orgCode).build());
         }
     }
 
