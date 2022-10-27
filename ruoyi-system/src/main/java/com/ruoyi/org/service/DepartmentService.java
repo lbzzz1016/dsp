@@ -37,7 +37,7 @@ public class DepartmentService  extends ServiceImpl<DepartmentMapper, Department
         LambdaQueryWrapper<Department> depQW = new LambdaQueryWrapper<Department>();
         depQW.eq(Department::getName,deptName);
         depQW.eq(Department::getPcode,pcode);
-        depQW.eq(Department::getOrganization_code,orgCode);
+        depQW.eq(Department::getOrganizationCode,orgCode);
         return baseMapper.selectOne(depQW);
     }
 

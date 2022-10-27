@@ -19,11 +19,11 @@ public class Department  extends BaseDomain implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String code;
-    private String organization_code;
+    private String organizationCode;
     private String name;
     private Integer sort;
     private String pcode;
     private String icon;
-    private String create_time;
+    private String createTime;
     private String path;
 }

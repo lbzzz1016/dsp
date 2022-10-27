@@ -19,11 +19,11 @@ public class DepartmentMember extends BaseDomain implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String code;
-    private String department_code;
-    private String organization_code;
-    private String account_code;
-    private String join_time;
-    private Integer is_principal;
-    private Integer is_owner;
+    private String departmentCode;
+    private String organizationCode;
+    private String accountCode;
+    private String joinTime;
+    private Integer isPrincipal;
+    private Integer isOwner;
     private String authorize;
 }

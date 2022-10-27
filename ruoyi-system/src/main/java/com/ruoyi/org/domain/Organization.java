@@ -21,8 +21,8 @@ public class Organization extends BaseDomain implements Serializable {
     private String name;
     private String avatar;
     private String description;
-    private String owner_code;
-    private String create_time;
+    private String ownerCode;
+    private String createTime;
     private Integer personal;
     private String code;
     private String address;

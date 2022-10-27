@@ -555,8 +555,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .createTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
                 .status(1).email(email).build();
             //组织
-            Organization saveOrganization = Organization.builder().name(name + "的个人项目").owner_code(code)
-                .create_time(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
+            Organization saveOrganization = Organization.builder().name(name + "的个人项目").ownerCode(code)
+                .createTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
                 .personal(1).code(IdUtil.fastSimpleUUID()).build();
             //组织角色
             ProjectAuth auth1 = ProjectAuth.builder().title("管理员").status(1).sort(0).desc("管理员")

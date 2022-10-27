@@ -105,9 +105,9 @@ public class OrgService{
         if (StrUtil.isNotEmpty(departmentCode)) {
             Department department = departmentService.lambdaQuery().eq(Department::getCode, departmentCode).one();
             MemberAccount one = memberAccountService.lambdaQuery().eq(MemberAccount::getCode, accountCode).one();
-            DepartmentMember saveDepartMember = DepartmentMember.builder().code(IdUtil.fastSimpleUUID()).department_code(departmentCode).organization_code(organizationcode)
-                    .account_code(accountCode).is_owner(one.getIsOwner()).is_principal(one.getIsOwner()).authorize(one.getAuthorize())
-                    .join_time(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS))).build();
+            DepartmentMember saveDepartMember = DepartmentMember.builder().code(IdUtil.fastSimpleUUID()).departmentCode(departmentCode).organizationCode(organizationcode)
+                    .accountCode(accountCode).isOwner(one.getIsOwner()).isPrincipal(one.getIsOwner()).authorize(one.getAuthorize())
+                    .joinTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS))).build();
             boolean save = departmentMemberService.save(saveDepartMember);
             String depCode = StrUtil.isNotEmpty(one.getDepartmentCode()) ? one.getDepartmentCode() + "," + department.getCode() : department.getCode();
             String depStr = StrUtil.isNotEmpty(one.getDepartment()) ? one.getDepartment() + "-" + department.getName() : department.getName();
@@ -146,8 +146,8 @@ public class OrgService{
             depCode = list.stream().map(Department::getCode).collect(Collectors.joining(","));
             depStr = list.stream().map(Department::getName).collect(Collectors.joining("-"));
         }
-        boolean remove = departmentMemberService.remove(Wrappers.<DepartmentMember>lambdaQuery().eq(DepartmentMember::getAccount_code, accountCode)
-                .eq(DepartmentMember::getDepartment_code, departmentCode).eq(DepartmentMember::getOrganization_code, organizationcode));
+        boolean remove = departmentMemberService.remove(Wrappers.<DepartmentMember>lambdaQuery().eq(DepartmentMember::getAccountCode, accountCode)
+                .eq(DepartmentMember::getDepartmentCode, departmentCode).eq(DepartmentMember::getOrganizationCode, organizationcode));
         boolean update = memberAccountService.lambdaUpdate().set(MemberAccount::getDepartment, depStr).set(MemberAccount::getDepartmentCode, depCode).eq(MemberAccount::getCode, accountCode).update();
         log.info("移除部门：{}，更新用户信息：{}", remove, update);
         return null;

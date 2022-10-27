@@ -41,8 +41,8 @@ public class DepartmentMemberService extends ServiceImpl<DepartmentMemberMapper,
     MemberService memberService;
     public DepartmentMember getDepartmentMember(String accountCode,String deptCode){
         LambdaQueryWrapper<DepartmentMember> dmWQ = new LambdaQueryWrapper<DepartmentMember>();
-        dmWQ.eq(DepartmentMember::getAccount_code,accountCode);
-        dmWQ.eq(DepartmentMember::getDepartment_code,deptCode);
+        dmWQ.eq(DepartmentMember::getAccountCode,accountCode);
+        dmWQ.eq(DepartmentMember::getDepartmentCode,deptCode);
         return baseMapper.selectOne(dmWQ);
     }
 
@@ -58,9 +58,9 @@ public class DepartmentMemberService extends ServiceImpl<DepartmentMemberMapper,
             if(!ObjectUtils.isEmpty(ma)){
                 throw new CustomException("已加入该部门");
             }
-            ma = DepartmentMember.builder().code(CommUtils.getUUID()).account_code(accountCode).organization_code(orgCode)
-                .department_code(deptCode).is_owner(isOwner).is_principal(isPrincipal)
-                .join_time(DateUtils.getTime()).build();
+            ma = DepartmentMember.builder().code(CommUtils.getUUID()).accountCode(accountCode).organizationCode(orgCode)
+                .departmentCode(deptCode).isOwner(isOwner).isPrincipal(isPrincipal)
+                .joinTime(DateUtils.getTime()).build();
             save(ma);
             List<String> departmentCodes = baseMapper.selectDepartmentCodes(accountCode,orgCode);
             if(null !=departmentCodes && departmentCodes.size()>0){

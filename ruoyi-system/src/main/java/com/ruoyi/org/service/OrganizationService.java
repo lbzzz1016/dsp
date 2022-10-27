@@ -48,8 +48,8 @@ public class OrganizationService extends ServiceImpl<OrganizationMapper, Organiz
         Integer defaultAdminAuthId = 3;//默认管理员权限id
         Integer defaultMemberAuthId = 4;//默认成员权限id
         Organization organization = Organization.builder().name(member.getName()+"的个人项目")
-                .code(CommUtils.getUUID()).personal(1).create_time(DateUtils.getTime())
-                .owner_code(member.getCode()).build();
+                .code(CommUtils.getUUID()).personal(1).createTime(DateUtils.getTime())
+                .ownerCode(member.getCode()).build();
         save(organization);
         ProjectAuth defaultAdminAuth=projectAuthService.getById(defaultAdminAuthId);
         ProjectAuth defaultMemberAuth=projectAuthService.getById(defaultMemberAuthId);
