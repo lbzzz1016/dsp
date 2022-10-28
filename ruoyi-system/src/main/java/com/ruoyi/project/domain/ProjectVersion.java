@@ -22,13 +22,13 @@ public class ProjectVersion extends BaseDomain implements Serializable {
     private String code;
     private String name;
     private String description;
-    private String create_time;
-    private String update_time;
-    private String organization_code;
-    private String publish_time;
-    private String start_time;
+    private String createTime;
+    private String updateTime;
+    private String organizationCode;
+    private String publishTime;
+    private String startTime;
     private Integer status;
     private Integer schedule;
-    private String plan_publish_time;
-    private String features_code;
+    private String planPublishTime;
+    private String featuresCode;
 }

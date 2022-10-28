@@ -18,7 +18,7 @@ public class ProjectCollection  extends BaseDomain implements Serializable {
 
     @TableId(type = IdType.AUTO)
     private Integer id;
-    private String project_code;
-    private String member_code;
-    private String create_time;
+    private String projectCode;
+    private String memberCode;
+    private String createTime;
 }

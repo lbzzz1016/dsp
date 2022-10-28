@@ -125,11 +125,11 @@ public class ProjectAssistController extends BaseController {
         }
         ProjectFeatures pf = new ProjectFeatures();
         pf.setCode(CommUtils.getUUID());
-        pf.setCreate_time(DateUtils.formatDateTime(new Date()));
-        pf.setProject_code(projectCode);
+        pf.setCreateTime(DateUtils.formatDateTime(new Date()));
+        pf.setProjectCode(projectCode);
         pf.setDescription(description);
         pf.setName(name);
-        pf.setOrganization_code(MapUtils.getString(getLoginMember(),"organizationCode"));
+        pf.setOrganizationCode(MapUtils.getString(getLoginMember(),"organizationCode"));
         return AjaxResult.success(projectFeaturesService.save(pf));
     }
 
@@ -178,13 +178,13 @@ public class ProjectAssistController extends BaseController {
 
         ProjectVersion pv = new ProjectVersion();
         ProjectVersionLog pvl = new ProjectVersionLog();
-        pv.setCreate_time(DateUtils.formatDateTime(new Date()));
-        pv.setCode(CommUtils.getUUID());pv.setFeatures_code(featuresCode);
-        pv.setStart_time(startTime);pv.setPlan_publish_time(planPublishTime);
+        pv.setCreateTime(DateUtils.formatDateTime(new Date()));
+        pv.setCode(CommUtils.getUUID());pv.setFeaturesCode(featuresCode);
+        pv.setStartTime(startTime);pv.setPlanPublishTime(planPublishTime);
         pv.setDescription(description);pv.setName(name);
-        pv.setOrganization_code(MapUtils.getString(memberMap,"organizationCode"));
-        pvl.setMember_code(MapUtils.getString(mmap,"memberCountCode"));
-        pvl.setSource_code(pv.getCode());pvl.setRemark("创建了新版本");
+        pv.setOrganizationCode(MapUtils.getString(memberMap,"organizationCode"));
+        pvl.setMemberCode(MapUtils.getString(mmap,"memberCountCode"));
+        pvl.setSourceCode(pv.getCode());pvl.setRemark("创建了新版本");
         pvl.setType("create");pvl.setContent(name);pvl.setCreate_time(DateUtils.formatDateTime(new Date()));
         pvl.setCode(CommUtils.getUUID());pvl.setFeatures_code(featuresCode);pvl.setIcon("plus");
         Integer i = projectVersionService.addProjectVersionAndVersionLog(pv,pvl);
@@ -393,7 +393,7 @@ public class ProjectAssistController extends BaseController {
         pv.setId(MapUtils.getInteger(versionMap,"id"));
         pv.setStatus(status);
         if(status == 3){
-            pv.setPublish_time(publishTime);
+            pv.setPublishTime(publishTime);
         }
         boolean i = projectVersionService.updateById(pv);
         ProjectVersionLog pvl = new ProjectVersionLog();
@@ -435,8 +435,8 @@ public class ProjectAssistController extends BaseController {
         upProjectVersion.setId(MapUtils.getInteger(versionMap,"id"));
         if(!CommUtils.isEmpty(name))upProjectVersion.setName(name);
         if(!CommUtils.isEmpty(description))upProjectVersion.setDescription(description);
-        if(!CommUtils.isEmpty(start_time))upProjectVersion.setStart_time(start_time);
-        if(!CommUtils.isEmpty(plan_publish_time))upProjectVersion.setPlan_publish_time(plan_publish_time);
+        if(!CommUtils.isEmpty(start_time))upProjectVersion.setStartTime(start_time);
+        if(!CommUtils.isEmpty(plan_publish_time))upProjectVersion.setPlanPublishTime(plan_publish_time);
         boolean bo =  projectVersionService.updateById(upProjectVersion);
         ProjectVersionLog pvl = new ProjectVersionLog();
         String remark = "";

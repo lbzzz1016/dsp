@@ -37,11 +37,12 @@ public class ProjectVersionLog   extends BaseDomain implements Serializable {
     }
 
     public String getMember_code() {
-        return member_code;
+        return memberCode;
     }
 
-    public ProjectVersionLog setMember_code(String member_code) {
-        this.member_code = member_code;return this;
+    public ProjectVersionLog setMember_code(String memberCode) {
+        this.memberCode = memberCode;
+        return this;
     }
 
     public String getContent() {
@@ -65,31 +66,32 @@ public class ProjectVersionLog   extends BaseDomain implements Serializable {
     }
 
     public ProjectVersionLog setType(String type) {
-        this.type = type;return this;
+        this.type = type;
+        return this;
     }
 
     public String getCreate_time() {
-        return create_time;
+        return createTime;
     }
 
-    public ProjectVersionLog setCreate_time(String create_time) {
-        this.create_time = create_time;return this;
+    public ProjectVersionLog setCreate_time(String createTime) {
+        this.createTime = createTime;return this;
     }
 
     public String getSource_code() {
-        return source_code;
+        return sourceCode;
     }
 
-    public ProjectVersionLog setSource_code(String source_code) {
-        this.source_code = source_code;return this;
+    public ProjectVersionLog setSource_code(String sourceCode) {
+        this.sourceCode = sourceCode;return this;
     }
 
     public String getProject_code() {
-        return project_code;
+        return projectCode;
     }
 
-    public ProjectVersionLog setProject_code(String project_code) {
-        this.project_code = project_code;
+    public ProjectVersionLog setProject_code(String projectCode) {
+        this.projectCode = projectCode;
         return this;
     }
 
@@ -102,25 +104,25 @@ public class ProjectVersionLog   extends BaseDomain implements Serializable {
     }
 
     public String getFeatures_code() {
-        return features_code;
+        return featuresCode;
     }
 
-    public ProjectVersionLog setFeatures_code(String features_code) {
-        this.features_code = features_code;return this;
+    public ProjectVersionLog setFeatures_code(String featuresCode) {
+        this.featuresCode = featuresCode;return this;
     }
 
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String code;
-    private String member_code;
+    private String memberCode;
     private String content;
     private String remark;
     private String type;
-    private String create_time;
-    private String source_code;
-    private String project_code;
+    private String createTime;
+    private String sourceCode;
+    private String projectCode;
     private String icon;
-    private String features_code;
+    private String featuresCode;
     public  ProjectVersionLog(String memberCode,String content,String remark,String type,String createTime,String sourceCode,String projectCode,String icon,String featureCode){
         if(!CommUtils.isEmpty(memberCode))setMember_code(memberCode);
         if(!CommUtils.isEmpty(content))setContent(content);

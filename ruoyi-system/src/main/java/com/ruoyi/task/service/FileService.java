@@ -60,9 +60,9 @@ public class FileService  extends ServiceImpl<FileMapper, File> {
         file.setCreateBy(memberCode);
         if(StringUtils.isNotEmpty(file.getTaskCode())){
 
-            SourceLink sourceLink = SourceLink.builder().source_type("file").code(CommUtils.getUUID()).
-                    create_by(memberCode).organization_code(file.getOrganizationCode()).link_code(file.getTaskCode())
-                    .link_type("task").source_code(file.getCode()).source_type("file").sort(0).build();
+            SourceLink sourceLink = SourceLink.builder().sourceType("file").code(CommUtils.getUUID()).
+                    createBy(memberCode).organizationCode(file.getOrganizationCode()).linkCode(file.getTaskCode())
+                    .linkType("task").sourceCode(file.getCode()).sourceType("file").sort(0).build();
             sourceLinkMapper.insert(sourceLink);
         }
         baseMapper.insert(file);

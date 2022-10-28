@@ -20,13 +20,13 @@ public class SourceLink  extends BaseDomain implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String code;
-    private String source_type;
-    private String source_code;
-    private String link_type;
-    private String link_code;
-    private String organization_code;
-    private String create_by;
-    private String create_time;
+    private String sourceType;
+    private String sourceCode;
+    private String linkType;
+    private String linkCode;
+    private String organizationCode;
+    private String createBy;
+    private String createTime;
     private Integer sort;
 
     @TableField(exist = false)

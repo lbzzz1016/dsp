@@ -560,11 +560,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .personal(1).code(IdUtil.fastSimpleUUID()).build();
             //组织角色
             ProjectAuth auth1 = ProjectAuth.builder().title("管理员").status(1).sort(0).desc("管理员")
-                .create_at(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
-                .organization_code(saveOrganization.getCode()).type("admin").build();
+                .createAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
+                .organizationCode(saveOrganization.getCode()).type("admin").build();
             ProjectAuth auth2 = ProjectAuth.builder().title("用户").status(1).sort(1).desc("用户")
-                .create_at(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
-                .organization_code(saveOrganization.getCode()).type("member").is_default(1).build();
+                .createAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
+                .organizationCode(saveOrganization.getCode()).type("member").isDefault(1).build();
             boolean saveAuth1 = projectAuthService.save(auth1);
             boolean saveAuth2 = projectAuthService.save(auth2);
             log.info("创建管理员：{}，创建用户：{}", saveAuth1, saveAuth2);

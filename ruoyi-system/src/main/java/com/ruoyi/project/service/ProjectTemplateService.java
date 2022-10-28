@@ -36,9 +36,9 @@ public class ProjectTemplateService extends ServiceImpl<ProjectTemplateMapper, P
     public IPage<ProjectTemplate> getProTemplateByOrgCode(ProjectTemplate projectTemplete){
 
         LambdaQueryWrapper<ProjectTemplate> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ProjectTemplate::getOrganization_code, projectTemplete.getOrganization_code());
-        if(-1 != projectTemplete.getIs_system()){
-            queryWrapper.eq(ProjectTemplate::getIs_system, projectTemplete.getIs_system());
+        queryWrapper.eq(ProjectTemplate::getOrganizationCode, projectTemplete.getOrganizationCode());
+        if(-1 != projectTemplete.getIsSystem()){
+            queryWrapper.eq(ProjectTemplate::getIsSystem, projectTemplete.getIsSystem());
         }
         IPage<ProjectTemplate> mapIPage = baseMapper.selectPage(projectTemplete.toPage(),queryWrapper);
         return mapIPage;

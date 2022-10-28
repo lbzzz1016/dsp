@@ -17,9 +17,9 @@ import java.io.Serializable;
 public class ProjectReport extends BaseDomain implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
-    private String project_code;
+    private String projectCode;
     private String date;
     private String content;
-    private String create_time;
-    private String update_time;
+    private String createTime;
+    private String updateTime;
 }

@@ -32,16 +32,16 @@ public class ProjectLogService extends ServiceImpl<ProjectLogMapper, ProjectLog>
     }
 
     public Project run(Map param){
-        ProjectLog projectLog = ProjectLog.builder().action_type(MapUtils.getString(param,"action_type")).code(CommUtils.getUUID())
-                .create_time(DateUtils.getTime()).to_member_code(MapUtils.getString(param,"to_member_code"))
-                .is_comment(MapUtils.getInteger(param,"is_comment")).content(MapUtils.getString(param,"content",""))
-                .type(MapUtils.getString(param,"type")).source_code(MapUtils.getString(param,"source_code"))
-                .member_code(MapUtils.getString(param,"member_code")).project_code(MapUtils.getString(param,"project_code")).build();
-        Project project = projectService.getProjectProjectByCode(projectLog.getProject_code());
-        projectLog.setProject_code(project.getCode());
+        ProjectLog projectLog = ProjectLog.builder().actionType(MapUtils.getString(param,"action_type")).code(CommUtils.getUUID())
+                .createTime(DateUtils.getTime()).toMemberCode(MapUtils.getString(param,"to_member_code"))
+                .isComment(MapUtils.getInteger(param,"is_comment")).content(MapUtils.getString(param,"content",""))
+                .type(MapUtils.getString(param,"type")).sourceCode(MapUtils.getString(param,"source_code"))
+                .memberCode(MapUtils.getString(param,"member_code")).projectCode(MapUtils.getString(param,"project_code")).build();
+        Project project = projectService.getProjectProjectByCode(projectLog.getProjectCode());
+        projectLog.setProjectCode(project.getCode());
         SysUser toMember = new SysUser();
-        if(StringUtils.isNotEmpty(projectLog.getTo_member_code())){
-            toMember = sysUserService.getUserByCode(projectLog.getTo_member_code());
+        if(StringUtils.isNotEmpty(projectLog.getToMemberCode())){
+            toMember = sysUserService.getUserByCode(projectLog.getToMemberCode());
         }
         String type = projectLog.getType();
         if("create".equals(type)){

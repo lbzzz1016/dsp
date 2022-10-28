@@ -126,7 +126,7 @@ public class AuthorityControoler extends BaseController {
         Integer id = MapUtils.getInteger(mmap,"id",-1);
         Integer is_default = MapUtils.getInteger(mmap,"is_default",0);
         ProjectAuth pa = new ProjectAuth();
-        pa.setId(id);pa.setIs_default(is_default);
+        pa.setId(id);pa.setIsDefault(is_default);
         Map loginMember = getLoginMember();
         String orgCode = MapUtils.getString(loginMember,"organizationCode");
 
@@ -216,9 +216,9 @@ public class AuthorityControoler extends BaseController {
         Integer sort = MapUtils.getInteger(mmap,"sort");
         ProjectAuth pa = new ProjectAuth();
         pa.setTitle(title);pa.setDesc(desc);pa.setStatus(status);pa.setSort(sort);
-        pa.setOrganization_code(MapUtils.getString(loginMap,"organizationCode"));
-        pa.setCreate_at(DateUtils.formatDateTime(new Date()));
-        pa.setIs_default(0);pa.setCreate_by(0);
+        pa.setOrganizationCode(MapUtils.getString(loginMap,"organizationCode"));
+        pa.setCreateAt(DateUtils.formatDateTime(new Date()));
+        pa.setIsDefault(0);pa.setCreateBy(0);
         projectAuthService.save(pa);
         if("admin".equals(pa.getType()) || "member".equals(pa.getType())){
             pa.setCanDelete(0);
@@ -236,10 +236,10 @@ public class AuthorityControoler extends BaseController {
     @PostMapping("/menu/menuEdit")
     @ResponseBody
     public AjaxResult menuDel(ProjectMenu menuEdit) {
-        if (menuEdit.getIs_inner()) {
-            menuEdit.setIsinner(1);
+        if (menuEdit.getIs_Inner()) {
+            menuEdit.setIsInner(1);
         } else {
-            menuEdit.setIsinner(0);
+            menuEdit.setIsInner(0);
         }
         return AjaxResult.success("修改成功", projectMenuService.updateById(menuEdit));
     }
@@ -368,16 +368,16 @@ public class AuthorityControoler extends BaseController {
         Integer pid = MapUtils.getInteger(mmap,"pid");
 
         ProjectMenu pm = new ProjectMenu();
-        pm.setTitle(title);pm.setUrl(url);pm.setFile_path(file_path);
+        pm.setTitle(title);pm.setUrl(url);pm.setFilePath(file_path);
         pm.setNode(node);pm.setSort(sort);pm.setParams(params);
-        pm.set_values(values);pm.setIcon(icon);pm.setStatus(status);
-        pm.setPid(pid);pm.setShowslider("true".equalsIgnoreCase(show_slider)?1:0);
-        pm.setIsinner("true".equalsIgnoreCase(is_inner)?1:0);
-        pm.setCreate_at(DateUtils.formatDateTime(new Date()));
-        pm.setCreate_by(0);
+        pm.setValues(values);pm.setIcon(icon);pm.setStatus(status);
+        pm.setPid(pid);pm.setShowSlider("true".equalsIgnoreCase(show_slider)?1:0);
+        pm.setIsInner("true".equalsIgnoreCase(is_inner)?1:0);
+        pm.setCreateAt(DateUtils.formatDateTime(new Date()));
+        pm.setCreateBy(0);
         projectMenuService.save(pm);
 
-        if(pm.getIsinner() == 0){pm.setInnerText("导航");}else if(pm.getIsinner() == 1){ pm.setInnerText("内页");}
+        if(pm.getIsInner() == 0){pm.setInnerText("导航");}else if(pm.getIsInner() == 1){ pm.setInnerText("内页");}
         if(pm.getStatus() == 0){pm.setStatusText("禁用");}else if(pm.getStatus() == 1){ pm.setStatusText("使用中");}
         if((null != pm.getParams() && null != pm.get_values()) || !"".equals(pm.get_values())){
             pm.setFullUrl(pm.getUrl()+"/"+pm.get_values());

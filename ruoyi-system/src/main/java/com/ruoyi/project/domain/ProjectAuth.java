@@ -25,10 +25,10 @@ public class ProjectAuth extends BaseDomain implements Serializable {
 
     @TableField("`desc`")
     private String desc;
-    private Integer create_by;
-    private String create_at;
-    private String organization_code;
-    private Integer is_default;
+    private Integer createBy;
+    private String createAt;
+    private String organizationCode;
+    private Integer isDefault;
     private String type;
 
     @TableField(exist = false)

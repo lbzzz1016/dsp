@@ -25,13 +25,13 @@ public class ProjectTemplate extends BaseDomain implements Serializable {
     private String name;
     private String description;
     private Integer sort;
-    private String create_time;
+    private String createTime;
     private String code;
-    private String organization_code;
+    private String organizationCode;
     private String cover;
-    private String member_code;
+    private String memberCode;
     @TableField("is_system")
-    private Integer is_system;
+    private Integer isSystem;
     @TableField(exist = false)
-    private List<String> task_stages;
+    private List<String> taskStages;
 }

@@ -22,34 +22,34 @@ public class Project  extends BaseDomain implements Serializable {
     private String name;
     private String code;
     private String description;
-    private String access_control_type;
-    private String white_list;
+    private String accessControlType;
+    private String whiteList;
     @TableField(exist = false)
     private Long order;
     private Integer deleted;
-    private String template_code;
+    private String templateCode;
     private Double schedule;
-    private String create_time;
-    private String organization_code;
-    private String deleted_time;
+    private String createTime;
+    private String organizationCode;
+    private String deletedTime;
     @TableField("private")
     private Integer privated;
     private String prefix;
-    private Integer open_prefix;
+    private Integer openPrefix;
     private Integer archive;
-    private String archive_time;
-    private Integer open_begin_time;
-    private Integer open_task_private;
-    private String task_board_theme;
-    private String begin_time;
-    private String end_time;
-    private Integer auto_update_schedule;
+    private String archiveTime;
+    private Integer openBeginTime;
+    private Integer openTaskPrivate;
+    private String taskBoardTheme;
+    private String beginTime;
+    private String endTime;
+    private Integer autoUpdateSchedule;
 
     @TableField(exist = false)
     private Integer collected;
     @TableField(exist = false)
-    private String owner_name;
+    private String ownerName;
     @TableField(exist = false)
-    private String owner_avatar;
+    private String ownerAvatar;
 
 }

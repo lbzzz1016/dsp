@@ -53,16 +53,16 @@ public class OrganizationService extends ServiceImpl<OrganizationMapper, Organiz
         save(organization);
         ProjectAuth defaultAdminAuth=projectAuthService.getById(defaultAdminAuthId);
         ProjectAuth defaultMemberAuth=projectAuthService.getById(defaultMemberAuthId);
-        ProjectAuth defaultAdminAuthSave=ProjectAuth.builder().create_at(DateUtils.getTime())
-                .organization_code(organization.getCode())
-                .is_default(1).type(defaultAdminAuth.getType()).title(defaultAdminAuth.getTitle())
-                .status(1).sort(0).desc(defaultAdminAuth.getDesc()).create_by(defaultAdminAuth.getCreate_by())
+        ProjectAuth defaultAdminAuthSave=ProjectAuth.builder().createAt(DateUtils.getTime())
+                .organizationCode(organization.getCode())
+                .isDefault(1).type(defaultAdminAuth.getType()).title(defaultAdminAuth.getTitle())
+                .status(1).sort(0).desc(defaultAdminAuth.getDesc()).createBy(defaultAdminAuth.getCreateBy())
                 .build();
         projectAuthService.save(defaultAdminAuthSave);
-        ProjectAuth defaultMemberAuthSave = ProjectAuth.builder().create_at(DateUtils.getTime())
-                .organization_code(organization.getCode())
-                .is_default(0).type(defaultMemberAuth.getType()).title(defaultMemberAuth.getTitle())
-                .status(1).sort(0).desc(defaultMemberAuth.getDesc()).create_by(defaultMemberAuth.getCreate_by())
+        ProjectAuth defaultMemberAuthSave = ProjectAuth.builder().createAt(DateUtils.getTime())
+                .organizationCode(organization.getCode())
+                .isDefault(0).type(defaultMemberAuth.getType()).title(defaultMemberAuth.getTitle())
+                .status(1).sort(0).desc(defaultMemberAuth.getDesc()).createBy(defaultMemberAuth.getCreateBy())
                 .build();
         projectAuthService.save(defaultMemberAuthSave);
 

@@ -115,8 +115,8 @@ public class OrgService{
             log.info("保存新部门：{}，更新用户信息：{}", save, update);
             return null;
         } else {
-            ProjectAuth projectAuth = projectAuthService.lambdaQuery().select(ProjectAuth::getId).eq(ProjectAuth::getOrganization_code, organizationcode)
-                    .eq(ProjectAuth::getIs_default, "1").one();
+            ProjectAuth projectAuth = projectAuthService.lambdaQuery().select(ProjectAuth::getId).eq(ProjectAuth::getOrganizationCode, organizationcode)
+                    .eq(ProjectAuth::getIsDefault, "1").one();
             Member one = memberService.lambdaQuery().eq(Member::getCode, accountCode).one();
             MemberAccount saveMemberAccount = MemberAccount.builder().code(IdUtil.fastSimpleUUID()).memberCode(accountCode).organizationCode(organizationcode)
                     .authorize(projectAuth.getId().toString()).name(one.getName()).mobile(one.getMobile()).email(one.getEmail()).avatar(one.getAvatar())

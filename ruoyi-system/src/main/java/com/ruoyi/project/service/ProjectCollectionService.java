@@ -34,33 +34,33 @@ public class ProjectCollectionService extends ServiceImpl<ProjectCollectionMappe
         if(ObjectUtils.isEmpty(project)){
             throw new CustomException("该项目已失效");
         }
-        ProjectCollection hasCollected = lambdaQuery().eq(ProjectCollection::getMember_code,memberCode).eq(ProjectCollection::getProject_code,projectCode).one();
+        ProjectCollection hasCollected = lambdaQuery().eq(ProjectCollection::getMemberCode,memberCode).eq(ProjectCollection::getProjectCode,projectCode).one();
         if("collect".equals(type)){
             if(ObjectUtil.isNotEmpty(hasCollected)){
                 throw new CustomException("该项目已收藏");
             }
-            ProjectCollection projectCollection = ProjectCollection.builder().member_code(memberCode).project_code(projectCode).create_time(DateUtils.getTime()).build();
+            ProjectCollection projectCollection = ProjectCollection.builder().memberCode(memberCode).projectCode(projectCode).createTime(DateUtils.getTime()).build();
             return save(projectCollection);
         }else{
             if(ObjectUtil.isEmpty(hasCollected)){
                 throw new CustomException("尚未收藏该项目");
             }
-            return lambdaUpdate().eq(ProjectCollection::getMember_code,memberCode).eq(ProjectCollection::getProject_code,projectCode).remove();
+            return lambdaUpdate().eq(ProjectCollection::getMemberCode,memberCode).eq(ProjectCollection::getProjectCode,projectCode).remove();
         }
     }
     //取消收藏
     public int cancel(ProjectCollection pc){
         UpdateWrapper updateWrapper = new UpdateWrapper();
-        updateWrapper.eq("member_code",pc.getMember_code());
-        updateWrapper.eq("project_code",pc.getProject_code());
+        updateWrapper.eq("member_code",pc.getMemberCode());
+        updateWrapper.eq("project_code",pc.getProjectCode());
         return baseMapper.delete(updateWrapper);
     }
 
     //根据projectCode和memberCode获取收藏记录
     public List<Map> getProjectCollection(String projectCode, String memberCode){
         LambdaQueryWrapper<ProjectCollection> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ProjectCollection::getMember_code, memberCode);
-        queryWrapper.eq(ProjectCollection::getProject_code, projectCode);
+        queryWrapper.eq(ProjectCollection::getMemberCode, memberCode);
+        queryWrapper.eq(ProjectCollection::getProjectCode, projectCode);
         return baseMapper.selectProjectCollection(projectCode,memberCode);
     }
 }

@@ -18,16 +18,16 @@ public class CollectionTeamService extends ServiceImpl<CollectionTeamMapper, Col
     public void starTask(String sourceCode,String memberCode,Integer star){
         Map collectionMap = baseMapper.selectCollection(sourceCode,memberCode);
         if(star>0 && MapUtils.isEmpty(collectionMap)){
-            save(CollectionTeam.builder().create_time(DateUtils.getTime())
-            .code(CommUtils.getUUID()).source_code(sourceCode).type("task").member_code(memberCode)
+            save(CollectionTeam.builder().createTime(DateUtils.getTime())
+            .code(CommUtils.getUUID()).sourceCode(sourceCode).type("task").memberCode(memberCode)
             .build());
             return ;
         }
         if(star==0){
             LambdaUpdateWrapper<CollectionTeam> collUQ = new LambdaUpdateWrapper<CollectionTeam>();
-            collUQ.eq(CollectionTeam::getSource_code,sourceCode);
+            collUQ.eq(CollectionTeam::getSourceCode,sourceCode);
             collUQ.eq(CollectionTeam::getType,"task");
-            collUQ.eq(CollectionTeam::getMember_code,memberCode);
+            collUQ.eq(CollectionTeam::getMemberCode,memberCode);
             baseMapper.delete(collUQ);
         }
     }

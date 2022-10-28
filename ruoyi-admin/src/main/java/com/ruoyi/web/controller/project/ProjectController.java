@@ -167,10 +167,10 @@ public class ProjectController extends BaseController {
                         expireToday[0] ++;
                     }
                 }else{
-                    List<ProjectLog> logList = projectLogService.lambdaQuery().eq(ProjectLog::getAction_type,"task")
-                            .eq(ProjectLog::getSource_code,task.getCode()).eq(ProjectLog::getType,"done").list();
+                    List<ProjectLog> logList = projectLogService.lambdaQuery().eq(ProjectLog::getActionType,"task")
+                            .eq(ProjectLog::getSourceCode,task.getCode()).eq(ProjectLog::getType,"done").list();
                     if(!CollectionUtils.isEmpty(logList)){
-                        if(task.getEndTime().compareTo(logList.get(0).getCreate_time()) == -1){
+                        if(task.getEndTime().compareTo(logList.get(0).getCreateTime()) == -1){
                             doneOverdue[0]++;
                         }
                     }
@@ -380,16 +380,16 @@ public class ProjectController extends BaseController {
         project.setCover(MapUtils.getString(mmap,"cover",project.getCover()));
 
         project.setPrefix(MapUtils.getString(mmap,"prefix",project.getPrefix()));
-        project.setTask_board_theme(MapUtils.getString(mmap,"task_board_theme",project.getTask_board_theme()));
+        project.setTaskBoardTheme(MapUtils.getString(mmap,"task_board_theme",project.getTaskBoardTheme()));
 
-        project.setOpen_begin_time(MapUtils.getInteger(mmap,"open_begin_time",project.getOpen_begin_time()));
-        project.setOpen_task_private(MapUtils.getInteger(mmap,"open_task_private",project.getOpen_task_private()));
+        project.setOpenBeginTime(MapUtils.getInteger(mmap,"open_begin_time",project.getOpenBeginTime()));
+        project.setOpenTaskPrivate(MapUtils.getInteger(mmap,"open_task_private",project.getOpenTaskPrivate()));
         project.setSchedule(MapUtils.getDouble(mmap,"schedule",project.getSchedule()));
-        project.setOpen_prefix(MapUtils.getInteger(mmap,"open_prefix",project.getOpen_prefix()));
-        project.setAccess_control_type(MapUtils.getString(mmap,"access_control_type",project.getAccess_control_type()));
-        project.setAuto_update_schedule(MapUtils.getInteger(mmap,"auto_update_schedule",project.getAuto_update_schedule()));
-        project.setBegin_time(MapUtils.getString(mmap,"begin_time",project.getBegin_time()));
-        project.setEnd_time(MapUtils.getString(mmap,"end_time",project.getEnd_time()));
+        project.setOpenPrefix(MapUtils.getInteger(mmap,"open_prefix",project.getOpenPrefix()));
+        project.setAccessControlType(MapUtils.getString(mmap,"access_control_type",project.getAccessControlType()));
+        project.setAutoUpdateSchedule(MapUtils.getInteger(mmap,"auto_update_schedule",project.getAutoUpdateSchedule()));
+        project.setBeginTime(MapUtils.getString(mmap,"begin_time",project.getBeginTime()));
+        project.setEndTime(MapUtils.getString(mmap,"end_time",project.getEndTime()));
         boolean result = proService.updateById(project);
         return AjaxResult.success(result);
     }
@@ -444,8 +444,8 @@ public class ProjectController extends BaseController {
             return AjaxResult.warn("项目信息有误！");
         }
         project.setCollected(0);
-        ProjectCollection projectCollection = projectCollectionService.lambdaQuery().eq(ProjectCollection::getProject_code,project.getCode())
-            .eq(ProjectCollection::getMember_code,LoginHelper.getLoginUser().getCode()).one();
+        ProjectCollection projectCollection = projectCollectionService.lambdaQuery().eq(ProjectCollection::getProjectCode,project.getCode())
+            .eq(ProjectCollection::getMemberCode,LoginHelper.getLoginUser().getCode()).one();
         if(ObjectUtils.isNotEmpty(projectCollection)){
             project.setCollected(1);
         }
@@ -455,8 +455,8 @@ public class ProjectController extends BaseController {
             //Member member = memberService.lambdaQuery().eq(Member::getCode,projectMember.getMember_code()).one();
             SysUser sysUser = userService.lambdaQuery().eq(SysUser::getCode, projectMember.getMemberCode()).one();
             if(ObjectUtils.isNotEmpty(sysUser)){
-                project.setOwner_name(sysUser.getNickName());
-                project.setOwner_avatar(sysUser.getAvatar());
+                project.setOwnerName(sysUser.getNickName());
+                project.setOwnerAvatar(sysUser.getAvatar());
             }
         }
         return AjaxResult.success(project);
@@ -717,10 +717,10 @@ public class ProjectController extends BaseController {
             throw new CustomException("该项目已失效");
         }
         ProjectInfo projectInfo = ProjectInfo.builder()
-                .project_code(projectCode).code(CommUtils.getUUID())
-                .create_time(DateUtils.getTime())
+                .projectCode(projectCode).code(CommUtils.getUUID())
+                .createTime(DateUtils.getTime())
                 .description(MapUtils.getString(mmap,"description"))
-                .organization_code(ServletUtils.getHeaderParam("organizationCode"))
+                .organizationCode(ServletUtils.getHeaderParam("organizationCode"))
                 .value(MapUtils.getString(mmap,"value"))
                 .sort(MapUtils.getInteger(mmap,"description",0))
                 .name(MapUtils.getString(mmap,"name")).build();
@@ -746,7 +746,7 @@ public class ProjectController extends BaseController {
         if(ObjectUtil.isEmpty(projectInfo)){
             throw new CustomException("该项目信息已失效");
         }
-        List<ProjectInfo> projectInfoList = projectInfoService.lambdaQuery().eq(ProjectInfo::getName,name).eq(ProjectInfo::getProject_code,projectCode).list();
+        List<ProjectInfo> projectInfoList = projectInfoService.lambdaQuery().eq(ProjectInfo::getName,name).eq(ProjectInfo::getProjectCode,projectCode).list();
         if(CollectionUtils.isNotEmpty(projectInfoList)){
             throw new CustomException("该项目信息名称已存在！");
         }
@@ -782,9 +782,9 @@ public class ProjectController extends BaseController {
         String code = MapUtils.getString(mmap,"code");
         ProjectTemplate pt = new ProjectTemplate();
         pt.setName(name);pt.setDescription(description);pt.setCover(cover);pt.setCode(CommUtils.getUUID());
-        pt.setCreate_time(DateUtils.formatDateTime(new Date()));
-        pt.setMember_code(MapUtils.getString(loginMember,"memberCode"));
-        pt.setOrganization_code(MapUtils.getString(loginMember,"organizationCode"));
+        pt.setCreateTime(DateUtils.formatDateTime(new Date()));
+        pt.setMemberCode(MapUtils.getString(loginMember,"memberCode"));
+        pt.setOrganizationCode(MapUtils.getString(loginMember,"organizationCode"));
         TaskStagesTemplete tst1 = new TaskStagesTemplete();
         TaskStagesTemplete tst2 = new TaskStagesTemplete();
         TaskStagesTemplete tst3 = new TaskStagesTemplete();
@@ -824,12 +824,12 @@ public class ProjectController extends BaseController {
         Project project = Project.builder()
                 .name(name)
                 .description(MapUtils.getString(mmap,"description"))
-                .template_code(MapUtils.getString(mmap,"templateCode"))
-                .create_time(DateUtils.getTime())
-                .organization_code(ServletUtils.getHeaderParam("organizationCode"))
+                .templateCode(MapUtils.getString(mmap,"templateCode"))
+                .createTime(DateUtils.getTime())
+                .organizationCode(ServletUtils.getHeaderParam("organizationCode"))
                 .code(CommUtils.getUUID())
                 .cover(MapUtils.getString(mmap,"cover"))
-                .task_board_theme("simple").build();
+                .taskBoardTheme("simple").build();
         return AjaxResult.success(proService.saveProject(project));
     }
 

@@ -44,18 +44,18 @@ public class ProjectNodeService extends ServiceImpl<ProjectNodeMapper, ProjectNo
                 String auth = name.get(i).get("name").toString();
                 Boolean authVal = (Boolean) value.get(i).get("value");
                 if (Objects.equals("is_auth", auth)) {
-                    node.is_auth(authVal ? 1 : 0);
+                    node.isAuth(authVal ? 1 : 0);
                 } else {
-                    node.is_login(authVal ? 1 : 0);
+                    node.isLogin(authVal ? 1 : 0);
                 }
             }
             ProjectNode build = node.build();
             LambdaUpdateChainWrapper<ProjectNode> wrapper = lambdaUpdate().eq(ProjectNode::getNode, build.getNode());
-            if (build.getIs_auth() != null){
-                wrapper.set(ProjectNode::getIs_auth, build.getIs_auth());
+            if (build.getIsAuth() != null){
+                wrapper.set(ProjectNode::getIsAuth, build.getIsAuth());
             }
-            if (build.getIs_login() != null){
-                wrapper.set(ProjectNode::getIs_login, build.getIs_login());
+            if (build.getIsLogin() != null){
+                wrapper.set(ProjectNode::getIsLogin, build.getIsLogin());
             }
             boolean update = wrapper.update();
             log.info("节点：{},保存：{}", build.getNode(), update);

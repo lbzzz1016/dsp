@@ -21,18 +21,18 @@ public class ProjectLog  extends BaseDomain implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String code;
-    private String member_code;
+    private String memberCode;
     private String content;
     private String remark;
     private String type;
-    private String create_time;
-    private String source_code;
-    private String action_type;
-    private String to_member_code;
-    private Integer is_comment;
-    private String project_code;
+    private String createTime;
+    private String sourceCode;
+    private String actionType;
+    private String toMemberCode;
+    private Integer isComment;
+    private String projectCode;
     private String icon;
-    private Integer is_robot;
+    private Integer isRobot;
 
 //    @TableField(exist = false)
 //    private Member member;
@@ -58,12 +58,12 @@ public class ProjectLog  extends BaseDomain implements Serializable {
         return this;
     }
 
-    public String getMember_code() {
-        return member_code;
+    public String getMemberCode() {
+        return memberCode;
     }
 
-    public ProjectLog setMember_code(String member_code) {
-        this.member_code = member_code;
+    public ProjectLog setMember_code(String memberCode) {
+        this.memberCode = memberCode;
         return this;
     }
 
@@ -94,57 +94,57 @@ public class ProjectLog  extends BaseDomain implements Serializable {
         return this;
     }
 
-    public String getCreate_time() {
-        return create_time;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public ProjectLog setCreate_time(String create_time) {
-        this.create_time = create_time;
+    public ProjectLog setCreateTime(String createTime) {
+        this.createTime = createTime;
         return this;
     }
 
-    public String getSource_code() {
-        return source_code;
+    public String getSourceCode() {
+        return sourceCode;
     }
 
-    public ProjectLog setSource_code(String source_code) {
-        this.source_code = source_code;
+    public ProjectLog setSource_code(String sourceCode) {
+        this.sourceCode = sourceCode;
         return this;
     }
 
-    public String getAction_type() {
-        return action_type;
+    public String getActionType() {
+        return actionType;
     }
 
-    public ProjectLog setAction_type(String action_type) {
-        this.action_type = action_type;
+    public ProjectLog setActionType(String actionType) {
+        this.actionType = actionType;
         return this;
     }
 
-    public String getTo_member_code() {
-        return to_member_code;
+    public String getToMemberCode() {
+        return toMemberCode;
     }
 
-    public ProjectLog setTo_member_code(String to_member_code) {
-        this.to_member_code = to_member_code;
+    public ProjectLog setToMemberCode(String toMemberCode) {
+        this.toMemberCode = toMemberCode;
         return this;
     }
 
-    public Integer getIs_comment() {
-        return is_comment;
+    public Integer getIsComment() {
+        return isComment;
     }
 
-    public ProjectLog setIs_comment(Integer is_comment) {
-        this.is_comment = is_comment;
+    public ProjectLog setIsComment(Integer isComment) {
+        this.isComment = isComment;
         return this;
     }
 
-    public String getProject_code() {
-        return project_code;
+    public String getProjectCode() {
+        return projectCode;
     }
 
-    public ProjectLog setProject_code(String project_code) {
-        this.project_code = project_code;
+    public ProjectLog setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
         return this;
     }
 
@@ -157,12 +157,12 @@ public class ProjectLog  extends BaseDomain implements Serializable {
         return this;
     }
 
-    public Integer getIs_robot() {
-        return is_robot;
+    public Integer getIsRobot() {
+        return isRobot;
     }
 
-    public ProjectLog setIs_robot(Integer is_robot) {
-        this.is_robot = is_robot;
+    public ProjectLog setIsRobot(Integer isRobot) {
+        this.isRobot = isRobot;
         return this;
     }
 }

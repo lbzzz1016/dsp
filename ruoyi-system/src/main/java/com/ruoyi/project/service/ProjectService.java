@@ -206,7 +206,7 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
     @Transactional
     public Map saveProject(Project project){
         QueryWrapper<TaskStagesTemplete> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("project_template_code", project.getTemplate_code());
+        queryWrapper.eq("project_template_code", project.getTemplateCode());
         List<TaskStagesTemplete> tsts = taskStagesTempleteMapper.selectList(queryWrapper);
         if(CollectionUtils.isEmpty(tsts)){
             tsts = getDefaultTaskStageTemplate();
@@ -317,7 +317,7 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
         String memberCode = MapUtils.getString(member, "memberCode");
         String orgCode = MapUtils.getString(member, "organizationCode");
         //该组织下的所有项目
-        List<Project> list = lambdaQuery().select(Project::getCode, Project::getSchedule, Project::getCreate_time).eq(Project::getOrganization_code, orgCode)
+        List<Project> list = lambdaQuery().select(Project::getCode, Project::getSchedule, Project::getCreateTime).eq(Project::getOrganizationCode, orgCode)
         		.eq(Project::getArchive, 0).eq(Project::getDeleted, 0).list();        
         if (CollUtil.isNotEmpty(list)) {
             List<String> proCodeList = list.parallelStream().map(Project::getCode).collect(Collectors.toList());
@@ -346,7 +346,7 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                 Map<String, Object> map = new HashMap<>(4);
                 LocalDate finalDate = date;
                 long count = list.stream().filter(o -> {
-                    LocalDateTime create = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                    LocalDateTime create = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
                     return create.getMonthValue() == finalDate.getMonthValue() && create.getYear() == finalDate.getYear();
                 }).count();
                 if (date.getMonthValue() == now.getMonthValue()) {
@@ -361,11 +361,11 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
             LocalDateTime lastWeek = now.plusWeeks(-1);
             LocalDateTime yesterday = now.plusDays(-1);
             double lastWeekSchedule = list.stream().filter(o -> {
-                LocalDate create = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                LocalDate create = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                 return create.isBefore(lastWeek.toLocalDate()) || create.equals(lastWeek.toLocalDate());
             }).mapToDouble(Project::getSchedule).average().orElse(0);
             double yesterdaySchedule = list.stream().filter(o -> {
-                LocalDate create = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                LocalDate create = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                 return create.isBefore(yesterday.toLocalDate()) || create.equals(yesterday.toLocalDate());
             }).mapToDouble(Project::getSchedule).average().orElse(0);
             weekSchedule = lastWeekSchedule == 0 ? 0 : (int) ((projectSchedule - lastWeekSchedule) * 100 / lastWeekSchedule);
@@ -454,7 +454,7 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
 
     public Map<String, Object> getTopList(String orgCode, String dateType, String startDate, String endDate) {
         //该组织下的所有项目
-        List<Project> projects = lambdaQuery().select(Project::getCode, Project::getSchedule, Project::getCreate_time).eq(Project::getOrganization_code, orgCode)
+        List<Project> projects = lambdaQuery().select(Project::getCode, Project::getSchedule, Project::getCreateTime).eq(Project::getOrganizationCode, orgCode)
                 .eq(Project::getArchive, 0).eq(Project::getDeleted, 0).list();
         List<Task> tasks = null;
         List<ProjectMember> projectMemberList = null;
@@ -490,8 +490,8 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                 case "day": {
                     //项目数
                     Map<String, Object> projectMap = new HashMap<>(4);
-                    long count = projects == null ? 0 : projects.stream().filter(o -> StrUtil.isNotEmpty(o.getCreate_time())).filter(o -> {
-                        LocalDate begin = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                    long count = projects == null ? 0 : projects.stream().filter(o -> StrUtil.isNotEmpty(o.getCreateTime())).filter(o -> {
+                        LocalDate begin = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                         return begin.equals(now);
                     }).count();
                     projectMap.put("日期", "今日");
@@ -530,8 +530,8 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                     while (beginDate.isBefore(now) || beginDate.equals(now)) {
                         Map<String, Object> map = new HashMap<>(4);
                         LocalDate finalBeginDate = beginDate;
-                        long count = projects == null ? 0 : projects.stream().filter(o -> StrUtil.isNotEmpty(o.getCreate_time())).filter(o -> {
-                            LocalDate begin = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                        long count = projects == null ? 0 : projects.stream().filter(o -> StrUtil.isNotEmpty(o.getCreateTime())).filter(o -> {
+                            LocalDate begin = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                             return begin.equals(finalBeginDate);
                         }).count();
                         String day;
@@ -587,8 +587,8 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                     while (beginDate.isBefore(now) || beginDate.equals(now)) {
                         Map<String, Object> map = new HashMap<>(4);
                         LocalDate finalBeginDate = beginDate;
-                        long count = projects == null ? 0 : projects.stream().filter(o -> StrUtil.isNotEmpty(o.getCreate_time())).filter(o -> {
-                            LocalDate begin = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                        long count = projects == null ? 0 : projects.stream().filter(o -> StrUtil.isNotEmpty(o.getCreateTime())).filter(o -> {
+                            LocalDate begin = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                             return begin.equals(finalBeginDate);
                         }).count();
                         map.put("日期", beginDate.getDayOfMonth() + "日");
@@ -628,8 +628,8 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                     while (beginDate.isBefore(now) || beginDate == now) {
                         Map<String, Object> map = new HashMap<>(4);
                         LocalDate finalBeginDate = beginDate;
-                        long count = projects == null ? 0 : projects.stream().filter(o -> StrUtil.isNotEmpty(o.getCreate_time())).filter(o -> {
-                            LocalDate begin = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                        long count = projects == null ? 0 : projects.stream().filter(o -> StrUtil.isNotEmpty(o.getCreateTime())).filter(o -> {
+                            LocalDate begin = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                             return begin.getMonthValue() == finalBeginDate.getMonthValue() && begin.getYear() == finalBeginDate.getYear();
                         }).count();
                         map.put("日期", beginDate.getMonthValue() + "月");
@@ -675,8 +675,8 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
             while (beginDate.isBefore(finalDate) || beginDate.equals(finalDate)) {
                 Map<String, Object> map = new HashMap<>(4);
                 LocalDate finalBeginDate = beginDate;
-                long count = projects == null ? 0 : projects.stream().filter(o -> StrUtil.isNotEmpty(o.getCreate_time())).filter(o -> {
-                    LocalDate begin = LocalDateTime.parse(o.getCreate_time(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
+                long count = projects == null ? 0 : projects.stream().filter(o -> StrUtil.isNotEmpty(o.getCreateTime())).filter(o -> {
+                    LocalDate begin = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
                     return begin.equals(finalBeginDate);
                 }).count();
                 map.put("日期", beginDate.getMonthValue() + "-" + beginDate.getDayOfMonth());
@@ -732,7 +732,7 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
     }
 
     public List<Task> taskPriority(String orgCode) {
-        List<Project> list = lambdaQuery().select(Project::getCode).eq(Project::getOrganization_code, orgCode).list();
+        List<Project> list = lambdaQuery().select(Project::getCode).eq(Project::getOrganizationCode, orgCode).list();
         List<Task> taskList = null;
         if (list != null) {
             List<String> codes = list.parallelStream().map(Project::getCode).collect(Collectors.toList());

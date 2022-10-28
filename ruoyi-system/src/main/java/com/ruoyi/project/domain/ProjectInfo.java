@@ -18,10 +18,10 @@ public class ProjectInfo {
     private String name;
     private String value;
     private String description;
-    private String create_time;
-    private String update_time;
-    private String organization_code;
-    private String project_code;
+    private String createTime;
+    private String updateTime;
+    private String organizationCode;
+    private String projectCode;
     private Integer sort;
     private String code;
 }

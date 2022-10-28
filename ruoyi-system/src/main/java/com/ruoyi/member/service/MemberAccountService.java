@@ -150,8 +150,8 @@ public class MemberAccountService extends ServiceImpl<MemberAccountMapper, Membe
             throw new CustomException("该用户不存在");
         }
         LambdaQueryWrapper<ProjectAuth> projectAuthWQ = new LambdaQueryWrapper<>();
-        projectAuthWQ.eq(ProjectAuth::getOrganization_code,memberAccount.getOrganizationCode());
-        projectAuthWQ.eq(ProjectAuth::getIs_default,1);
+        projectAuthWQ.eq(ProjectAuth::getOrganizationCode,memberAccount.getOrganizationCode());
+        projectAuthWQ.eq(ProjectAuth::getIsDefault,1);
         ProjectAuth pa = projectAuthMapper.selectOne(projectAuthWQ);
         if(ObjectUtils.isNotEmpty(pa)){
             memberAccount.setAuthorize(String.valueOf(pa.getId()));

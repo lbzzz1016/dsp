@@ -161,12 +161,12 @@ public class ProjectVersionService  extends ServiceImpl<ProjectVersionMapper, Pr
      */
     public void run(Map map){
         ProjectVersionLog pvl = ProjectVersionLog.builder().code(CommUtils.getUUID())
-                .member_code(MapUtils.getString(map,"memberCode"))
-                .source_code(MapUtils.getString(map,"versionCode"))
+                .memberCode(MapUtils.getString(map,"memberCode"))
+                .sourceCode(MapUtils.getString(map,"versionCode"))
                 .remark(MapUtils.getString(map,"remark"))
                 .type(MapUtils.getString(map,"type"))
                 .content(MapUtils.getString(map,"content"))
-                .create_time(DateUtil.formatDateTime(new Date()))
+                .createTime(DateUtil.formatDateTime(new Date()))
                 .build();
         Map versionMap = getProjectVersionByCode(MapUtils.getString(map,"versionCode"));
         pvl.setFeatures_code(MapUtils.getString(versionMap,"features_code"));

@@ -454,7 +454,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         task.setCode(CommUtils.getUUID());
         task.setPath(path);
         task.setPri(0);
-        if(null == project.getOpen_task_private() || 0 == project.getOpen_task_private()){
+        if(null == project.getOpenTaskPrivate() || 0 == project.getOpenTaskPrivate()){
             task.setPrivated(0);
         }else{
             task.setPrivated(1);
@@ -698,7 +698,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
             }
             task.put("parentTasks",pathList);
         }
-        task.put("openBeginTime",project.getOpen_begin_time());
+        task.put("openBeginTime",project.getOpenBeginTime());
         task.put("projectName",project.getName());
         task.put("stageName",taskStage.getName());
         return buildTaskMap(task,memberCode);
@@ -763,7 +763,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         lambdaUpdate().eq(Task::getPcode,taskCode).remove();
         taskMemberService.lambdaUpdate().eq(TaskMember::getTaskCode,taskCode).remove();
         taskLikeMapper.delete(Wrappers.<TaskLike>lambdaUpdate().eq(TaskLike::getTaskCode,taskCode));
-        projectLogService.lambdaUpdate().eq(ProjectLog::getSource_code,taskCode).eq(ProjectLog::getAction_type,"task").remove();
+        projectLogService.lambdaUpdate().eq(ProjectLog::getSourceCode,taskCode).eq(ProjectLog::getActionType,"task").remove();
     }
 
     @Transactional
@@ -896,7 +896,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         LambdaQueryWrapper<Project> projectQW = new LambdaQueryWrapper<>();
         projectQW.eq(Project::getCode, MapUtils.getString(taskMap,"project_code"));
         Project project = projectService.getBaseMapper().selectOne(projectQW);
-        if(null != project && project.getAuto_update_schedule()>0){
+        if(null != project && project.getAutoUpdateSchedule()>0){
             Integer taskCount = baseMapper.selectCountByProjectCode(MapUtils.getString(taskMap,"project_code"));
             if(taskCount>0){
                 Integer doneTaskCount = baseMapper.selectCountByProjectCodeAndDone(MapUtils.getString(taskMap,"project_code"));
@@ -923,18 +923,18 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
 
     public void run(Map data){
         int isRobot = MapUtils.getObject(data,"data")!=null && MapUtils.getString((Map)data.get("data"),"is_robot")!=null?1:0;
-        ProjectLog logData = ProjectLog.builder().member_code(MapUtils.getString(data,"memberCode"))
-                .source_code(MapUtils.getString(data,"taskCode"))
+        ProjectLog logData = ProjectLog.builder().memberCode(MapUtils.getString(data,"memberCode"))
+                .sourceCode(MapUtils.getString(data,"taskCode"))
                 .remark(MapUtils.getString(data,"remark"))
                 .type(MapUtils.getString(data,"type"))
                 .content(MapUtils.getString(data,"content"))
-                .is_comment(MapUtils.getInteger(data,"isComment"))
-                .to_member_code(MapUtils.getString(data,"toMemberCode"))
-                .create_time(DateUtils.getTime())
+                .isComment(MapUtils.getInteger(data,"isComment"))
+                .toMemberCode(MapUtils.getString(data,"toMemberCode"))
+                .createTime(DateUtils.getTime())
                 .code(CommUtils.getUUID())
-                .action_type("task").is_robot(isRobot).build();
+                .actionType("task").isRobot(isRobot).build();
         Task task = getTaskByCode(MapUtils.getString(data,"taskCode"));
-        logData.setProject_code(task.getProjectCode());
+        logData.setProjectCode(task.getProjectCode());
         SysUser toMember = null;
 
         if(StringUtils.isNotEmpty(MapUtils.getString(data,"toMemberCode"))){
@@ -1079,7 +1079,7 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
                 break;
         }
         logData.setIcon(icon);
-        if(logData.getIs_robot()>0){
+        if(logData.getIsRobot()>0){
             logData.setIcon("alert");
         }
         if(StringUtils.isNotEmpty(MapUtils.getString(data,"remark"))){

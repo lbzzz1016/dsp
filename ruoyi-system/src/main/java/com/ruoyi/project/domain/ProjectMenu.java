@@ -28,27 +28,23 @@ public class ProjectMenu  extends BaseDomain implements Serializable {
     private String title;
     private String icon;
     private String url;
-    private String file_path;
+    private String filePath;
     private String params;
     private String node;
     private Integer sort;
     private Integer status;
-    private Integer create_by;
-    private String create_at;
+    private Integer createBy;
+    private String createAt;
 
     @TableField("is_inner")
-    private Integer isinner;
-    @TableField(exist = false)
-    private boolean is_inner;
+    private Integer isInner;
 
     private String _values;
     @TableField(exist = false)
     private String values;
 
     @TableField("show_slider")
-    private Integer showslider;
-    @TableField(exist = false)
-    private boolean show_slider;
+    private Integer showSlider;
 
     @TableField(exist = false)
     private String statusText;
@@ -67,8 +63,8 @@ public class ProjectMenu  extends BaseDomain implements Serializable {
         return  children;
     }
 
-    public boolean getIs_inner(){
-        if(isinner == 0){
+    public boolean getIs_Inner(){
+        if(isInner == 0){
             return false;
         }else{
             return true;
@@ -81,8 +77,8 @@ public class ProjectMenu  extends BaseDomain implements Serializable {
         else return "";
     }
     public String getInnerText(){
-        if(1 == isinner)return "内页";
-        else if(0 == isinner) return "导航";
+        if(1 == isInner)return "内页";
+        else if(0 == isInner) return "导航";
         else return "";
     }
     public String getFullUrl(){

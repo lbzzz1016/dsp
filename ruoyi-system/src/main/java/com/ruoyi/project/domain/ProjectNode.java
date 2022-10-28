@@ -20,8 +20,8 @@ public class ProjectNode  extends BaseDomain implements Serializable {
     private Integer id;
     private String node;
     private String title;
-    private Integer is_menu;
-    private Integer is_auth;
-    private Integer is_login;
-    private String create_at;
+    private Integer isMenu;
+    private Integer isAuth;
+    private Integer isLogin;
+    private String createAt;
 }

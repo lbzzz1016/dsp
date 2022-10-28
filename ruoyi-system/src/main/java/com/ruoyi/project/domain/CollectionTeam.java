@@ -20,7 +20,7 @@ public class CollectionTeam extends BaseDomain implements Serializable {
     private Integer id;
     private String code;
     private String type;
-    private String source_code;
-    private String member_code;
-    private String create_time;
+    private String sourceCode;
+    private String memberCode;
+    private String createTime;
 }

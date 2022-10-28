@@ -651,16 +651,16 @@ public class TaskController  extends BaseController {
         IPage<ProjectLog> pagel=Constant.createPage(new Page(),mmap);
         List<ProjectLog> records = new ArrayList<>();
         if(0==showAll){
-            LambdaQueryChainWrapper<ProjectLog> lqcw=projectLogService.lambdaQuery().eq(ProjectLog::getSource_code,taskCode).eq(ProjectLog::getAction_type,"task");
+            LambdaQueryChainWrapper<ProjectLog> lqcw=projectLogService.lambdaQuery().eq(ProjectLog::getSourceCode,taskCode).eq(ProjectLog::getActionType,"task");
             if(onlyComment>0){
-                lqcw.eq(ProjectLog::getIs_comment,1);
+                lqcw.eq(ProjectLog::getIsComment,1);
             }
             pagel=lqcw.orderByDesc(ProjectLog::getId).page(pagel);
             records = pagel.getRecords();
         }else{
-            LambdaQueryChainWrapper<ProjectLog> lqcw=projectLogService.lambdaQuery().eq(ProjectLog::getSource_code,taskCode).eq(ProjectLog::getAction_type,"task");
+            LambdaQueryChainWrapper<ProjectLog> lqcw=projectLogService.lambdaQuery().eq(ProjectLog::getSourceCode,taskCode).eq(ProjectLog::getActionType,"task");
             if(onlyComment>0){
-                lqcw.eq(ProjectLog::getIs_comment,1);
+                lqcw.eq(ProjectLog::getIsComment,1);
             }
             records=lqcw.orderByDesc(ProjectLog::getId).list();
         }
@@ -669,7 +669,7 @@ public class TaskController  extends BaseController {
         if(!CollectionUtils.isEmpty(records)){
             SysUser user = null;
             for(ProjectLog pl : records){
-               if(pl.getIs_robot()>0 && "claim".equals(pl.getType())){
+               if(pl.getIsRobot()>0 && "claim".equals(pl.getType())){
                    user = new SysUser();
                    user.setNickName("PP Robot");
                    pl.setSysUser(user);
@@ -677,7 +677,7 @@ public class TaskController  extends BaseController {
                    continue;
                }
                //member = memberService.lambdaQuery().eq(Member::getCode,pl.getMember_code()).one();
-               user = userService.lambdaQuery().eq(SysUser::getCode, pl.getMember_code()).one();
+               user = userService.lambdaQuery().eq(SysUser::getCode, pl.getMemberCode()).one();
                pl.setSysUser(user);
                resultList.add(pl);
             }

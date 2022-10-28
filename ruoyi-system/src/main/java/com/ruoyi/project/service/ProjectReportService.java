@@ -29,7 +29,7 @@ public class ProjectReportService extends ServiceImpl<ProjectReportMapper, Proje
          List<Integer> undoneTask = new ArrayList<>();
          List<Integer> baseLineList = new ArrayList<>();
          List<LocalDate> dateList = Stream.iterate(now, o -> o.plusDays(-1)).limit(day).collect(Collectors.toList());
-         List<ProjectReport> projectReports = lambdaQuery().in(ProjectReport::getDate, dateList).eq(ProjectReport::getProject_code, projectCode)
+         List<ProjectReport> projectReports = lambdaQuery().in(ProjectReport::getDate, dateList).eq(ProjectReport::getProjectCode, projectCode)
                  .orderByAsc(ProjectReport::getDate).list();
          if (projectReports != null) {
              projectReports.forEach(o -> {

@@ -88,14 +88,14 @@ public class ScheduleTask {
                     map.put("baseLineList", baseLineList);
                     String content = JSONUtil.toJsonStr(map);
                     String dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
-                    ProjectReport.ProjectReportBuilder projectReportBuilder = ProjectReport.builder().content(content).update_time(dateStr);
-                    ProjectReport one = projectReportService.lambdaQuery().eq(ProjectReport::getProject_code, pro).eq(ProjectReport::getDate, date).one();
+                    ProjectReport.ProjectReportBuilder projectReportBuilder = ProjectReport.builder().content(content).updateTime(dateStr);
+                    ProjectReport one = projectReportService.lambdaQuery().eq(ProjectReport::getProjectCode, pro).eq(ProjectReport::getDate, date).one();
                     if (one != null) {
                         ProjectReport build = projectReportBuilder.id(one.getId()).build();
                         boolean update = projectReportService.updateById(build);
                         log.info("更新项目完成数量：{}", update);
                     } else {
-                        ProjectReport build = projectReportBuilder.create_time(dateStr).project_code(pro)
+                        ProjectReport build = projectReportBuilder.createTime(dateStr).projectCode(pro)
                                 .date(date.format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS))).build();
                         boolean save = projectReportService.save(build);
                         log.info("新增项目完成数量：{}", save);
