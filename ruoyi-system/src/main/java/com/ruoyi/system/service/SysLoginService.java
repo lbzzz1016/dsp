@@ -115,8 +115,8 @@ public class SysLoginService {
         asyncService.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"), request);
         recordLoginInfo(user.getUserId(), username);
 
-        List<MemberAccount> list = memberAccountService.selectMemberAccountList(userCode);
-//        List<MemberAccount> list = memberAccountService.lambdaQuery().eq(MemberAccount::getMember_code, userCode).list();
+//        List<MemberAccount> list = memberAccountService.selectMemberAccountList(userCode);
+        List<MemberAccount> list = memberAccountService.lambdaQuery().eq(MemberAccount::getMemberCode, userCode).list();
         member.setMemberAccountList(list);
         Set<String> authSet = list.stream().map(MemberAccount::getAuthorize).collect(Collectors.toSet());
         List<ProjectAuthNode> projectAuthNodeList = projectAuthNodeService.lambdaQuery().in(ProjectAuthNode::getAuth, authSet).list();
