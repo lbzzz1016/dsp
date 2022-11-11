@@ -66,7 +66,7 @@ public class TaskStageController extends BaseController {
 
     @PostMapping("/task_stages_template/index")
     @ResponseBody
-    public AjaxResult taskStagesTemplate(@RequestParam Map<String, Object> mmap) {
+    public AjaxResult taskStagesTemplate(@RequestBody Map<String, Object> mmap) {
     	String code = MapUtils.getString(mmap, "code");
     	if (StringUtils.isEmpty(code)) {
             return AjaxResult.warn("请选择一个项目");
@@ -76,7 +76,7 @@ public class TaskStageController extends BaseController {
 
     @PostMapping("/task_stages_template/save")
     @ResponseBody
-    public AjaxResult taskStagesSave(@RequestParam Map<String,Object> mmap){
+    public AjaxResult taskStagesSave(@RequestBody Map<String,Object> mmap){
         String name = MapUtils.getString(mmap,"name");
         String template_code = MapUtils.getString(mmap,"template_code");
         Integer sort = MapUtils.getInteger(mmap,"sort",0);
@@ -95,7 +95,7 @@ public class TaskStageController extends BaseController {
 
     @PostMapping("/task_stages_template/edit")
     @ResponseBody
-    public AjaxResult taskStagesEdit(@RequestParam Map<String,Object> mmap){
+    public AjaxResult taskStagesEdit(@RequestBody Map<String,Object> mmap){
         String name = MapUtils.getString(mmap,"name");
         String code = MapUtils.getString(mmap,"code");
         Integer sort = MapUtils.getInteger(mmap,"sort",0);
@@ -117,7 +117,7 @@ public class TaskStageController extends BaseController {
     }
     @PostMapping("/task_stages_template/delete")
     @ResponseBody
-    public AjaxResult taskStagesDel(@RequestParam Map<String,Object> mmap){
+    public AjaxResult taskStagesDel(@RequestBody Map<String,Object> mmap){
         String code = MapUtils.getString(mmap,"code");
         if(StringUtils.isEmpty(code)){
             return AjaxResult.warn("请选择一个任务");

@@ -62,7 +62,7 @@ public class MemberController extends BaseController {
      */
     @PostMapping("/index/editPersonal")
     @ResponseBody
-    public AjaxResult indexEditPersonal(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult indexEditPersonal(@RequestBody Map<String,Object> mmap) {
         String name = MapUtils.getString(mmap,"name");
         String description = MapUtils.getString(mmap,"description");
         String code = MapUtils.getString(mmap,"code");
@@ -85,7 +85,7 @@ public class MemberController extends BaseController {
 
     @PostMapping("/task_member/inviteMemberBatch")
     @ResponseBody
-    public AjaxResult taskMemberInviteMemberBatch(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult taskMemberInviteMemberBatch(@RequestBody Map<String,Object> mmap) {
         String memberCodes = MapUtils.getString(mmap,"memberCodes");
         String taskCode = MapUtils.getString(mmap,"taskCode");
         if(StringUtils.isEmpty(memberCodes) || StringUtils.isEmpty(taskCode)){
@@ -107,7 +107,7 @@ public class MemberController extends BaseController {
      */
     @PostMapping("/account/forbid")
     @ResponseBody
-    public AjaxResult setAccountForbid(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult setAccountForbid(@RequestBody Map<String,Object> mmap) {
         String accountCode = MapUtils.getString(mmap,"accountCode");
         Integer status = MapUtils.getInteger(mmap,"status");
 
@@ -128,7 +128,7 @@ public class MemberController extends BaseController {
      */
     @PostMapping("/account/resume")
     @ResponseBody
-    public AjaxResult setAccountResume(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult setAccountResume(@RequestBody Map<String,Object> mmap) {
         String accountCode = MapUtils.getString(mmap,"accountCode");
         Integer status = MapUtils.getInteger(mmap,"status");
 
@@ -149,7 +149,7 @@ public class MemberController extends BaseController {
      */
     @PostMapping("/account/del")
     @ResponseBody
-    public AjaxResult accountDel(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult accountDel(@RequestBody Map<String,Object> mmap) {
         String accountCode = MapUtils.getString(mmap,"accountCode");
         Map loginMember = getLoginMember();
 
@@ -164,7 +164,7 @@ public class MemberController extends BaseController {
      */
     @PostMapping("/account/edit")
     @ResponseBody
-    public AjaxResult accountEdit(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult accountEdit(@RequestBody Map<String,Object> mmap) {
         String name = MapUtils.getString(mmap,"name");
         String mobile = MapUtils.getString(mmap,"mobile");
         String email = MapUtils.getString(mmap,"email");
@@ -193,7 +193,7 @@ public class MemberController extends BaseController {
      */
     @PostMapping("/account/auth")
     @ResponseBody
-    public AjaxResult accountAuth(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult accountAuth(@RequestBody Map<String,Object> mmap) {
         Integer auth = MapUtils.getInteger(mmap,"auth");
         Integer id = MapUtils.getInteger(mmap,"id");
 
@@ -210,7 +210,7 @@ public class MemberController extends BaseController {
      */
     @PostMapping("/account/read")
     @ResponseBody
-    public AjaxResult accountRead(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult accountRead(@RequestBody Map<String,Object> mmap) {
         String code = MapUtils.getString(mmap,"code");
         Map memberAccountMap= memberAccountService.getMemberAccountByCode(code);
         String[] depCodeArr ,authorizeArr= null;
@@ -255,7 +255,7 @@ public class MemberController extends BaseController {
      */
     @PostMapping("/account/index")
     @ResponseBody
-    public AjaxResult accountIndex(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult accountIndex(@RequestBody Map<String,Object> mmap) {
 
         String departmentCode = MapUtils.getString(mmap, "departmentCode");
         Map loginMember = getLoginMember();
@@ -365,7 +365,7 @@ public class MemberController extends BaseController {
      */
     @PostMapping("/project_member/searchInviteMember")
     @ResponseBody
-    public AjaxResult searchInviteMember(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult searchInviteMember(@RequestBody Map<String,Object> mmap) {
         Map loginMember = getLoginMember();
         String projectCode = MapUtils.getString(mmap, "projectCode");
         String orgCode = MapUtils.getString(loginMember,"organizationCode");
@@ -396,7 +396,7 @@ public class MemberController extends BaseController {
      */
     @PostMapping("/project_member/_listForInvite")
     @ResponseBody
-    public AjaxResult _listForInvite(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult _listForInvite(@RequestBody Map<String,Object> mmap) {
         Map loginMember = getLoginMember();
         String projectCode = MapUtils.getString(mmap, "projectCode");
         if(StringUtils.isEmpty(projectCode)){
@@ -430,7 +430,7 @@ public class MemberController extends BaseController {
      */
     @PostMapping("/project_member/index")
     @ResponseBody
-    public AjaxResult getProject(@RequestParam Map<String,Object> mmap)
+    public AjaxResult getProject(@RequestBody Map<String,Object> mmap)
     {
         String projectCode = MapUtils.getString(mmap,"projectCode");
         Integer page = MapUtils.getInteger(mmap,"page",1);
@@ -483,7 +483,7 @@ public class MemberController extends BaseController {
 
     @PostMapping("/project_member/inviteMember")
     @ResponseBody
-    public AjaxResult inviteMember(@RequestParam Map<String,Object> mmap)
+    public AjaxResult inviteMember(@RequestBody Map<String,Object> mmap)
     {
         String memberCode = MapUtils.getString(mmap,"memberCode");
         String projectCode = MapUtils.getString(mmap,"projectCode");
@@ -502,7 +502,7 @@ public class MemberController extends BaseController {
     }
     @PostMapping("/project_member/removeMember")
     @ResponseBody
-    public AjaxResult removeMember(@RequestParam Map<String,Object> mmap)
+    public AjaxResult removeMember(@RequestBody Map<String,Object> mmap)
     {
         String memberCode = MapUtils.getString(mmap,"memberCode");
         String projectCode = MapUtils.getString(mmap,"projectCode");

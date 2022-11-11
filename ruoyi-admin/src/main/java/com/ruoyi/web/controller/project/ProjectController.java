@@ -119,7 +119,7 @@ public class ProjectController extends BaseController {
     ProjectLogService projectLogService;
     @PostMapping("/project/_projectStats")
     @ResponseBody
-    public AjaxResult _projectStats(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult _projectStats(@RequestBody Map<String,Object> mmap)  throws Exception {
         String projectCode = MapUtils.getString(mmap,"projectCode");
         if(StringUtils.isEmpty(projectCode)){
             return AjaxResult.warn("该项目已失效");
@@ -192,7 +192,7 @@ public class ProjectController extends BaseController {
     ProjectReportService projectReportService;
     @PostMapping("/project/_getProjectReport")
     @ResponseBody
-    public AjaxResult _getProjectReport(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult _getProjectReport(@RequestBody Map<String,Object> mmap)  throws Exception {
         String projectCode = MapUtils.getString(mmap, "projectCode");
         if(StringUtils.isEmpty(projectCode)){
             return AjaxResult.success("项目已失效");
@@ -208,7 +208,7 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/index/uploadAvatar")
     @ResponseBody
-    public AjaxResult uploadAvatar(HttpServletRequest request, @RequestParam("avatar") MultipartFile multipartFile)  throws Exception
+    public AjaxResult uploadAvatar(HttpServletRequest request, @RequestParam(value = "avatar") MultipartFile multipartFile)  throws Exception
     {
         String code = request.getParameter("code");
         Map resMap = new HashMap();
@@ -228,7 +228,7 @@ public class ProjectController extends BaseController {
 
     @PostMapping("/source_link/delete")
     @ResponseBody
-    public AjaxResult sourceLinkDel(@RequestParam Map<String,Object> mmap){
+    public AjaxResult sourceLinkDel(@RequestBody Map<String,Object> mmap){
         String sourceCode = MapUtils.getString(mmap,"sourceCode");
         Map loginMap = getLoginMember();
         if(StringUtils.isEmpty(sourceCode)){
@@ -274,7 +274,7 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/project/recycle")
     @ResponseBody
-    public AjaxResult recycle(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult recycle(@RequestBody Map<String,Object> mmap)  throws Exception
         {
         String projectCode = String.valueOf(mmap.get("projectCode"));
         Map projectMap = proService.getProjectByCode(projectCode);
@@ -294,7 +294,7 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/project/recovery")
     @ResponseBody
-    public AjaxResult recovery(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult recovery(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String projectCode = String.valueOf(mmap.get("projectCode"));
         int i = proService.updateRecycleByCode(projectCode,0,DateUtils.formatDateTime(new Date()));
@@ -308,7 +308,7 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/project/archive")
     @ResponseBody
-    public AjaxResult archive(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult archive(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String projectCode = String.valueOf(mmap.get("projectCode"));
         int i = proService.updateArctiveByCode(projectCode,1,DateUtils.formatDateTime(new Date()));
@@ -322,7 +322,7 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/project/recoveryArchive")
     @ResponseBody
-    public AjaxResult recoveryArchive(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult recoveryArchive(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String projectCode = String.valueOf(mmap.get("projectCode"));
         int i = proService.updateArctiveByCode(projectCode,0,"");
@@ -331,7 +331,7 @@ public class ProjectController extends BaseController {
 
     @PostMapping("/project/quit")
     @ResponseBody
-    public AjaxResult projectQuit(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult projectQuit(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String projectCode = MapUtils.getString(mmap,"projectCode");
         Project project = proService.lambdaQuery().eq(Project::getCode,projectCode).one();
@@ -357,7 +357,7 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/project/edit")
     @ResponseBody
-    public AjaxResult projectEdit(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult projectEdit(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String projectCode = String.valueOf(mmap.get("projectCode"));
 
@@ -396,7 +396,7 @@ public class ProjectController extends BaseController {
 
     @PostMapping("/project/uploadCover")
     @ResponseBody
-    public AjaxResult projectUploadCover(HttpServletRequest request, @RequestParam("cover") MultipartFile multipartFile)
+    public AjaxResult projectUploadCover(HttpServletRequest request, @RequestParam(value = "cover") MultipartFile multipartFile)
     {
         String projectCode = request.getParameter("projectCode");
         if (multipartFile.isEmpty()) {
@@ -435,7 +435,7 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/project/read")
     @ResponseBody
-    public AjaxResult projectRead(@RequestParam Map<String,Object> mmap)
+    public AjaxResult projectRead(@RequestBody Map<String,Object> mmap)
     {
         String projectCode = MapUtils.getString(mmap,"projectCode");//String.valueOf(mmap.get("projectCode"));
 
@@ -493,7 +493,7 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/project/selfList")
     @ResponseBody
-    public AjaxResult projectSelfList(@RequestParam Map<String,Object> mmap)
+    public AjaxResult projectSelfList(@RequestBody Map<String,Object> mmap)
     {
         LoginUser loginUser = LoginHelper.getLoginUser();
         Map loginMember = getLoginMember();
@@ -566,7 +566,7 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/project_collect/collect")
     @ResponseBody
-    public AjaxResult projectCollect(@RequestParam Map<String,Object> mmap)
+    public AjaxResult projectCollect(@RequestBody Map<String,Object> mmap)
     {
         String projectCode = String.valueOf(mmap.get("projectCode"));
         String type = String.valueOf(mmap.get("type"));
@@ -602,8 +602,10 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/project/index")
     @ResponseBody
-    public AjaxResult projectIndex(@RequestParam Map<String,Object> mmap)
+    public AjaxResult projectIndex(@RequestBody Map<String,Object> mmap)
     {
+        System.out.println(mmap.size());
+        System.out.println("this is type" + MapUtils.getString(mmap,"type",null));
         Map loginMember = getLoginMember();
         String archive = MapUtils.getString(mmap,"archive",null);
         String type = MapUtils.getString(mmap,"type",null);
@@ -620,7 +622,7 @@ public class ProjectController extends BaseController {
 
     @PostMapping("/project_template/index")
     @ResponseBody
-    public AjaxResult projectTemplateIndex(@RequestParam Map<String,Object> mmap)
+    public AjaxResult projectTemplateIndex(@RequestBody Map<String,Object> mmap)
     {
         Map loginMember = getLoginMember();
         mmap.put("memberCode",MapUtils.getString(loginMember,"memberCode"));
@@ -661,7 +663,7 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/project_template/delete")
     @ResponseBody
-    public AjaxResult projectTemplateDelete(@RequestParam Map<String,Object> mmap)
+    public AjaxResult projectTemplateDelete(@RequestBody Map<String,Object> mmap)
     {
         String code = MapUtils.getString(mmap,"code");
         Map projectTempMap = projectTemplateService.getProjectTemplateByCode(code);
@@ -684,7 +686,7 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/project_template/edit")
     @ResponseBody
-    public AjaxResult projectTemplateEdit(@RequestParam Map<String,Object> mmap)
+    public AjaxResult projectTemplateEdit(@RequestBody Map<String,Object> mmap)
     {
         String name = MapUtils.getString(mmap,"name");
         String description = MapUtils.getString(mmap,"description");
@@ -706,7 +708,7 @@ public class ProjectController extends BaseController {
     ProjectInfoService projectInfoService;
     @PostMapping("/project_info/save")
     @ResponseBody
-    public AjaxResult projectInfoSave(@RequestParam Map<String,Object> mmap)
+    public AjaxResult projectInfoSave(@RequestBody Map<String,Object> mmap)
     {
         String name = MapUtils.getString(mmap,"name");
         String projectCode = MapUtils.getString(mmap,"projectCode");
@@ -730,7 +732,7 @@ public class ProjectController extends BaseController {
     }
     @PostMapping("/project_info/edit")
     @ResponseBody
-    public AjaxResult projectInfoEdit(@RequestParam Map<String,Object> mmap)
+    public AjaxResult projectInfoEdit(@RequestBody Map<String,Object> mmap)
     {
         String name = MapUtils.getString(mmap,"name");
         String value = MapUtils.getString(mmap,"value");
@@ -760,7 +762,7 @@ public class ProjectController extends BaseController {
     }
     @PostMapping("/project_info/delete")
     @ResponseBody
-    public AjaxResult projectInfoDelete(@RequestParam Map<String,Object> mmap)
+    public AjaxResult projectInfoDelete(@RequestBody Map<String,Object> mmap)
     {
         String infoCode = MapUtils.getString(mmap,"infoCode");
         projectInfoService.lambdaUpdate().eq(ProjectInfo::getCode,infoCode).remove();
@@ -774,7 +776,7 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/project_template/save")
     @ResponseBody
-    public AjaxResult projectTemplateSave(@RequestParam Map<String,Object> mmap)
+    public AjaxResult projectTemplateSave(@RequestBody Map<String,Object> mmap)
     {
         Map loginMember = getLoginMember();
         String name = MapUtils.getString(mmap,"name");
@@ -815,7 +817,7 @@ public class ProjectController extends BaseController {
      */
     @PostMapping("/project/save")
     @ResponseBody
-    public AjaxResult saveProject(@RequestParam Map<String,Object> mmap)
+    public AjaxResult saveProject(@RequestBody Map<String,Object> mmap)
     {
         String name = MapUtils.getString(mmap,"name");
         if(StringUtils.isEmpty(name)){

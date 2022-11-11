@@ -54,7 +54,7 @@ public class OrgController   extends BaseController {
 //     */
 //    @PostMapping("/department/save")
 //    @ResponseBody
-//    public AjaxResult departmentSave(@RequestParam Map<String,Object> mmap)
+//    public AjaxResult departmentSave(@RequestBody Map<String,Object> mmap)
 //    {
 //        Map loginMember = getLoginMember();
 //        String organizationCode = MapUtils.getString(loginMember,"organizationCode");
@@ -77,7 +77,7 @@ public class OrgController   extends BaseController {
 
 //    @PostMapping("/department/index")
 //    @ResponseBody
-//    public AjaxResult getDepartment(@RequestParam Map<String,Object> mmap)
+//    public AjaxResult getDepartment(@RequestBody Map<String,Object> mmap)
 //    {
 //        Map loginMember = getLoginMember();
 //        String organizationCode = MapUtils.getString(loginMember,"organizationCode");
@@ -88,7 +88,7 @@ public class OrgController   extends BaseController {
 
 //    @PostMapping("/department/read")
 //    @ResponseBody
-//    public AjaxResult departmentRead(@RequestParam Map<String,Object> mmap)
+//    public AjaxResult departmentRead(@RequestBody Map<String,Object> mmap)
 //    {
 //        String departmentCode = MapUtils.getString(mmap,"departmentCode");
 //        Map deptMap = departmentService.getDepartmentByCode(departmentCode);
@@ -100,7 +100,7 @@ public class OrgController   extends BaseController {
 //    }
 //    @PostMapping("/department/delete")
 //    @ResponseBody
-//    public AjaxResult departmentDelete(@RequestParam Map<String,Object> mmap)
+//    public AjaxResult departmentDelete(@RequestBody Map<String,Object> mmap)
 //    {
 //        String departmentCode = MapUtils.getString(mmap,"departmentCode");
 //        Integer resultData = departmentService.delDepartmentByCodes(new ArrayList<String>(){{add(departmentCode);}});
@@ -109,7 +109,7 @@ public class OrgController   extends BaseController {
 //    }
 //    @PostMapping("/department/edit")
 //    @ResponseBody
-//    public AjaxResult departmentEdit(@RequestParam Map<String,Object> mmap)
+//    public AjaxResult departmentEdit(@RequestBody Map<String,Object> mmap)
 //    {
 //        String departmentCode = MapUtils.getString(mmap,"departmentCode");
 //        String parentDepartmentCode = MapUtils.getString(mmap,"parentDepartmentCode");
@@ -138,7 +138,7 @@ public class OrgController   extends BaseController {
      */
     @PostMapping("/organization/index")
     @ResponseBody
-    public AjaxResult getOrganization(@RequestParam Map<String,Object> mmap)
+    public AjaxResult getOrganization(@RequestBody Map<String,Object> mmap)
     {
         Map loginMember = getLoginMember();
         String memberCode = MapUtils.getString(loginMember,"memberCode");
@@ -155,7 +155,7 @@ public class OrgController   extends BaseController {
      */
     @PostMapping("/organization/edit")
     @ResponseBody
-    public AjaxResult orgEdit(@RequestParam Map<String,Object> mmap)
+    public AjaxResult orgEdit(@RequestBody Map<String,Object> mmap)
     {
 
         String name = MapUtils.getString(mmap,"name","");
@@ -191,7 +191,7 @@ public class OrgController   extends BaseController {
 
     @GetMapping("/department_member/_downloadTemplate")
     @ResponseBody
-    public void downloadTemplate(@RequestParam Map<String,Object> mmap)
+    public void downloadTemplate(@RequestBody Map<String,Object> mmap)
     {
         try
         {
@@ -210,7 +210,7 @@ public class OrgController   extends BaseController {
     }
 
     @PostMapping("/department_member/uploadFile")
-    public AjaxResult uploadFile(@RequestParam Map<String,Object> mmap, MultipartFile file)throws Exception
+    public AjaxResult uploadFile(@RequestBody Map<String,Object> mmap, MultipartFile file)throws Exception
     {
         InputStream ins = file.getInputStream();
         List<String> list = null;

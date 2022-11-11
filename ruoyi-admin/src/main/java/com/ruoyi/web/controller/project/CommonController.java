@@ -6,6 +6,7 @@ import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.file.FileUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,7 +52,7 @@ public class CommonController {
     }
 
     @GetMapping("/common/image")
-    public void image(@RequestParam Map<String,Object> mmap)
+    public void image(@RequestBody Map<String,Object> mmap)
     {
         String filePathName =  MapUtils.getString(mmap,"filePathName");
         String realFileName =  MapUtils.getString(mmap,"realFileName");

@@ -61,7 +61,7 @@ public class TaskFileController extends BaseController {
      * @param file        Excel文件
      */
     @PostMapping("task/uploadFile")
-    public AjaxResult downTemplate(@RequestParam("projectCode") String projectCode, @RequestParam("file") MultipartFile file) {
+    public AjaxResult downTemplate(@RequestParam(value = "projectCode") String projectCode, @RequestParam(value = "file") MultipartFile file) {
         List<List<Object>> listInfo = ExcelUtils.getListInfo(file);
         List<Task> taskList = new ArrayList<>();
         Map loginMember = getLoginMember();

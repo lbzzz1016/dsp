@@ -94,4 +94,8 @@ public class SysFile extends BaseEntity {
     @TableField(exist = false)
     private String deletedTime;
 
+    @TableField(exist = false)
+    private String creatorName;
+    @TableField(exist = false)
+    private String fullName;
 }

@@ -22,7 +22,7 @@ public class NodeController {
 
     @PostMapping("/node/save")
     @ResponseBody
-    public AjaxResult save(@RequestParam("list") String jsonList){
+    public AjaxResult save(@RequestParam(value = "list") String jsonList){
         return AjaxResult.success("保存成功", projectNodeService.saveNode(jsonList));
     }
 }

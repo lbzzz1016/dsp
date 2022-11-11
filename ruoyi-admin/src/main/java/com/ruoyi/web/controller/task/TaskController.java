@@ -84,11 +84,10 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task/selfList")
     @ResponseBody
-    public AjaxResult taskSelfList(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult taskSelfList(@RequestBody Map<String,Object> mmap)  throws Exception {
 
         Integer taskType =  MapUtils.getInteger(mmap,"taskType",1);
         Integer type = MapUtils.getInteger(mmap,"type",0);
-
         String memberCode = MapUtils.getString(mmap,"memberCode", LoginHelper.getLoginUser().getCode());
 
         Integer done = type;
@@ -137,7 +136,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task_member/index")
     @ResponseBody
-    public AjaxResult taskMember(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult taskMember(@RequestBody Map<String,Object> mmap) {
         Map loginMember = getLoginMember();
         String taskCode = MapUtils.getString(mmap,"taskCode");
         Integer pageSize = MapUtils.getInteger(mmap,"pageSize");
@@ -184,7 +183,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task/edit")
     @ResponseBody
-    public AjaxResult taskEdit(@RequestParam Map<String,Object> mmap)   {
+    public AjaxResult taskEdit(@RequestBody Map<String,Object> mmap)   {
 
         String taskCode = MapUtils.getString(mmap,"taskCode");
 
@@ -260,7 +259,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task/createComment")
     @ResponseBody
-    public AjaxResult taskCreateComment(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult taskCreateComment(@RequestBody Map<String,Object> mmap)  throws Exception {
         String taskCode = MapUtils.getString(mmap, "taskCode");
         String comment = MapUtils.getString(mmap, "comment");
         String mentions = MapUtils.getString(mmap,"mentions");
@@ -299,7 +298,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task/delTaskWorkTime")
     @ResponseBody
-    public AjaxResult taskDelTaskWorkTime(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult taskDelTaskWorkTime(@RequestBody Map<String,Object> mmap)  throws Exception {
         String code = MapUtils.getString(mmap, "code");
         return AjaxResult.success(taskWorkTimeService.delTaskWorkTimeByCode(code));
     }
@@ -307,7 +306,7 @@ public class TaskController  extends BaseController {
 
     @PostMapping("/task/getListByTaskTag")
     @ResponseBody
-    public AjaxResult getListByTaskTag(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult getListByTaskTag(@RequestBody Map<String,Object> mmap)  throws Exception {
         String taskTagCode = MapUtils.getString(mmap, "taskTagCode");
         IPage<Map> page = Constant.createPage(mmap);
         page = taskTagService.selectListByTaskTag(page,taskTagCode);
@@ -316,7 +315,7 @@ public class TaskController  extends BaseController {
 
     @PostMapping("/task/dateTotalForProject")
     @ResponseBody
-    public AjaxResult dateTotalForProject(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult dateTotalForProject(@RequestBody Map<String,Object> mmap)  throws Exception {
         String projectCode = MapUtils.getString(mmap, "projectCode");
         String beginTime = MapUtils.getString(mmap, "beginTime");
         String endTime = MapUtils.getString(mmap, "endTime");
@@ -348,7 +347,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task/editTaskWorkTime")
     @ResponseBody
-    public AjaxResult taskEditTaskWorkTime(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult taskEditTaskWorkTime(@RequestBody Map<String,Object> mmap)  throws Exception {
         String beginTime = MapUtils.getString(mmap, "beginTime");
         Integer num = MapUtils.getInteger(mmap, "num");
         String content = MapUtils.getString(mmap, "content");
@@ -373,7 +372,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task/saveTaskWorkTime")
     @ResponseBody
-    public AjaxResult taskSaveTaskWorkTime(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult taskSaveTaskWorkTime(@RequestBody Map<String,Object> mmap)  throws Exception {
 
         String beginTime = MapUtils.getString(mmap, "beginTime");
         Integer num = MapUtils.getInteger(mmap, "num");
@@ -393,7 +392,7 @@ public class TaskController  extends BaseController {
     }
     @PostMapping("/task/assignTask")
     @ResponseBody
-    public AjaxResult assignTask(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult assignTask(@RequestBody Map<String,Object> mmap) {
         String taskCode = MapUtils.getString(mmap,"taskCode");
         String executorCode = MapUtils.getString(mmap,"executorCode");
         if(StringUtils.isEmpty(taskCode)){
@@ -409,7 +408,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task/save")
     @ResponseBody
-    public AjaxResult taskSave(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult taskSave(@RequestBody Map<String,Object> mmap)  throws Exception {
 
         String pcode = MapUtils.getString(mmap, "pcode");
         String name = MapUtils.getString(mmap, "name");
@@ -455,7 +454,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task/setTag")
     @ResponseBody
-    public AjaxResult taskSetTag(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult taskSetTag(@RequestBody Map<String,Object> mmap)  throws Exception {
         String taskCode = MapUtils.getString(mmap, "taskCode");
         String tagCode = MapUtils.getString(mmap, "tagCode");
         TaskToTag taskToTag = new TaskToTag();
@@ -479,7 +478,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task_tag/edit")
     @ResponseBody
-    public AjaxResult taskTagEdit(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult taskTagEdit(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String name = MapUtils.getString(mmap, "name");
         String color = MapUtils.getString(mmap, "color");
@@ -502,7 +501,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task_tag/save")
     @ResponseBody
-    public AjaxResult taskTagSave(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult taskTagSave(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String name = MapUtils.getString(mmap,"name");
         String projectCode = MapUtils.getString(mmap,"projectCode");
@@ -528,7 +527,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task/taskToTags")
     @ResponseBody
-    public AjaxResult taskToTags(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult taskToTags(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String taskCode = MapUtils.getString(mmap,"taskCode");
         List<Map> taskTagList = taskToTagService.getTaskToTagByTaskCode(taskCode);
@@ -552,7 +551,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task_tag/index")
     @ResponseBody
-    public AjaxResult taskTag(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult taskTag(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String projectCode = MapUtils.getString(mmap,"projectCode");
         List<Map> taskTagList = taskTagService.getTaskTagByProjectCode(projectCode);
@@ -567,7 +566,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task/taskSources")
     @ResponseBody
-    public AjaxResult taskSources(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult taskSources(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String taskCode = MapUtils.getString(mmap,"taskCode");
 
@@ -596,7 +595,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task/_taskWorkTimeList")
     @ResponseBody
-    public AjaxResult taskWorkTimeList(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult taskWorkTimeList(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String taskCode = MapUtils.getString(mmap,"taskCode");
         List<Map> mapList = taskWorkTimeService.getTaskWorkTimeByTaskCode(taskCode);
@@ -615,7 +614,7 @@ public class TaskController  extends BaseController {
 
     @PostMapping("/task/read")
     @ResponseBody
-    public AjaxResult taskRead(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult taskRead(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         Map loginMember = getLoginMember();
         String memberCode = MapUtils.getString(loginMember,"memberCode");
@@ -624,7 +623,7 @@ public class TaskController  extends BaseController {
     }
     @PostMapping("/task/index")
     @ResponseBody
-    public AjaxResult taskIndex(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult taskIndex(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         Map loginMember = getLoginMember();
         IPage<Map> page = Constant.createPage(mmap);
@@ -640,7 +639,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task/taskLog")
     @ResponseBody
-    public AjaxResult taskTaskLog(@RequestParam Map<String, Object> mmap)  throws Exception
+    public AjaxResult taskTaskLog(@RequestBody Map<String, Object> mmap)  throws Exception
     {
         Integer pageSize = MapUtils.getInteger(mmap,"pageSize",1000);
         Integer page = MapUtils.getInteger(mmap,"page",1);
@@ -690,7 +689,7 @@ public class TaskController  extends BaseController {
     }
     @PostMapping("/task_stages/save")
     @ResponseBody
-    public AjaxResult taskStagesSave(@RequestParam Map<String,Object> mmap)
+    public AjaxResult taskStagesSave(@RequestBody Map<String,Object> mmap)
     {
         String name = MapUtils.getString(mmap,"name");
         String projectCode = MapUtils.getString(mmap,"projectCode");
@@ -711,7 +710,7 @@ public class TaskController  extends BaseController {
     }
     @PostMapping("/task_stages/edit")
     @ResponseBody
-    public AjaxResult taskStagesEidt(@RequestParam Map<String,Object> mmap)
+    public AjaxResult taskStagesEidt(@RequestBody Map<String,Object> mmap)
     {
         String name = MapUtils.getString(mmap,"name");
         String stageCode = MapUtils.getString(mmap,"stageCode");
@@ -731,7 +730,7 @@ public class TaskController  extends BaseController {
 
     @PostMapping("/task/batchAssignTask")
     @ResponseBody
-    public AjaxResult batchAssignTask(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult batchAssignTask(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String taskCodes = MapUtils.getString(mmap,"taskCodes","[]");
         String stageCode = MapUtils.getString(mmap,"executorCode");
@@ -746,7 +745,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task_stages/tasks")
     @ResponseBody
-    public AjaxResult taskStagesTasks(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult taskStagesTasks(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         return AjaxResult.success(taskProjectService.tasks(mmap));
         /*String stageCode = MapUtils.getString(mmap,"stageCode");
@@ -780,7 +779,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task_stages/index")
     @ResponseBody
-    public AjaxResult taskStages(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult taskStages(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String projectCode = MapUtils.getString(mmap,"projectCode");
         if(null == projectCode){
@@ -806,7 +805,7 @@ public class TaskController  extends BaseController {
      */
 //    @PostMapping("/task_workflow/delete")
 //    @ResponseBody
-//    public AjaxResult taskWorkflowDelete(@RequestParam Map<String,Object> mmap)  throws Exception
+//    public AjaxResult taskWorkflowDelete(@RequestBody Map<String,Object> mmap)  throws Exception
 //    {
 //        String taskWorkflowCode = MapUtils.getString(mmap,"taskWorkflowCode");
 //
@@ -822,7 +821,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task_workflow/_getTaskWorkflowRules")
     @ResponseBody
-    public AjaxResult _getTaskWorkflowRules(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult _getTaskWorkflowRules(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String taskWorkflowCode = MapUtils.getString(mmap,"taskWorkflowCode");
         List<Map> listResult = taskWorkflowService.selectTaskWorkflowRuleByWorkflowCode(taskWorkflowCode);
@@ -838,7 +837,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task_stages/_getAll")
     @ResponseBody
-    public AjaxResult taskStagesGetAll(@RequestParam Map<String,Object> mmap)
+    public AjaxResult taskStagesGetAll(@RequestBody Map<String,Object> mmap)
     {
         String projectCode = MapUtils.getString(mmap,"projectCode");
         List<Map> listResult = taskStageService.selectTaskStageByProjectCode(projectCode);
@@ -847,7 +846,7 @@ public class TaskController  extends BaseController {
     }
     @PostMapping("/task_stages/delete")
     @ResponseBody
-    public AjaxResult taskStagesDelete(@RequestParam Map<String,Object> mmap)
+    public AjaxResult taskStagesDelete(@RequestBody Map<String,Object> mmap)
     {
         String code = MapUtils.getString(mmap,"code");
         taskStageService.deleteStage(code);
@@ -860,7 +859,7 @@ public class TaskController  extends BaseController {
      */
     @PostMapping("/task_workflow/index")
     @ResponseBody
-    public AjaxResult taskWorkflowByProjectCode(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult taskWorkflowByProjectCode(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String projectCode = MapUtils.getString(mmap,"projectCode");
         List<Map> listResult = taskWorkflowService.selectTaskWorkflowByProjectCode(projectCode);
@@ -869,7 +868,7 @@ public class TaskController  extends BaseController {
 
     @PostMapping("/task/like")
     @ResponseBody
-    public AjaxResult like(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult like(@RequestBody Map<String,Object> mmap)  throws Exception {
         Integer data = MapUtils.getInteger(mmap,"like");
         String code = MapUtils.getString(mmap,"taskCode");
         if(StringUtils.isEmpty(code)){
@@ -888,7 +887,7 @@ public class TaskController  extends BaseController {
     }
     @PostMapping("/task/star")
     @ResponseBody
-    public AjaxResult star(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult star(@RequestBody Map<String,Object> mmap)  throws Exception {
         Integer data = MapUtils.getInteger(mmap,"star");
         String code = MapUtils.getString(mmap,"taskCode");
         if(StringUtils.isEmpty(code)){
@@ -907,7 +906,7 @@ public class TaskController  extends BaseController {
     }
     @PostMapping("/task/setPrivate")
     @ResponseBody
-    public AjaxResult setPrivate(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult setPrivate(@RequestBody Map<String,Object> mmap)  throws Exception {
         Integer private_=MapUtils.getInteger(mmap,"private");
         String taskCode = MapUtils.getString(mmap,"taskCode");
         if( 0==private_ || 1==private_){
@@ -919,28 +918,28 @@ public class TaskController  extends BaseController {
     }
     @PostMapping("/task/recycle")
     @ResponseBody
-    public AjaxResult recycle(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult recycle(@RequestBody Map<String,Object> mmap)  throws Exception {
         String taskCode = MapUtils.getString(mmap,"taskCode");
         taskProjectService.recycle(taskCode,MapUtils.getString(getLoginMember(),"memberCode"));
         return  AjaxResult.success();
     }
     @PostMapping("/task/recycleBatch")
     @ResponseBody
-    public AjaxResult recycleBatch(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult recycleBatch(@RequestBody Map<String,Object> mmap)  throws Exception {
         String stageCode = MapUtils.getString(mmap,"stageCode");
         taskProjectService.recycleBatch(stageCode);
         return  AjaxResult.success();
     }
 	@PostMapping("/task/delete")
     @ResponseBody
-    public AjaxResult delete(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult delete(@RequestBody Map<String,Object> mmap)  throws Exception {
         String taskCode = MapUtils.getString(mmap,"taskCode");
         taskProjectService.delete(taskCode);
         return  AjaxResult.success();
     }
     @PostMapping("/task/recovery")
     @ResponseBody
-    public AjaxResult recovery(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult recovery(@RequestBody Map<String,Object> mmap)  throws Exception {
         String taskCode = MapUtils.getString(mmap,"taskCode");
         taskProjectService.recovery(taskCode);
         return  AjaxResult.success();
@@ -948,7 +947,7 @@ public class TaskController  extends BaseController {
 
     @PostMapping("/task/taskDone")
     @ResponseBody
-    public AjaxResult taskDone(@RequestParam Map<String,Object> mmap)  throws Exception {
+    public AjaxResult taskDone(@RequestBody Map<String,Object> mmap)  throws Exception {
         String taskCode = MapUtils.getString(mmap,"taskCode");
         if(StringUtils.isEmpty(taskCode)){
             return AjaxResult.warn("请选择任务");
@@ -963,7 +962,7 @@ public class TaskController  extends BaseController {
     }
     @PostMapping("/task/sort")
     @ResponseBody
-    public AjaxResult taskSort(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult taskSort(@RequestBody Map<String,Object> mmap) {
         String stageCode = MapUtils.getString(mmap,"stageCode");
         String codes = MapUtils.getString(mmap,"codes");
         if(StringUtils.isEmpty(codes)){

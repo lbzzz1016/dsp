@@ -43,7 +43,7 @@ public class AuthorityControoler extends BaseController {
      */
     @PostMapping("/auth/apply")
     @ResponseBody
-    public AjaxResult authApply(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult authApply(@RequestBody Map<String,Object> mmap) {
 
         String action = MapUtils.getString(mmap,"action");
         Integer id = MapUtils.getInteger(mmap,"id",-1);
@@ -122,7 +122,7 @@ public class AuthorityControoler extends BaseController {
      */
     @PostMapping("/auth/setDefault")
     @ResponseBody
-    public AjaxResult authSetDefault(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult authSetDefault(@RequestBody Map<String,Object> mmap) {
         Integer id = MapUtils.getInteger(mmap,"id",-1);
         Integer is_default = MapUtils.getInteger(mmap,"is_default",0);
         ProjectAuth pa = new ProjectAuth();
@@ -140,7 +140,7 @@ public class AuthorityControoler extends BaseController {
      */
     @PostMapping("/auth/del")
     @ResponseBody
-    public AjaxResult authDel(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult authDel(@RequestBody Map<String,Object> mmap) {
         Integer id = MapUtils.getInteger(mmap,"id",-1);
         return AjaxResult.success(projectAuthService.authDelete(id));
     }
@@ -152,7 +152,7 @@ public class AuthorityControoler extends BaseController {
      */
     @PostMapping("/auth/index")
     @ResponseBody
-    public AjaxResult auth(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult auth(@RequestBody Map<String,Object> mmap) {
         Map loginMember = getLoginMember();
         Integer page = MapUtils.getInteger(mmap,"page",1);
         Integer pageSize = MapUtils.getInteger(mmap,"pageSize",100);
@@ -188,7 +188,7 @@ public class AuthorityControoler extends BaseController {
      */
     @PostMapping("/auth/edit")
     @ResponseBody
-    public AjaxResult authEdit(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult authEdit(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         Map loginMap=getLoginMember();
         String title = MapUtils.getString(mmap,"title");
@@ -207,7 +207,7 @@ public class AuthorityControoler extends BaseController {
      */
     @PostMapping("/auth/add")
     @ResponseBody
-    public AjaxResult authAdd(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult authAdd(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         Map loginMap=getLoginMember();
         String title = MapUtils.getString(mmap,"title");
@@ -251,7 +251,7 @@ public class AuthorityControoler extends BaseController {
      */
     @PostMapping("/menu/menuDel")
     @ResponseBody
-    public AjaxResult menuDel(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult menuDel(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         Integer id = MapUtils.getInteger(mmap,"id",-1);
         return AjaxResult.success(projectMenuService.menuDelete(id));
@@ -264,7 +264,7 @@ public class AuthorityControoler extends BaseController {
      */
     @PostMapping("/menu/menuResume")
     @ResponseBody
-    public AjaxResult menuResume(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult menuResume(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         Integer id = MapUtils.getInteger(mmap,"id");
         Integer status = MapUtils.getInteger(mmap,"status");
@@ -278,7 +278,7 @@ public class AuthorityControoler extends BaseController {
      */
     @PostMapping("/menu/menuForbid")
     @ResponseBody
-    public AjaxResult menuForbid(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult menuForbid(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         Integer id = MapUtils.getInteger(mmap,"id");
         Integer status = MapUtils.getInteger(mmap,"status");
@@ -293,7 +293,7 @@ public class AuthorityControoler extends BaseController {
      */
     @PostMapping("/menu/menu")
     @ResponseBody
-    public AjaxResult menuList(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult menuList(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         return AjaxResult.success(projectMenuService.getAllProjectMenuTree());
     }
@@ -305,7 +305,7 @@ public class AuthorityControoler extends BaseController {
      */
     @PostMapping("/node/allList")
     @ResponseBody
-    public AjaxResult nodeAllList(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult nodeAllList(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String module = MapUtils.getString(mmap,"module");
         String node = MapUtils.getString(mmap,"node");
@@ -314,13 +314,13 @@ public class AuthorityControoler extends BaseController {
 
     @PostMapping("/node/clear")
     @ResponseBody
-    public AjaxResult nodeClear(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult nodeClear(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         return AjaxResult.success("无效节点清单成功！");
     }
     @PostMapping("/node/index")
     @ResponseBody
-    public AjaxResult nodeIndex(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult nodeIndex(@RequestBody Map<String,Object> mmap)  throws Exception
     {
 //        String module = MapUtils.getString(mmap,"module");
 //        List<Map> listNode = projectNodeService.getAllProjectNode();
@@ -351,7 +351,7 @@ public class AuthorityControoler extends BaseController {
      */
     @PostMapping("/menu/menuAdd")
     @ResponseBody
-    public AjaxResult menuMenuAdd(@RequestParam Map<String,Object> mmap)  throws Exception
+    public AjaxResult menuMenuAdd(@RequestBody Map<String,Object> mmap)  throws Exception
     {
         String title = MapUtils.getString(mmap,"title");
         String url = MapUtils.getString(mmap,"url");

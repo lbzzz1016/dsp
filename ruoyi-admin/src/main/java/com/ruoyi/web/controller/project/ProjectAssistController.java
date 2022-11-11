@@ -68,7 +68,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_features/edit")
     @ResponseBody
-    public AjaxResult getProjectVersionEdit(@RequestParam Map<String,Object> mmap){
+    public AjaxResult getProjectVersionEdit(@RequestBody Map<String,Object> mmap){
         String featuresCode = MapUtils.getString(mmap,"featuresCode");
         String projectCode = MapUtils.getString(mmap,"projectCode");
         String description = MapUtils.getString(mmap,"description");
@@ -97,7 +97,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_features/delete")
     @ResponseBody
-    public AjaxResult getProjectVersionDelete(@RequestParam Map<String,Object> mmap){
+    public AjaxResult getProjectVersionDelete(@RequestBody Map<String,Object> mmap){
         String featuresCode = MapUtils.getString(mmap,"featuresCode");
         if(CommUtils.isEmpty(featuresCode)){
             return AjaxResult.warn("请选择一个版本库");
@@ -112,7 +112,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_features/save")
     @ResponseBody
-    public AjaxResult projectProjectFeaturesSave(@RequestParam Map<String,Object> mmap){
+    public AjaxResult projectProjectFeaturesSave(@RequestBody Map<String,Object> mmap){
         String projectCode = MapUtils.getString(mmap,"projectCode");
         String description = MapUtils.getString(mmap,"description");
         String name = MapUtils.getString(mmap,"name");
@@ -140,7 +140,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_features/index")
     @ResponseBody
-    public AjaxResult projectProjectFeatures(@RequestParam Map<String,Object> mmap){
+    public AjaxResult projectProjectFeatures(@RequestBody Map<String,Object> mmap){
         String projectCode = MapUtils.getString(mmap,"projectCode");
         if(CommUtils.isEmpty(projectCode)){
             return AjaxResult.warn("请选择一个项目");
@@ -155,7 +155,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_version/save")
     @ResponseBody
-    public AjaxResult getProjectVersionSave(@RequestParam Map<String,Object> mmap){
+    public AjaxResult getProjectVersionSave(@RequestBody Map<String,Object> mmap){
         Map memberMap = getLoginMember();
         String name = MapUtils.getString(mmap,"name");
         String description = MapUtils.getString(mmap,"description");
@@ -201,7 +201,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_version/index")
     @ResponseBody
-    public AjaxResult getProjectVersion(@RequestParam Map<String,Object> mmap){
+    public AjaxResult getProjectVersion(@RequestBody Map<String,Object> mmap){
         String projectFeaturesCode = MapUtils.getString(mmap,"projectFeaturesCode");
         if(CommUtils.isEmpty(projectFeaturesCode)){
             return AjaxResult.warn("请选择一个版本库");
@@ -211,7 +211,7 @@ public class ProjectAssistController extends BaseController {
 
     @PostMapping("/project_version/removeVersionTask")
     @ResponseBody
-    public AjaxResult removeVersionTask(@RequestParam Map<String,Object> mmap) throws Exception {
+    public AjaxResult removeVersionTask(@RequestBody Map<String,Object> mmap) throws Exception {
         String taskCode = MapUtils.getString(mmap,"taskCode");
         Map loginMember = getLoginMember();
         /*Map taskMap = taskService.getTaskMapByCode(taskCode);
@@ -243,7 +243,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_version/delete")
     @ResponseBody
-    public AjaxResult projectVersionDelete(@RequestParam Map<String,Object> mmap){
+    public AjaxResult projectVersionDelete(@RequestBody Map<String,Object> mmap){
         String versionCode = MapUtils.getString(mmap,"versionCode");
         if(CommUtils.isEmpty(versionCode)){
             return AjaxResult.warn("请选择一个版本");
@@ -256,7 +256,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_version/_getVersionTask")
     @ResponseBody
-    public AjaxResult getVersionTask(@RequestParam Map<String,Object> mmap){
+    public AjaxResult getVersionTask(@RequestBody Map<String,Object> mmap){
         String versionCode = MapUtils.getString(mmap,"versionCode");
         if(CommUtils.isEmpty(versionCode)){
             return AjaxResult.warn("请选择一个版本");
@@ -283,7 +283,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_version/_getVersionLog")
     @ResponseBody
-    public AjaxResult getVersionLog(@RequestParam Map<String,Object> mmap){
+    public AjaxResult getVersionLog(@RequestBody Map<String,Object> mmap){
         String versionCode = MapUtils.getString(mmap,"versionCode");
         Integer showAll = MapUtils.getInteger(mmap,"all",0);
 
@@ -325,7 +325,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_version/addVersionTask")
     @ResponseBody
-    public AjaxResult addVersionTask(@RequestParam Map<String,Object> mmap) throws Exception {
+    public AjaxResult addVersionTask(@RequestBody Map<String,Object> mmap) throws Exception {
         String taskCodeList = MapUtils.getString(mmap,"taskCodeList");
         String versionCode = MapUtils.getString(mmap,"versionCode");
         Map memberMap = getLoginMember();
@@ -380,7 +380,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_version/changeStatus")
     @ResponseBody
-    public AjaxResult projectVersionChangeStatus(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult projectVersionChangeStatus(@RequestBody Map<String,Object> mmap) {
         String versionCode = MapUtils.getString(mmap, "versionCode");
         Integer status = MapUtils.getInteger(mmap, "status",-1);
         String publishTime = MapUtils.getString(mmap, "publishTime");
@@ -411,7 +411,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_version/edit")
     @ResponseBody
-    public AjaxResult projectVersionEdit(@RequestParam Map<String,Object> mmap){
+    public AjaxResult projectVersionEdit(@RequestBody Map<String,Object> mmap){
         String versionCode = MapUtils.getString(mmap,"versionCode");
         String name = MapUtils.getString(mmap,"name");
         String description = MapUtils.getString(mmap,"description");
@@ -486,7 +486,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_version/read")
     @ResponseBody
-    public AjaxResult projectVersionRead(@RequestParam Map<String,Object> mmap){
+    public AjaxResult projectVersionRead(@RequestBody Map<String,Object> mmap){
         String versionCode = MapUtils.getString(mmap,"versionCode");
         if(CommUtils.isEmpty(versionCode)){
             return AjaxResult.warn("请选择一个版本");
@@ -508,7 +508,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/project_info/index")
     @ResponseBody
-    public AjaxResult projectProjectInfo(@RequestParam Map<String,Object> mmap){
+    public AjaxResult projectProjectInfo(@RequestBody Map<String,Object> mmap){
         String projectCode = MapUtils.getString(mmap,"projectCode");
         List<Map> projectInfoList = projectInfoService.getProjectInfoByProjectCode(projectCode);
         return AjaxResult.success(projectInfoList);
@@ -521,7 +521,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/file/recycle")
     @ResponseBody
-    public AjaxResult projectFileRecycle(@RequestParam Map<String,Object> mmap){
+    public AjaxResult projectFileRecycle(@RequestBody Map<String,Object> mmap){
         String fileCode = MapUtils.getString(mmap,"fileCode");
 
         Map fileMap = fileService.getFileByCode(fileCode);
@@ -543,7 +543,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/file/edit")
     @ResponseBody
-    public AjaxResult projectFileEdit(@RequestParam Map<String,Object> mmap){
+    public AjaxResult projectFileEdit(@RequestBody Map<String,Object> mmap){
         String title = MapUtils.getString(mmap,"title");
         String fileCode = MapUtils.getString(mmap,"fileCode");
 
@@ -561,7 +561,7 @@ public class ProjectAssistController extends BaseController {
      */
     @PostMapping("/file/index")
     @ResponseBody
-    public AjaxResult getProjectFile(@RequestParam Map<String,Object> mmap){
+    public AjaxResult getProjectFile(@RequestBody Map<String,Object> mmap){
 
         String projectCode = MapUtils.getString(mmap,"projectCode");
         Integer deleted = MapUtils.getInteger(mmap,"deleted",0);
@@ -610,7 +610,7 @@ public class ProjectAssistController extends BaseController {
      */
 	@PostMapping("/file/uploadFiles")
     @ResponseBody
-    public AjaxResult uploadFiels(HttpServletRequest request, @RequestParam("file") MultipartFile multipartFile)  throws Exception{
+    public AjaxResult uploadFiels(HttpServletRequest request, @RequestParam(value = "file") MultipartFile multipartFile)  throws Exception{
         String  fileName= request.getParameter("identifier");
         String  orgFileName= request.getParameter("filename");
         int  chunkNumber= request.getParameter("chunkNumber") == null ?0:new Integer(request.getParameter("chunkNumber"));
@@ -702,14 +702,14 @@ public class ProjectAssistController extends BaseController {
 
     @PostMapping("/file/recovery")
     @ResponseBody
-    public AjaxResult fileRecovery(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult fileRecovery(@RequestBody Map<String,Object> mmap) {
         String fileCode = MapUtils.getString(mmap,"fileCode");
         fileService.recovery(fileCode);
         return  AjaxResult.success();
     }
     @PostMapping("/file/delete")
     @ResponseBody
-    public AjaxResult deleteFile(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult deleteFile(@RequestBody Map<String,Object> mmap) {
         String fileCode = MapUtils.getString(mmap,"fileCode");
         fileService.deleteFile(fileCode);
         return  AjaxResult.success();

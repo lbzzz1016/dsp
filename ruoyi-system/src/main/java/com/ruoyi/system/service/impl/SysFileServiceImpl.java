@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.exception.CustomException;
+import com.ruoyi.common.utils.CommUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.project.domain.Project;
+import com.ruoyi.project.domain.SourceLink;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.domain.bo.SysFileBo;
@@ -175,41 +177,10 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
      */
     @Override
     @Transactional
-    public Project uploadFiles(SysFile file, String memberCode, String projectCode) {
+    public boolean uploadFiles(SysFile file, String memberCode, String projectCode) {
         file.setProjectCode(projectCode);
         file.setCreateBy(memberCode);
-        if(StringUtils.isNotEmpty(file.getTaskCode())){
 
-//            SourceLink sourceLink = SourceLink.builder().source_type("file").code(CommUtils.getUUID()).
-//                create_by(memberCode).organization_code(file.getOrganization_code()).link_code(file.getTask_code())
-//                .link_type("task").source_code(file.getCode()).source_type("file").sort(0).build();
-//            sourceLinkMapper.insert(sourceLink);
-        }
-        baseMapper.insert(file);
-//        ProjectLog projectLog=ProjectLog.builder().project_code(file.getProject_code()).member_code(memberCode)
-//            .type("uploadFile").to_member_code("").is_comment(0).remark("").content("").build();
-        /**
-         * is_comment
-         * to_member_code
-         * content
-         * type
-         * source_code
-         * member_code
-         *
-         */
-        Project project = new Project();
-//            projectLogService.run(new HashMap(){{
-//            put("is_comment",0);
-//            put("to_member_code","");
-//            put("content","");
-//            put("type","uploadFile");
-//            put("source_code",file.getTaskCode());
-//            put("member_code",memberCode);
-//            put("action_type","task");
-//            put("url",file.getFileUrl());
-//            put("title",file.getTitle());
-//            put("project_code",projectCode);
-//        }});
-        return project;
+        return baseMapper.insert(file) > 0;
     }
 }

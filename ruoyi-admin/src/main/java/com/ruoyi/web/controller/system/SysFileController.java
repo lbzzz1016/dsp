@@ -7,11 +7,17 @@ import java.io.RandomAccessFile;
 import java.util.*;
 
 import cn.hutool.core.util.IdUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.AjaxResult;
 import com.ruoyi.common.config.MProjectConfig;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.utils.Constant;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.member.domain.Member;
+import com.ruoyi.member.service.MemberService;
 import com.ruoyi.project.domain.Project;
+import com.ruoyi.project.service.ProjectInfoService;
 import com.ruoyi.system.domain.SysFile;
 import com.ruoyi.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +66,9 @@ public class SysFileController extends BaseController {
 
     private final ISysUserService iSysUserService;
 
+    private final MemberService memberService;
+
+    private final ProjectInfoService projectInfoService;
     /**
      * 查询文件列表
      */
@@ -131,28 +140,28 @@ public class SysFileController extends BaseController {
         return toAjax(iSysFileService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
     }
 
-//    /**
-//     * 我的文件	移入回收站
-//     * @param
-//     * @return
-//     */
-//    @PostMapping("/project_info/index")
-//    @ResponseBody
-//    public AjaxResult projectProjectInfo(@RequestParam Map<String,Object> mmap){
-//        String projectCode = MapUtils.getString(mmap,"projectCode");
-//        List<Map> projectInfoList = projectInfoService.getProjectInfoByProjectCode(projectCode);
-//        return AjaxResult.success(projectInfoList);
-//
-//    }
+    /**
+     * 我的文件	移入回收站
+     * @param
+     * @return
+     */
+    @PostMapping("/project_info/index")
+    @ResponseBody
+    public AjaxResult projectProjectInfo(@RequestParam Map<String,Object> mmap){
+        String projectCode = MapUtils.getString(mmap,"projectCode");
+        List<Map> projectInfoList = projectInfoService.getProjectInfoByProjectCode(projectCode);
+        return AjaxResult.success(projectInfoList);
+
+    }
 
     /**
      * 我的文件	移入回收站
      * @param
      * @return
      */
-    @PostMapping("/file/recycle")
+    @PostMapping("/recycle")
     @ResponseBody
-    public AjaxResult projectFileRecycle(@RequestParam Map<String,Object> mmap){
+    public AjaxResult projectFileRecycle(@RequestBody Map<String,Object> mmap){
         String fileCode = MapUtils.getString(mmap,"fileCode");
 
         Map fileMap = iSysFileService.getFileByCode(fileCode);
@@ -173,9 +182,9 @@ public class SysFileController extends BaseController {
      * @param
      * @return
      */
-    @PostMapping("/file/edit")
+    @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult projectFileEdit(@RequestParam Map<String,Object> mmap){
+    public AjaxResult projectFileEdit(@RequestBody Map<String,Object> mmap){
         String title = MapUtils.getString(mmap,"title");
         String fileCode = MapUtils.getString(mmap,"fileCode");
 
@@ -186,35 +195,30 @@ public class SysFileController extends BaseController {
         return AjaxResult.success(iSysFileService.updateById(projectFile));
     }
 
-//    /**
-//     * 我的文件清单
-//     * @param
-//     * @return
-//     */
-//    @PostMapping("/file/index")
-//    @ResponseBody
-//    public AjaxResult getProjectFile(@RequestParam Map<String,Object> mmap){
-//
-//        String projectCode = MapUtils.getString(mmap,"projectCode");
-//        Integer deleted = MapUtils.getInteger(mmap,"deleted",0);
-//        Map params = new HashMap(){{
-//            put("projectCode",projectCode);
-//            put("deleted",deleted);
-//        }};
-//        IPage<com.project.task.domain.File> page_ = Constant.createPage(new Page<com.projectm.task.domain.File>(),mmap);
-//        page_=fileService.lambdaQuery().eq(com.projectm.task.domain.File::getProject_code,projectCode).eq(com.projectm.task.domain.File::getDeleted,0).page(page_);
-//        List<com.projectm.task.domain.File> resultList = new ArrayList<>();
-//        for(int i=0;page_ !=null && page_.getRecords() !=null && i<page_.getRecords().size();i++){
-//            com.projectm.task.domain.File f = page_.getRecords().get(i);
-//            SysUser user = iSysUserService.lambdaQuery().eq(Member::getCode,f.getCreate_by()).one();
-//            f.setCreatorName(member.getName());
-//            f.setFullName(f.getTitle()+"."+f.getExtension());
-//            resultList.add(f);
-//        }
-//        page_.setRecords(resultList);
-//        Map data = Constant.createPageResultMap(page_);
-//        return AjaxResult.success(data);
-//    }
+    /**
+     * 我的文件清单
+     * @param
+     * @return
+     */
+    @PostMapping("/index")
+    @ResponseBody
+    public AjaxResult getProjectFile(@RequestParam Map<String,Object> mmap){
+
+        Integer deleted = MapUtils.getInteger(mmap,"deleted",0);
+        IPage<SysFile> page_ = Constant.createPage(new Page<SysFile>(),mmap);
+        page_=iSysFileService.lambdaQuery().eq(SysFile::getDeleted,0).page(page_);
+        List<SysFile> resultList = new ArrayList<>();
+        for(int i=0;page_ !=null && page_.getRecords() !=null && i<page_.getRecords().size();i++){
+            SysFile f = page_.getRecords().get(i);
+            Member member = memberService.lambdaQuery().eq(Member::getCode,f.getCreateBy()).one();
+            f.setCreatorName(member.getName());
+            f.setFullName(f.getTitle()+"."+f.getExtension());
+            resultList.add(f);
+        }
+        page_.setRecords(resultList);
+        Map data = Constant.createPageResultMap(page_);
+        return AjaxResult.success(data);
+    }
 
     @Value("${mproject.downloadServer}")
     private String downloadServer;
@@ -240,16 +244,16 @@ public class SysFileController extends BaseController {
      *
      * 此处仍不完善，未处理断点续传加密、秒传处理等。
      */
-    @PostMapping("/file/uploadFiles")
+    @PostMapping("/uploadFiles")
     @ResponseBody
-    public AjaxResult uploadFiles(HttpServletRequest request, @RequestParam("file") MultipartFile multipartFile)  throws Exception{
+    public AjaxResult uploadFiles(HttpServletRequest request, @RequestParam(value = "file") MultipartFile multipartFile)  throws Exception{
         String  fileName= request.getParameter("identifier");
         String  orgFileName= request.getParameter("filename");
         int  chunkNumber= request.getParameter("chunkNumber") == null ?0:new Integer(request.getParameter("chunkNumber"));
         int  totalChunks= request.getParameter("totalChunks") == null ?0:new Integer(request.getParameter("totalChunks"));
 
-        String  taskCode= request.getParameter("taskCode");
-        String projectCode = request.getParameter("projectCode");
+        String  taskCode= "taskCode";
+        String projectCode = "projectCode";
         Map loginMember = getLoginMember();
         String orgCode = MapUtils.getString(loginMember,"organizationCode");
         String memberCode = MapUtils.getString(loginMember,"memberCode");
@@ -265,8 +269,8 @@ public class SysFileController extends BaseController {
             String uploadFileName = uuid+"-"+originFileName;
             //String file_url = MProjectConfig.getUploadFolderPath()+memberCode+"/"+date+"/"+dateTimeNow+uploadFileName;
             //String base_url = MProjectConfig.getStaticUploadPrefix()+memberCode+"/"+date+"/"+dateTimeNow+uploadFileName;
-            String file_url = MProjectConfig.getProfile()+"/projectfile/"+memberCode+"/"+date+"/";
-            String base_url = "/projectfile/"+memberCode+"/"+date+"/"+uploadFileName;
+            String file_url = MProjectConfig.getProfile()+"/openfile/"+memberCode+"/"+date+"/";
+            String base_url = "/openfile/"+memberCode+"/"+date+"/"+uploadFileName;
             String downloadUrl = "/common/download?filePathName="+base_url+"&realFileName="+originFileName;
             // 这里使用Apache的FileUtils方法来进行保存
             //FileUtils.copyInputStreamToFile(multipartFile.getInputStream(), new File(file_url, uploadFileName));
@@ -316,11 +320,11 @@ public class SysFileController extends BaseController {
                     .downloads(0l)
                     .taskCode(taskCode)
                     .extension(originFileName.substring(originFileName.lastIndexOf(".")+1)).build();
-                Project project = iSysFileService.uploadFiles(file,memberCode,projectCode);
+                boolean flag = iSysFileService.uploadFiles(file,memberCode,projectCode);
                 Map result = new HashMap();
                 result.put("key",file.getPathName());
                 result.put("url",file.getFileUrl());
-                //result.put("projectName",project.getName());
+                result.put("flag",flag);
                 return AjaxResult.success(result);
             }else {
                 //正常返回
@@ -329,16 +333,16 @@ public class SysFileController extends BaseController {
         }
     }
 
-    @PostMapping("/file/recovery")
+    @PostMapping("/recovery")
     @ResponseBody
-    public AjaxResult fileRecovery(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult fileRecovery(@RequestBody Map<String,Object> mmap) {
         String fileCode = MapUtils.getString(mmap,"fileCode");
         iSysFileService.recovery(fileCode);
         return  AjaxResult.success();
     }
-    @PostMapping("/file/delete")
+    @PostMapping("/delete")
     @ResponseBody
-    public AjaxResult deleteFile(@RequestParam Map<String,Object> mmap) {
+    public AjaxResult deleteFile(@RequestBody Map<String,Object> mmap) {
         String fileCode = MapUtils.getString(mmap,"fileCode");
         iSysFileService.deleteFile(fileCode);
         return  AjaxResult.success();

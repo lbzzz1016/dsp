@@ -76,5 +76,5 @@ public interface ISysFileService extends IService<SysFile> {
      * @param projectCode
      * @return
      */
-    public Project uploadFiles(SysFile file, String memberCode, String projectCode);
+    public boolean uploadFiles(SysFile file, String memberCode, String projectCode);
 }
