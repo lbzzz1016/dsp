@@ -180,7 +180,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
     public boolean uploadFiles(SysFile file, String memberCode, String projectCode) {
         file.setProjectCode(projectCode);
         file.setCreateBy(memberCode);
-
+        System.out.println(file.getId());
         return baseMapper.insert(file) > 0;
     }
 }

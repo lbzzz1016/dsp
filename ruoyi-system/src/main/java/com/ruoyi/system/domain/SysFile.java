@@ -29,7 +29,7 @@ public class SysFile extends BaseEntity {
      * 
      */
     @TableId(value = "id")
-    private Integer id;
+    private Long id;
     /**
      * 编号
      */

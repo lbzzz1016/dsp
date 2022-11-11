@@ -29,7 +29,7 @@ public class SysFileBo extends BaseEntity {
      */
     @ApiModelProperty(value = "", required = true)
     @NotNull(message = "不能为空", groups = { EditGroup.class })
-    private Integer id;
+    private Long id;
 
     /**
      * 编号

@@ -172,7 +172,7 @@ public class SysFileController extends BaseController {
             return  AjaxResult.warn("文件已在回收站");
         }
         SysFile projectFile = new SysFile();
-        projectFile.setId(MapUtils.getInteger(fileMap,"id"));
+        projectFile.setId(MapUtils.getLong(fileMap,"id"));
         projectFile.setDeleted(1);
         projectFile.setDeletedTime(DateUtils.getTime());
         return AjaxResult.success(iSysFileService.updateById(projectFile));
@@ -190,7 +190,7 @@ public class SysFileController extends BaseController {
 
         Map fileMap = iSysFileService.getFileByCode(fileCode);
         SysFile projectFile = new SysFile();
-        projectFile.setId(MapUtils.getInteger(fileMap,"id"));
+        projectFile.setId(MapUtils.getLong(fileMap,"id"));
         projectFile.setTitle(title);
         return AjaxResult.success(iSysFileService.updateById(projectFile));
     }
@@ -202,8 +202,7 @@ public class SysFileController extends BaseController {
      */
     @PostMapping("/index")
     @ResponseBody
-    public AjaxResult getProjectFile(@RequestParam Map<String,Object> mmap){
-
+    public AjaxResult getProjectFile(@RequestBody Map<String,Object> mmap){
         Integer deleted = MapUtils.getInteger(mmap,"deleted",0);
         IPage<SysFile> page_ = Constant.createPage(new Page<SysFile>(),mmap);
         page_=iSysFileService.lambdaQuery().eq(SysFile::getDeleted,0).page(page_);
