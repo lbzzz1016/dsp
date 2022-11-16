@@ -7,13 +7,14 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.AjaxResult;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.CommUtils;
 import com.ruoyi.common.utils.Constant;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.member.domain.Member;
 import com.ruoyi.member.service.MemberAccountService;
+import com.ruoyi.member.service.MemberService;
 import com.ruoyi.project.domain.Project;
 import com.ruoyi.project.domain.ProjectLog;
 import com.ruoyi.project.service.ProjectLogService;
@@ -43,8 +44,8 @@ public class TaskController  extends BaseController {
     @Autowired
     private TaskProjectService taskProjectService;
 
-//    @Autowired
-//    private MemberService memberService;
+    @Autowired
+    private MemberService memberService;
 
     @Autowired
     private ProjectLogService projectLogService;
@@ -72,9 +73,6 @@ public class TaskController  extends BaseController {
 
     @Autowired
     private MemberAccountService memberAccountService;
-
-    @Autowired
-    private ISysUserService userService;
 
     /**
      *
@@ -112,8 +110,8 @@ public class TaskController  extends BaseController {
             if(CollectionUtils.isNotEmpty(list)){
                 Map memberMap,projectMap = null;
                 for(Map m:list){
-                    //memberMap = memberService.getMemberMapByCode(MapUtils.getString(m,"assign_to"));
-                    memberMap = userService.getMemberMapByCode(MapUtils.getString(m, "assign_to"));
+                    memberMap = memberService.getMemberMapByCode(MapUtils.getString(m,"assign_to"));
+//                    memberMap = userService.getMemberMapByCode(MapUtils.getString(m, "assign_to"));
                     projectMap = projectService.getProjectByCode(MapUtils.getString(m,"project_code"));
                     m.put("executor", CommUtils.getMapField(memberMap,new String[]{"name","avatar"}));
                     m.put("projectInfo",CommUtils.getMapField(projectMap,new String[]{"name","code"}));
@@ -154,8 +152,8 @@ public class TaskController  extends BaseController {
             String orgCode = MapUtils.getString(loginMember,"organizationCode");
             for(Map map:records){
                 memberCode = MapUtils.getString(map,"member_code");
-                //memberMap = memberService.getMemberMapByCode(memberCode);
-                memberMap = userService.getMemberMapByCode(memberCode);
+                memberMap = memberService.getMemberMapByCode(memberCode);
+//                memberMap = userService.getMemberMapByCode(memberCode);
                 returnEntity = CommUtils.getMapField(memberMap,new String[]{"id","name","avatar","code"});
                 memberAccountMap = memberAccountService.getMemberAccountByMemCodeAndOrgCode(memberCode,orgCode);
 
@@ -599,12 +597,13 @@ public class TaskController  extends BaseController {
     {
         String taskCode = MapUtils.getString(mmap,"taskCode");
         List<Map> mapList = taskWorkTimeService.getTaskWorkTimeByTaskCode(taskCode);
+        System.out.println(mapList.toString());
         List<Map> recordResult = new ArrayList<>();
         if(!CollectionUtils.isEmpty(mapList)){
             Map member = null;
             for(Map map : mapList){
-                //member = memberService.getMemberMapByCode(MapUtils.getString(map,"member_code"));
-                member = userService.getMemberMapByCode(MapUtils.getString(map, "member_code"));
+                member = memberService.getMemberMapByCode(MapUtils.getString(map,"member_code"));
+//                member = userService.getMemberMapByCode(MapUtils.getString(map, "member_code"));
                 map.put("member", CommUtils.getMapField(member,new String[]{"name","avatar"}));
                 recordResult.add(map);
             }
@@ -666,18 +665,18 @@ public class TaskController  extends BaseController {
 
         List<ProjectLog> resultList = new ArrayList<>();
         if(!CollectionUtils.isEmpty(records)){
-            SysUser user = null;
+            Member member = null;
             for(ProjectLog pl : records){
                if(pl.getIsRobot()>0 && "claim".equals(pl.getType())){
-                   user = new SysUser();
-                   user.setNickName("PP Robot");
-                   pl.setSysUser(user);
+                   member = new Member();
+                   member.setName("PP Robot");
+                   pl.setMember(member);
                    resultList.add(pl);
                    continue;
                }
-               //member = memberService.lambdaQuery().eq(Member::getCode,pl.getMember_code()).one();
-               user = userService.lambdaQuery().eq(SysUser::getCode, pl.getMemberCode()).one();
-               pl.setSysUser(user);
+               member = memberService.lambdaQuery().eq(Member::getCode,pl.getMemberCode()).one();
+//               user = userService.lambdaQuery().eq(SysUser::getCode, pl.getMemberCode()).one();
+               pl.setMember(member);
                resultList.add(pl);
             }
         }
