@@ -48,7 +48,7 @@ public class WfCategoryController extends BaseController {
      * 查询流程分类列表
      */
     @ApiOperation("查询流程分类列表")
-    @SaCheckPermission("workflow:category:list")
+    //@SaCheckPermission("workflow:category:list")
     @GetMapping("/list")
     public TableDataInfo<WfCategoryVo> list(@Validated(QueryGroup.class) WfCategoryBo bo, PageQuery pageQuery) {
         return flowCategoryService.queryPageList(bo, pageQuery);

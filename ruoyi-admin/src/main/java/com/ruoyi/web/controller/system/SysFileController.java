@@ -7,6 +7,7 @@ import java.io.RandomAccessFile;
 import java.util.*;
 
 import cn.hutool.core.util.IdUtil;
+import com.amazonaws.event.DeliveryMode;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.AjaxResult;
@@ -192,6 +193,11 @@ public class SysFileController extends BaseController {
         SysFile projectFile = new SysFile();
         projectFile.setId(MapUtils.getLong(fileMap,"id"));
         projectFile.setTitle(title);
+        String extension = MapUtils.getString(fileMap, "extension");
+        String projectCode = MapUtils.getString(fileMap, "project_code");
+        if (!checkFile(title, extension, projectCode)) {
+            AjaxResult.error("存在同名文件！");
+        }
         return AjaxResult.success(iSysFileService.updateById(projectFile));
     }
 
@@ -264,6 +270,12 @@ public class SysFileController extends BaseController {
             String uuid = IdUtil.simpleUUID();
             // 文件原名称
             String originFileName = multipartFile.getOriginalFilename().toString();
+            //校验重名文件
+            String strTitle = originFileName.substring(0,originFileName.lastIndexOf("."));
+            String strExtension = originFileName.substring(originFileName.lastIndexOf(".")+1);
+            if (!checkFile(strTitle, strExtension, projectCode)) {
+                return AjaxResult.error("存在同名文件！");
+            }
             // 上传文件重命名
             String uploadFileName = uuid+"-"+originFileName;
             //String file_url = MProjectConfig.getUploadFolderPath()+memberCode+"/"+date+"/"+dateTimeNow+uploadFileName;
@@ -347,5 +359,11 @@ public class SysFileController extends BaseController {
         return  AjaxResult.success();
     }
 
-
+    public Boolean checkFile(String title, String extension, String projectCode) {
+        SysFile sysFile = iSysFileService.lambdaQuery().eq(SysFile::getTitle, title)
+                            .eq(SysFile::getExtension, extension)
+                            .eq(SysFile::getProjectCode, projectCode)
+                            .eq(SysFile::getDeleted, 0).one();
+        return sysFile == null ? true : false;
+    }
 }

@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     public R<Void> handleNotPermissionException(NotPermissionException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',权限码校验失败'{}'", requestURI, e.getMessage());
-        return R.fail(HttpStatus.HTTP_FORBIDDEN, "没有访问权限，请联系管理员授权");
+        return R.fail(HttpStatus.HTTP_FORBIDDEN, "权限码异常，没有访问权限，请联系管理员授权");
     }
 
     /**
@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
     public R<Void> handleNotRoleException(NotRoleException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',角色权限校验失败'{}'", requestURI, e.getMessage());
-        return R.fail(HttpStatus.HTTP_FORBIDDEN, "没有访问权限，请联系管理员授权");
+        return R.fail(HttpStatus.HTTP_FORBIDDEN, "角色权限异常，没有访问权限，请联系管理员授权");
     }
 
     /**

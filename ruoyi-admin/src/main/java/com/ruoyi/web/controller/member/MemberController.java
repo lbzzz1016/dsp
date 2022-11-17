@@ -71,7 +71,7 @@ public class MemberController extends BaseController {
         Map memberAccountMap = memberAccountService.getMemberAccountByMemCode(code);
         Member member = new Member();
         MemberAccount memberAccount = new MemberAccount();
-        member.setId(MapUtils.getInteger(memberMap,"id"));member.setName(name);member.setDescription(description);
+        member.setId(MapUtils.getLong(memberMap,"id"));member.setName(name);member.setDescription(description);
         member.setAvatar(avatar);
         memberAccount.setId(MapUtils.getInteger(memberAccountMap,"id"));
         memberAccount.setAvatar(avatar);
@@ -403,7 +403,7 @@ public class MemberController extends BaseController {
             throw new CustomException("请先选择项目");
         }
         List<MemberAccount> listMemberAccounts = memberAccountService.lambdaQuery()
-                .eq(MemberAccount::getOrganizationCode, ServletUtils.getHeaderParam("organizationCode"))
+                // .eq(MemberAccount::getOrganizationCode, ServletUtils.getHeaderParam("organizationCode"))
                 .list();
         List<Map> resultData = new ArrayList<>();
         if(!CollectionUtils.isEmpty(listMemberAccounts)){

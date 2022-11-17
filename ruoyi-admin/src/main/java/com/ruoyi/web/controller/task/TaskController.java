@@ -158,8 +158,8 @@ public class TaskController  extends BaseController {
                 memberAccountMap = memberAccountService.getMemberAccountByMemCodeAndOrgCode(memberCode,orgCode);
 
                 returnEntity.put("membar_account_code",MapUtils.getString(memberAccountMap,"code"));
-                returnEntity.put("is_executor",MapUtils.getInteger(map,"is_executor"));
-                returnEntity.put("is_owner",MapUtils.getInteger(map,"is_owner"));
+                returnEntity.put("is_executor",MapUtils.getBoolean(map,"is_executor"));
+                returnEntity.put("is_owner",MapUtils.getBoolean(map,"is_owner"));
                 resultList.add(returnEntity);
 
             }

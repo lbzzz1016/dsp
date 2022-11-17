@@ -551,6 +551,11 @@ public class ProjectAssistController extends BaseController {
         com.ruoyi.task.domain.File projectFile = new com.ruoyi.task.domain.File();
         projectFile.setId(MapUtils.getInteger(fileMap,"id"));
         projectFile.setTitle(title);
+        String extension = MapUtils.getString(fileMap, "extension");
+        String projectCode = MapUtils.getString(fileMap, "project_code");
+        if (!checkFile(title, extension, projectCode)) {
+            AjaxResult.error("存在同名文件！");
+        }
         return AjaxResult.success(fileService.updateById(projectFile));
     }
 
@@ -629,6 +634,12 @@ public class ProjectAssistController extends BaseController {
             String uuid = CommUtils.getUUID();
             // 文件原名称
             String originFileName = multipartFile.getOriginalFilename().toString();
+            //校验重名文件
+            String strTitle = originFileName.substring(0,originFileName.lastIndexOf("."));
+            String strExtension = originFileName.substring(originFileName.lastIndexOf(".")+1);
+            if (!checkFile(strTitle, strExtension, projectCode)) {
+                return AjaxResult.error("存在同名文件！");
+            }
             // 上传文件重命名
             String uploadFileName = uuid+"-"+originFileName;
             //String file_url = MProjectConfig.getUploadFolderPath()+memberCode+"/"+date+"/"+dateTimeNow+uploadFileName;
@@ -715,4 +726,11 @@ public class ProjectAssistController extends BaseController {
         return  AjaxResult.success();
     }
 
+    public Boolean checkFile(String title, String extension, String projectCode) {
+        com.ruoyi.task.domain.File file = fileService.lambdaQuery().eq(com.ruoyi.task.domain.File::getTitle, title)
+            .eq(com.ruoyi.task.domain.File::getExtension, extension)
+            .eq(com.ruoyi.task.domain.File::getProjectCode, projectCode)
+            .eq(com.ruoyi.task.domain.File::getDeleted, 0).one();
+        return file == null ? true : false;
+    }
 }

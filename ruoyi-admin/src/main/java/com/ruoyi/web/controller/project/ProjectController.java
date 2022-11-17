@@ -843,8 +843,11 @@ public class ProjectController extends BaseController {
     }
     
     @PostMapping("/project/getTopList")
-    public AjaxResult getTopList(String dateType, String startDate, String endDate) {
+    public AjaxResult getTopList(@RequestBody Map<String,Object> mmap) {
         String orgCode = getOrgCode();
+        String dateType = MapUtils.getString(mmap, "dateType");
+        String startDate = MapUtils.getString(mmap, "startDate");
+        String endDate = MapUtils.getString(mmap, "endDate");
         return AjaxResult.success("", proService.getTopList(orgCode, dateType, startDate, endDate));
     }
 

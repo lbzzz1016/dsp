@@ -415,18 +415,18 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                 }).count();
                 //逾期任务 逾期率
                 taskOverdueCount = (int) tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getEndTime())).filter(o -> {
-                    LocalDateTime end = LocalDateTime.parse(o.getEndTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                    LocalDateTime end = LocalDateTime.parse(o.getEndTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM));
                     return end.isBefore(now) && o.getDone() == 0;
                 }).count();
                 taskOverduePercent = taskOverdueCount * 100 / taskCount;
                 //周同比  日同比
                 int taskWeekCount = (int) tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getEndTime())).filter(o -> {
-                    LocalDateTime end = LocalDateTime.parse(o.getEndTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                    LocalDateTime end = LocalDateTime.parse(o.getEndTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM));
                     return end.isBefore(lastWeek) && o.getDone() == 0;
                 }).count();
                 weekRatio = taskWeekCount == 0 ? 0 : (taskOverdueCount - taskWeekCount) * 100 / taskWeekCount;
                 int taskDayCount = (int) tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getEndTime())).filter(o -> {
-                    LocalDateTime end = LocalDateTime.parse(o.getEndTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                    LocalDateTime end = LocalDateTime.parse(o.getEndTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM));
                     return end.isBefore(yesterday) && o.getDone() == 0;
                 }).count();
                 dayRatio = taskDayCount == 0 ? 0 : (taskOverdueCount - taskDayCount) * 100 / taskDayCount;
@@ -667,8 +667,8 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                     break;
             }
         } else {
-            LocalDate beginDate = LocalDate.parse(startDate, DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
-            LocalDate finalDate = LocalDate.parse(endDate, DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS));
+            LocalDate beginDate = LocalDate.parse(startDate, DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD));
+            LocalDate finalDate = LocalDate.parse(endDate, DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD));
             finalDate = finalDate.isBefore(now) ? finalDate : now;
             LocalDate finalBeginDate1 = beginDate;
             LocalDate finalDate1 = finalDate;

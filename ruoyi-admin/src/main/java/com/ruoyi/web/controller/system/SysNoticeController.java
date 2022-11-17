@@ -34,7 +34,7 @@ public class SysNoticeController extends BaseController {
      * 获取通知公告列表
      */
     @ApiOperation("获取通知公告列表")
-    @SaCheckPermission("system:notice:list")
+    //@SaCheckPermission("system:notice:list")
     @GetMapping("/list")
     public TableDataInfo<SysNotice> list(SysNotice notice, PageQuery pageQuery) {
         return noticeService.selectPageNoticeList(notice, pageQuery);

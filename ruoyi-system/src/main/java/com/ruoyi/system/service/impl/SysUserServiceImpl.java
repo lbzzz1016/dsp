@@ -302,6 +302,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         user.setCode(CommUtils.getUUID());
         // 新增用户信息
         int rows = baseMapper.insert(user);
+//        Member member = Member.builder().id(user.getUserId()).account(user.getUserName()).password(user.getPassword())
+//                                .name(user.getNickName()).mobile(user.getPhonenumber()).realname(user.getNickName())
+//                                .createTime(DateUtils.formatDateTime(user.getCreateTime())).status(Integer.parseInt(user.getStatus()))
+//                                .lastLoginTime(DateUtils.formatDateTime(user.getLoginDate())).sex(user.getSex()).avatar(user.getAvatar()).description(user.getRemark())
+//                                .email(user.getEmail()).code(user.getCode()).build();
+//        memberService.createMember(member);
         // 新增用户岗位关联
         insertUserPost(user);
         // 新增用户与角色管理
