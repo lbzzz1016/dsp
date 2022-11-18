@@ -59,7 +59,7 @@ public class SysUserController extends BaseController {
      * 获取用户列表
      */
     @ApiOperation("获取用户列表")
-    @SaCheckPermission("system:user:list")
+//    @SaCheckPermission("system:user:list")
     @GetMapping("/list")
     public TableDataInfo<SysUser> list(SysUser user, PageQuery pageQuery) {
         return userService.selectPageUserList(user, pageQuery);

@@ -557,7 +557,7 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
                         Map<String, Object> taskMap = new HashMap<>(4);
                         long taskCount = tasks == null ? 0 : tasks.stream().filter(o -> StrUtil.isNotEmpty(o.getCreateTime())).filter(o -> {
                             LocalDate create = LocalDateTime.parse(o.getCreateTime(), DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)).toLocalDate();
-                            return create.equals(now);
+                            return create.equals(finalBeginDate);
                         }).count();
                         taskMap.put("日期", day);
                         taskMap.put("任务", taskCount);

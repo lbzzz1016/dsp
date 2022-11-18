@@ -77,7 +77,9 @@ public class SysDeptController extends BaseController {
     @ApiOperation("获取部门下拉树列表")
     @GetMapping("/treeselect")
     public R<List<Tree<Long>>> treeselect(SysDept dept) {
-        List<SysDept> depts = deptService.selectDeptList(dept);
+        SysDept dept1 = new SysDept();
+        System.out.println(dept1.toString());
+        List<SysDept> depts = deptService.selectDeptList(dept1);
         return R.ok(deptService.buildDeptTreeSelect(depts));
     }
 
