@@ -44,7 +44,7 @@ public class SysNoticeController extends BaseController {
      * 根据通知公告编号获取详细信息
      */
     @ApiOperation("根据通知公告编号获取详细信息")
-    @SaCheckPermission("system:notice:query")
+//    @SaCheckPermission("system:notice:query")
     @GetMapping(value = "/{noticeId}")
     public R<SysNotice> getInfo(@ApiParam("公告ID") @PathVariable Long noticeId) {
         return R.ok(noticeService.selectNoticeById(noticeId));

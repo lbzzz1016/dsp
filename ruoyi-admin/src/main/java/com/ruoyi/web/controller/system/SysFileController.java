@@ -15,6 +15,7 @@ import com.ruoyi.common.config.MProjectConfig;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.Constant;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.member.domain.Member;
 import com.ruoyi.member.service.MemberService;
 import com.ruoyi.project.domain.Project;
@@ -169,7 +170,7 @@ public class SysFileController extends BaseController {
         if(MapUtils.isEmpty(fileMap)){
             return  AjaxResult.warn("文件不存在");
         }
-        if(1== MapUtils.getInteger(fileMap,"deleted")){
+        if(MapUtils.getBoolean(fileMap,"deleted")){
             return  AjaxResult.warn("文件已在回收站");
         }
         SysFile projectFile = new SysFile();
@@ -210,8 +211,9 @@ public class SysFileController extends BaseController {
     @ResponseBody
     public AjaxResult getProjectFile(@RequestBody Map<String,Object> mmap){
         Integer deleted = MapUtils.getInteger(mmap,"deleted",0);
+        String fileType = MapUtils.getString(mmap, "fileType", "others");
         IPage<SysFile> page_ = Constant.createPage(new Page<SysFile>(),mmap);
-        page_=iSysFileService.lambdaQuery().eq(SysFile::getDeleted,0).page(page_);
+        page_=iSysFileService.lambdaQuery().eq(SysFile::getDeleted,0).eq(SysFile::getFileType, fileType).page(page_);
         List<SysFile> resultList = new ArrayList<>();
         for(int i=0;page_ !=null && page_.getRecords() !=null && i<page_.getRecords().size();i++){
             SysFile f = page_.getRecords().get(i);
@@ -252,8 +254,10 @@ public class SysFileController extends BaseController {
     @PostMapping("/uploadFiles")
     @ResponseBody
     public AjaxResult uploadFiles(HttpServletRequest request, @RequestParam(value = "file") MultipartFile multipartFile)  throws Exception{
-        String  fileName= request.getParameter("identifier");
-        String  orgFileName= request.getParameter("filename");
+        String fileName= request.getParameter("identifier");
+        String orgFileName= request.getParameter("filename");
+        String fileType= request.getParameter("fileType") == null ? "" : request.getParameter("fileType");
+
         int  chunkNumber= request.getParameter("chunkNumber") == null ?0:new Integer(request.getParameter("chunkNumber"));
         int  totalChunks= request.getParameter("totalChunks") == null ?0:new Integer(request.getParameter("totalChunks"));
 
@@ -278,8 +282,6 @@ public class SysFileController extends BaseController {
             }
             // 上传文件重命名
             String uploadFileName = uuid+"-"+originFileName;
-            //String file_url = MProjectConfig.getUploadFolderPath()+memberCode+"/"+date+"/"+dateTimeNow+uploadFileName;
-            //String base_url = MProjectConfig.getStaticUploadPrefix()+memberCode+"/"+date+"/"+dateTimeNow+uploadFileName;
             String file_url = MProjectConfig.getProfile()+"/openfile/"+memberCode+"/"+date+"/";
             String base_url = "/openfile/"+memberCode+"/"+date+"/"+uploadFileName;
             String downloadUrl = "/common/download?filePathName="+base_url+"&realFileName="+originFileName;
@@ -323,7 +325,7 @@ public class SysFileController extends BaseController {
                     .pathName(file_url+uploadFileName)
                     .fileUrl(downloadServer+downloadUrl)
                     .title(originFileName.substring(0,originFileName.lastIndexOf(".")))
-                    .fileType("text/plain")
+                    .fileType(fileType)
                     .code(uuid)
                     .organizationCode(orgCode)
                     .projectCode(projectCode)
@@ -351,11 +353,21 @@ public class SysFileController extends BaseController {
         iSysFileService.recovery(fileCode);
         return  AjaxResult.success();
     }
+
     @PostMapping("/delete")
     @ResponseBody
     public AjaxResult deleteFile(@RequestBody Map<String,Object> mmap) {
         String fileCode = MapUtils.getString(mmap,"fileCode");
         iSysFileService.deleteFile(fileCode);
+        return  AjaxResult.success();
+    }
+
+    @PostMapping("/move")
+    @ResponseBody
+    public AjaxResult moveFile(@RequestBody Map<String,Object> mmap) {
+        String fileCode = MapUtils.getString(mmap,"fileCode");
+        String fileType = MapUtils.getString(mmap, "fileType");
+        iSysFileService.moveFile(fileCode, fileType);
         return  AjaxResult.success();
     }
 

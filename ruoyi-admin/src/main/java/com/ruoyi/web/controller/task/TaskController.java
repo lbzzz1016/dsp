@@ -573,8 +573,14 @@ public class TaskController  extends BaseController {
         if(!CollectionUtils.isEmpty(sourceLinkList)){
             Map file = null;Map project = null;
             for(Map map:sourceLinkList){
-                file = fileService.getFileByCode(MapUtils.getString(map,"source_code"));
+                file = fileService.getFileByCodeV2(MapUtils.getString(map,"source_code"));
+                if (file == null) {
+                    continue;
+                }
                 project = projectService.getProjectByCode(MapUtils.getString(file,"project_code"));
+                if (project == null) {
+                    continue;
+                }
                 map.put("title",MapUtils.getString(file,"title"));
                 file.put("fullName",MapUtils.getString(file,"title")+MapUtils.getString(file,"extension"));
                 file.put("projectName",MapUtils.getString(project,"name"));

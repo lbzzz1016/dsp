@@ -86,7 +86,7 @@ public class SysFile extends BaseEntity {
     /**
      * 文件类型
      */
-    @TableField(exist = false)
+//    @TableField(exist = false)
     private String fileType;
     /**
      * 删除时间

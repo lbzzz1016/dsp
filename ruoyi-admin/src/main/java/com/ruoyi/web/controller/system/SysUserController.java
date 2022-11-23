@@ -62,9 +62,19 @@ public class SysUserController extends BaseController {
 //    @SaCheckPermission("system:user:list")
     @GetMapping("/list")
     public TableDataInfo<SysUser> list(SysUser user, PageQuery pageQuery) {
-        return userService.selectPageUserList(user, pageQuery);
+        TableDataInfo<SysUser> retVal = userService.selectPageUserList(user, pageQuery);
+        System.out.println(retVal);
+        return retVal;
     }
 
+    @ApiOperation("获取用户列表")
+//    @SaCheckPermission("system:user:list")
+    @GetMapping("/listV2")
+    public TableDataInfo<SysUser> listV2(SysUser user, PageQuery pageQuery) {
+        TableDataInfo<SysUser> retVal = userService.selectPageUserList(user, pageQuery);
+        System.out.println(retVal);
+        return retVal;
+    }
 
     /**
      * 查询用户列表，用于用户选择场景

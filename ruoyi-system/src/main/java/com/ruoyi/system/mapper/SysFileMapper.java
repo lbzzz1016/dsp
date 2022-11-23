@@ -21,10 +21,10 @@ import java.util.Map;
 @Mapper
 public interface SysFileMapper extends BaseMapperPlus<SysFileMapper, SysFile, SysFileVo> {
 
-    @Select("SELECT id, code,path_name,title,extension,size,object_type,organization_code,task_code,project_code,create_by,create_time,downloads,extra,deleted,file_url,file_type,deleted_time FROM team_file WHERE code = #{fileCode}")
+    @Select("SELECT id, code,path_name,title,extension,size,object_type,organization_code,task_code,project_code,create_by,create_time,downloads,extra,deleted,file_url,file_type,deleted_time FROM sys_file WHERE code = #{fileCode}")
     Map selectFileByCode(@Param("fileCode") String fileCode);
 
-    @Select("SELECT * FROM team_file WHERE project_code = #{params.projectCode} AND deleted = #{params.deleted} ORDER BY id DESC")
+    @Select("SELECT * FROM sys_file WHERE project_code = #{params.projectCode} AND deleted = #{params.deleted} ORDER BY id DESC")
     IPage<Map> selectFileByProjectCodeAndDelete(IPage<Map> page, @Param("params") Map params);
 
 }

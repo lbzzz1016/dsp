@@ -20,10 +20,10 @@ import java.util.Map;
  */
 public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, SysUser> {
 
-    @DataPermission({
-        @DataColumn(key = "deptName", value = "d.dept_id"),
-        @DataColumn(key = "userName", value = "u.user_id")
-    })
+//    @DataPermission({
+//        @DataColumn(key = "deptName", value = "d.dept_id"),
+//        @DataColumn(key = "userName", value = "u.user_id")
+//    })
     Page<SysUser> selectPageUserList(@Param("page") Page<SysUser> page, @Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
 
     /**

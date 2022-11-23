@@ -140,7 +140,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
     }
 
     /**
-     * 更新文件
+     * 恢复文件
      * @param fileCode
      */
     @Override
@@ -166,6 +166,18 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
             throw new CustomException("文件不存在");
         }
         lambdaUpdate().eq(SysFile::getCode, fileCode).remove();
+    }
+
+    /**
+     * 移动文件
+     * @param fileCode
+     */
+    public void moveFile(String fileCode, String fileType) {
+        SysFile file = lambdaQuery().eq(SysFile::getCode,fileCode).one();
+        if(ObjectUtils.isEmpty(file)){
+            throw new CustomException("文件不存在");
+        }
+        lambdaUpdate().eq(SysFile::getCode, fileCode).set(SysFile::getFileType, fileType).update();
     }
 
     /**

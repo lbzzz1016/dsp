@@ -40,7 +40,7 @@ public class SysDeptController extends BaseController {
      * 获取部门列表
      */
     @ApiOperation("获取部门列表")
-    @SaCheckPermission("system:dept:list")
+//    @SaCheckPermission("system:dept:list")
     @GetMapping("/list")
     public R<List<SysDept>> list(SysDept dept) {
         List<SysDept> depts = deptService.selectDeptList(dept);
@@ -51,7 +51,7 @@ public class SysDeptController extends BaseController {
      * 查询部门列表（排除节点）
      */
     @ApiOperation("查询部门列表（排除节点）")
-    @SaCheckPermission("system:dept:list")
+//    @SaCheckPermission("system:dept:list")
     @GetMapping("/list/exclude/{deptId}")
     public R<List<SysDept>> excludeChild(@ApiParam("部门ID") @PathVariable(value = "deptId", required = false) Long deptId) {
         List<SysDept> depts = deptService.selectDeptList(new SysDept());
@@ -64,7 +64,7 @@ public class SysDeptController extends BaseController {
      * 根据部门编号获取详细信息
      */
     @ApiOperation("根据部门编号获取详细信息")
-    @SaCheckPermission("system:dept:query")
+//    @SaCheckPermission("system:dept:query")
     @GetMapping(value = "/{deptId}")
     public R<SysDept> getInfo(@ApiParam("部门ID") @PathVariable Long deptId) {
         deptService.checkDeptDataScope(deptId);

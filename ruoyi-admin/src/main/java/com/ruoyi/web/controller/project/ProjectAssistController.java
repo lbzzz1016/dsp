@@ -7,8 +7,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.AjaxResult;
 import com.ruoyi.common.config.MProjectConfig;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.*;
+import com.ruoyi.member.domain.Member;
+import com.ruoyi.member.service.MemberService;
 import com.ruoyi.project.domain.Project;
 import com.ruoyi.project.domain.ProjectFeatures;
 import com.ruoyi.project.domain.ProjectVersion;
@@ -17,7 +18,6 @@ import com.ruoyi.project.service.ProjectFeaturesService;
 import com.ruoyi.project.service.ProjectInfoService;
 import com.ruoyi.project.service.ProjectVersionLogService;
 import com.ruoyi.project.service.ProjectVersionService;
-import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.task.domain.Task;
 import com.ruoyi.task.service.FileService;
 import com.ruoyi.task.service.TaskProjectService;
@@ -50,16 +50,13 @@ public class ProjectAssistController extends BaseController {
     @Autowired
     private ProjectVersionService projectVersionService;
 
-//    @Autowired
-//    private MemberService memberService;
+    @Autowired
+    private MemberService memberService;
     @Autowired
     private TaskProjectService taskProjectService;
 
     @Autowired
     private ProjectVersionLogService projectVersionLogService;
-
-    @Autowired
-    private ISysUserService userService;
 
 
     /**编辑版本库
@@ -269,8 +266,7 @@ public class ProjectAssistController extends BaseController {
         List<Map> resultList = new ArrayList<>();
         Map memberMap = null;
         for(Map m:taskList){
-            //memberMap = memberService.getMemberMapByCode(MapUtils.getString(m,"assign_to"));
-            memberMap = userService.getMemberMapByCode(MapUtils.getString(m, "assign_to"));
+            memberMap = memberService.getMemberMapByCode(MapUtils.getString(m,"assign_to"));
             m.put("executor",CommUtils.getMapField(memberMap,new String[]{"name","avatar"}));
             resultList.add(m);
         }
@@ -309,8 +305,7 @@ public class ProjectAssistController extends BaseController {
         if(!CollectionUtils.isEmpty(selList)){
             Map memberMap = null;
             for(Map m:selList){
-                //memberMap = memberService.getMemberMapByCode(MapUtils.getString(m,"member_code"));
-                memberMap = userService.getMemberMapByCode(MapUtils.getString(m, "member_code"));
+                memberMap = memberService.getMemberMapByCode(MapUtils.getString(m,"member_code"));
                 m.put("member",CommUtils.getMapField(memberMap,new String[]{"id","name","avatar","code"}));
                 listResult.add(m);
             }
@@ -528,7 +523,7 @@ public class ProjectAssistController extends BaseController {
         if(MapUtils.isEmpty(fileMap)){
             return  AjaxResult.warn("文件不存在");
         }
-        if(1== MapUtils.getInteger(fileMap,"deleted")){
+        if(MapUtils.getBoolean(fileMap,"deleted")){
             return  AjaxResult.warn("文件已在回收站");
         }
         com.ruoyi.task.domain.File projectFile = new com.ruoyi.task.domain.File();
@@ -575,13 +570,12 @@ public class ProjectAssistController extends BaseController {
             put("deleted",deleted);
         }};
         IPage<com.ruoyi.task.domain.File> page_ = Constant.createPage(new Page<com.ruoyi.task.domain.File>(),mmap);
-        page_=fileService.lambdaQuery().eq(com.ruoyi.task.domain.File::getProjectCode,projectCode).eq(com.ruoyi.task.domain.File::getDeleted,0).page(page_);
+        page_=fileService.lambdaQuery().eq(com.ruoyi.task.domain.File::getProjectCode,projectCode).eq(com.ruoyi.task.domain.File::getDeleted,deleted).page(page_);
         List<com.ruoyi.task.domain.File> resultList = new ArrayList<>();
         for(int i=0;page_ !=null && page_.getRecords() !=null && i<page_.getRecords().size();i++){
             com.ruoyi.task.domain.File f = page_.getRecords().get(i);
-            //Member member = memberService.lambdaQuery().eq(Member::getCode,f.getCreate_by()).one();
-            SysUser member = userService.lambdaQuery().eq(SysUser::getCode, f.getCreateBy()).one();
-            f.setCreatorName(member.getNickName());
+            Member member = memberService.lambdaQuery().eq(Member::getCode,f.getCreateBy()).one();
+            f.setCreatorName(member.getName());
             f.setFullName(f.getTitle()+"."+f.getExtension());
             resultList.add(f);
         }
@@ -589,6 +583,7 @@ public class ProjectAssistController extends BaseController {
         Map data = Constant.createPageResultMap(page_);
         return AjaxResult.success(data);
     }
+
     @Value("${mproject.downloadServer}")
     private String downloadServer;
 

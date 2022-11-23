@@ -58,7 +58,7 @@ public interface ISysFileService extends IService<SysFile> {
     public Map getFileByCode(String fileCode);
 
     /**
-     * 更新文件
+     * 恢复文件
      * @param fileCode
      */
     public void recovery(String fileCode);
@@ -68,6 +68,12 @@ public interface ISysFileService extends IService<SysFile> {
      * @param fileCode
      */
     public void deleteFile(String fileCode);
+
+    /**
+     * 移动文件
+     * @param fileCode
+     */
+    public void moveFile(String fileCode, String fileType);
 
     /**
      * 上传文件

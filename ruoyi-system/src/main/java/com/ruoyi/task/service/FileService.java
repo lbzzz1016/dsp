@@ -31,6 +31,10 @@ public class FileService  extends ServiceImpl<FileMapper, File> {
         return baseMapper.selectFileByCode(fileCode);
     }
 
+    public Map getFileByCodeV2(String fileCode){
+        return baseMapper.selectFileByCodeV2(fileCode);
+    }
+
     public IPage<Map> gettFileByProjectCodeAndDelete(IPage<Map> page, Map params){
         return baseMapper.selectFileByProjectCodeAndDelete(page,params);
     }
