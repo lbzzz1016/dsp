@@ -19,6 +19,7 @@ import com.ruoyi.org.service.DepartmentService;
 import com.ruoyi.project.domain.Project;
 import com.ruoyi.project.service.ProjectAuthService;
 import com.ruoyi.project.service.ProjectService;
+import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.task.domain.Task;
 import com.ruoyi.task.service.TaskMemberService;
 import com.ruoyi.task.service.TaskProjectService;
@@ -54,6 +55,9 @@ public class MemberController extends BaseController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private ISysUserService userService;
 
     /**
      * 账号停用
@@ -263,36 +267,6 @@ public class MemberController extends BaseController {
         Integer searchType = MapUtils.getInteger(mmap, "searchType",-1);
         IPage<Map> ipage = Constant.createPage(mmap);
         ipage = memberAccountService.getAccountIndex(ipage,mmap,orgCode);
-        /*Map params = new HashMap();
-        Map resultData = new HashMap();
-        params.put("orgCode",orgCode);
-        switch (searchType){
-            case 1:{
-                params.put("status",1);
-                resultPage =  memberAccountService.getMemberAccountByOrgCodeAndStatus(ipage,params);
-                break;
-            }
-            case 2:{
-                params.put("depCode","");
-                resultPage =  memberAccountService.getMemberAccountByOrgCodeStatusDeptCode(ipage,params);
-                break;
-            }
-            case 3:{
-                params.put("status",0);
-                resultPage =  memberAccountService.getMemberAccountByOrgCodeAndStatus(ipage,params);
-                break;
-            }
-            case 4:{
-                params.put("status",1);
-                params.put("depCode",departmentCode);
-                resultPage =  memberAccountService.getMemberAccountByOrgCodeStatusDeptCode(ipage,params);
-                break;
-            }
-            default:{
-                params.put("status",1);
-                resultPage =  memberAccountService.getMemberAccountByOrgCodeAndStatus(ipage,params);
-            }
-        }*/
 
         List<Map> records = ipage.getRecords();
         List<Map> resultList = new ArrayList<>();

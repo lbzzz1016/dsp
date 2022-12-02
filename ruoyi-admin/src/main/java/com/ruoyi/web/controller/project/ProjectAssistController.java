@@ -637,13 +637,10 @@ public class ProjectAssistController extends BaseController {
             }
             // 上传文件重命名
             String uploadFileName = uuid+"-"+originFileName;
-            //String file_url = MProjectConfig.getUploadFolderPath()+memberCode+"/"+date+"/"+dateTimeNow+uploadFileName;
-            //String base_url = MProjectConfig.getStaticUploadPrefix()+memberCode+"/"+date+"/"+dateTimeNow+uploadFileName;
             String file_url = MProjectConfig.getProfile()+"/projectfile/"+memberCode+"/"+date+"/";
             String base_url = "/projectfile/"+memberCode+"/"+date+"/"+uploadFileName;
             String downloadUrl = "/common/download?filePathName="+base_url+"&realFileName="+originFileName;
             // 这里使用Apache的FileUtils方法来进行保存
-            //FileUtils.copyInputStreamToFile(multipartFile.getInputStream(), new File(file_url, uploadFileName));
             File tempFile= new File(file_url, originFileName);
             Long fileSize = 0L;
             //第一个块,则新建文件

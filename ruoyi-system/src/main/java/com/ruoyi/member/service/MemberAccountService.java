@@ -11,6 +11,7 @@ import com.ruoyi.commo.mapper.CommMapper;
 import com.ruoyi.common.utils.CommUtils;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.member.domain.Member;
 import com.ruoyi.member.domain.MemberAccount;
 import com.ruoyi.member.mapper.MemberAccountMapper;
 import com.ruoyi.project.domain.ProjectAuth;
@@ -133,7 +134,7 @@ public class MemberAccountService extends ServiceImpl<MemberAccountMapper, Membe
 
     @Lazy
     @Autowired
-    ISysUserService sysUserService;
+    MemberService memberService;
     @Autowired
     ProjectAuthMapper projectAuthMapper;
 
@@ -144,8 +145,8 @@ public class MemberAccountService extends ServiceImpl<MemberAccountMapper, Membe
         if(ObjectUtils.isNotEmpty(hasJoined) && ObjectUtils.isNotEmpty(hasJoined.getId())){
             return memberAccount;
         }
-        SysUser memberDate = sysUserService.lambdaQuery().eq(SysUser::getCode,memberAccount.getMemberCode())
-                .one();
+        Member memberDate = memberService.lambdaQuery().eq(Member::getCode,memberAccount.getMemberCode())
+            .one();
         if(ObjectUtil.isEmpty(memberDate)){
             throw new CustomException("该用户不存在");
         }
@@ -160,7 +161,7 @@ public class MemberAccountService extends ServiceImpl<MemberAccountMapper, Membe
         memberAccount.setIsOwner(0);
         memberAccount.setStatus(1);
         memberAccount.setCreateTime(DateUtils.getTime());
-        memberAccount.setName(memberDate.getNickName());
+        memberAccount.setName(memberDate.getName());
         memberAccount.setEmail(memberDate.getEmail());
         save(memberAccount);
         return memberAccount;

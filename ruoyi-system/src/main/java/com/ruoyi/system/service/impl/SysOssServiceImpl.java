@@ -16,6 +16,7 @@ import com.ruoyi.oss.factory.OssFactory;
 import com.ruoyi.system.domain.SysOss;
 import com.ruoyi.system.domain.bo.SysOssBo;
 import com.ruoyi.system.domain.vo.SysOssVo;
+import com.ruoyi.system.mapper.SysFileMapper;
 import com.ruoyi.system.mapper.SysOssMapper;
 import com.ruoyi.system.service.ISysOssService;
 import lombok.RequiredArgsConstructor;

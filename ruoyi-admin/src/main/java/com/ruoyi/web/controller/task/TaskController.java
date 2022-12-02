@@ -410,9 +410,9 @@ public class TaskController  extends BaseController {
 
         String pcode = MapUtils.getString(mmap, "pcode");
         String name = MapUtils.getString(mmap, "name");
-        String assign_to = MapUtils.getString(mmap, "assign_to");
-        String stage_code = MapUtils.getString(mmap,"stage_code");
-        String project_code = MapUtils.getString(mmap,"project_code");
+        String assign_to = MapUtils.getString(mmap, "assignTo");
+        String stage_code = MapUtils.getString(mmap,"stageCode");
+        String project_code = MapUtils.getString(mmap,"projectCode");
         Map loginMember = getLoginMember();
 
         if(StringUtils.isEmpty(name)){
