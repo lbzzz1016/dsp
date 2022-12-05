@@ -557,7 +557,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         Member member = list.parallelStream().filter(o -> StrUtil.equals(email, o.getEmail())).findAny().orElse(null);
         if (member == null) {
             //用户
-            Member saveMember = Member.builder().code(code).account(name).password(password).name(nickName).mobile(mobile)
+            Member saveMember = Member.builder().code(code).account(name).password(password).name(nickName).mobile(mobile).realname(nickName)
                 .createTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.YYYY_MM_DD_HH_MM_SS)))
                 .status(1).email(email).build();
             //组织

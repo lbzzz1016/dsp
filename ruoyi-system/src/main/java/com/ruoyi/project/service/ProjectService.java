@@ -156,6 +156,7 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
         }
         if(StringUtils.isNotEmpty(archive)){
             sql += " and pp.archive = 1";
+            sql += " and pp.deleted = 0";
         }
         if(StringUtils.isNotEmpty(recycle)){
             sql += " and pp.deleted = 1";
