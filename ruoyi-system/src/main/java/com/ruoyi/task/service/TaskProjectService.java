@@ -267,11 +267,17 @@ public class TaskProjectService extends ServiceImpl<TaskMapper, Task> {
         if(-1 != sort){
             luw = luw.set(Task::getSort,sort);updateMark = true;
         }
-        if(updateMark)luw.update();
+        if(updateMark){
+            luw.update();
+            //TODO 实时计算项目进度 %
+            TaskStage taskStage = taskStageService.getTaskStageByCode(taskCode);
+
+
+        }
+
+
         taskHook(LoginHelper.getLoginUser().getCode(),taskCode,type,"",0,
                 "","","",null,null);
-
-
     }
 
     public Map getTaskMapByCode(String code){
