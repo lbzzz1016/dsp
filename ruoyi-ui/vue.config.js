@@ -12,7 +12,7 @@ const name = process.env.VUE_APP_TITLE || 'RuoYi-Flowable-Plus后台管理系统
 const port = process.env.port || process.env.npm_config_port || 80 // 端口
 
 // vue.config.js 配置说明
-//官方vue.config.js 参考文档 https://cli.vuejs.org/zh/config/#css-loaderoptions
+// 官方vue.config.js 参考文档 https://cli.vuejs.org/zh/config/#css-loaderoptions
 // 这里只列一部分，具体配置参考文档
 module.exports = {
   // 部署生产环境和开发环境下的URL。
@@ -47,7 +47,16 @@ module.exports = {
   css: {
     loaderOptions: {
       sass: {
-        sassOptions: { outputStyle: "expanded" }
+        sassOptions: {
+          outputStyle: 'expanded'
+        }
+      },
+      less: {
+        modifyVars: {
+          blue: '#3a82f8',
+          'text-color': '#333'
+        },
+        javascriptEnabled: true
       }
     }
   },
@@ -55,18 +64,21 @@ module.exports = {
     name: name,
     resolve: {
       alias: {
-        '@': resolve('src')
+        'vue$': 'vue/dist/vue.esm.js',
+        '@': resolve('src'),
+        'assets': resolve('src/assets'),
+        'components': resolve('src/components')
       }
     },
     plugins: [
       // http://doc.ruoyi.vip/ruoyi-vue/other/faq.html#使用gzip解压缩静态文件
       new CompressionPlugin({
-        test: /\.(js|css|html)?$/i,     // 压缩文件格式
-        filename: '[path].gz[query]',   // 压缩后的文件名
-        algorithm: 'gzip',              // 使用gzip压缩
-        minRatio: 0.8                   // 压缩率小于1才会压缩
+        test: /\.(js|css|html)?$/i, // 压缩文件格式
+        filename: '[path].gz[query]', // 压缩后的文件名
+        algorithm: 'gzip', // 使用gzip压缩
+        minRatio: 0.8 // 压缩率小于1才会压缩
       })
-    ],
+    ]
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test
@@ -88,7 +100,12 @@ module.exports = {
         symbolId: 'icon-[name]'
       })
       .end()
-
+    config.module
+      .rule('iview')
+      .test(/\.js$/)
+      .use('babel')
+      .loader('babel-loader')
+      .end()
     config
       .when(process.env.NODE_ENV !== 'development',
         config => {
@@ -124,11 +141,14 @@ module.exports = {
                 }
               }
             })
-          config.optimization.runtimeChunk('single'),
-          {
-             from: path.resolve(__dirname, './public/robots.txt'), //防爬虫文件
-             to: './' //到根目录下
-          }
+          config
+            .optimization.runtimeChunk(
+              'single',
+              {
+                from: path.resolve(__dirname, './public/robots.txt'), // 防爬虫文件
+                to: './' // 到根目录下
+              }
+            )
         }
       )
   }

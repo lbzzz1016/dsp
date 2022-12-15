@@ -144,6 +144,12 @@ public class SysUser extends BaseEntity {
     private String code;
 
     /**
+     * 编码
+     */
+    @ApiModelProperty(value = "编码")
+    private int jobNumber;
+
+    /**
      * 部门对象
      */
     @ApiModelProperty(value = "部门对象")

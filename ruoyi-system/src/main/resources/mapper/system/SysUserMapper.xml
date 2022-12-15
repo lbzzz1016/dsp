@@ -25,6 +25,7 @@
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property="code" column="code"/>
+        <result property="jobNumber" column="job_number"/>
         <association property="dept" column="dept_id" javaType="SysDept" resultMap="deptResult"/>
         <collection property="roles" javaType="java.util.List" resultMap="RoleResult"/>
     </resultMap>
@@ -67,6 +68,7 @@
                u.create_time,
                u.remark,
                u.code,
+               u.job_number,
                d.dept_id,
                d.parent_id,
                d.ancestors,
@@ -88,15 +90,16 @@
 
     <select id="selectPageUserList" resultMap="SysUserResult">
         select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex,
-        u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.code, d.dept_name, d.leader from
+        u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.code,u.job_number, d.dept_name, d.leader from
         sys_user u
         left join sys_dept d on u.dept_id = d.dept_id
         ${ew.getCustomSqlSegment}
+         order by u.job_number asc
     </select>
 
     <select id="selectUserList" resultMap="SysUserResult">
         select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex,
-        u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.code, d.dept_name, d.leader from
+        u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.code,u.job_number, d.dept_name, d.leader from
         sys_user u
         left join sys_dept d on u.dept_id = d.dept_id
         ${ew.getCustomSqlSegment}
