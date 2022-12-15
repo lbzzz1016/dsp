@@ -56,9 +56,6 @@ public class MemberController extends BaseController {
     @Autowired
     private ProjectService projectService;
 
-    @Autowired
-    private ISysUserService userService;
-
     /**
      * 账号停用
      * @param mmap

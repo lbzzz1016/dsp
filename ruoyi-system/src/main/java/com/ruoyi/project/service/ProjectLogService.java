@@ -2,10 +2,11 @@ package com.ruoyi.project.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.CommUtils;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.member.domain.Member;
+import com.ruoyi.member.service.MemberService;
 import com.ruoyi.project.domain.Project;
 import com.ruoyi.project.domain.ProjectLog;
 import com.ruoyi.project.mapper.ProjectLogMapper;
@@ -25,6 +26,9 @@ public class ProjectLogService extends ServiceImpl<ProjectLogMapper, ProjectLog>
     ProjectService projectService;
 
     @Autowired
+    MemberService memberService;
+
+    @Autowired
     ISysUserService sysUserService;
 
     public IPage<Map> getProjectLogByParam(IPage<Map> ipage, Map params){
@@ -39,9 +43,9 @@ public class ProjectLogService extends ServiceImpl<ProjectLogMapper, ProjectLog>
                 .memberCode(MapUtils.getString(param,"member_code")).projectCode(MapUtils.getString(param,"project_code")).build();
         Project project = projectService.getProjectProjectByCode(projectLog.getProjectCode());
         projectLog.setProjectCode(project.getCode());
-        SysUser toMember = new SysUser();
+        Member toMember = new Member();
         if(StringUtils.isNotEmpty(projectLog.getToMemberCode())){
-            toMember = sysUserService.getUserByCode(projectLog.getToMemberCode());
+            toMember = memberService.getMemberByCode(projectLog.getToMemberCode());
         }
         String type = projectLog.getType();
         if("create".equals(type)){
@@ -65,12 +69,12 @@ public class ProjectLogService extends ServiceImpl<ProjectLogMapper, ProjectLog>
             projectLog.setRemark("清空了备注");
         }else if("inviteMember".equals(type)){
             projectLog.setIcon("user-add");
-            projectLog.setRemark("邀请"+toMember.getNickName()+"加入项目");
-            projectLog.setContent(toMember.getNickName());
+            projectLog.setRemark("邀请"+toMember.getName()+"加入项目");
+            projectLog.setContent(toMember.getName());
         }else if("removeMember".equals(type)){
             projectLog.setIcon("user-delete");
-            projectLog.setRemark("移除了成员"+toMember.getNickName());
-            projectLog.setContent(toMember.getNickName());
+            projectLog.setRemark("移除了成员"+toMember.getName());
+            projectLog.setContent(toMember.getName());
         }else if("recycle".equals(type)){
             projectLog.setIcon("delete");
             projectLog.setRemark("把项目移到了回收站");

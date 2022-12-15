@@ -32,6 +32,8 @@ public class ProjectMemberService extends ServiceImpl<ProjectMemberMapper, Proje
     @Lazy
     @Autowired
     ProjectService projectService;
+
+    @Lazy
     @Autowired
     ProjectLogService projectLogService;
 
