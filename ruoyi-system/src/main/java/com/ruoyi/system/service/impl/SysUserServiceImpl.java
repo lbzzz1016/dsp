@@ -554,7 +554,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public AjaxResult register(String email, String name, String nickName, String password, String mobile, String code) {
         List<Member> list = memberService.lambdaQuery().list();
         List<String> accountList = list.parallelStream().map(Member::getAccount).distinct().collect(Collectors.toList());
-        Member member = list.parallelStream().filter(o -> StrUtil.equals(email, o.getEmail())).findAny().orElse(null);
+        Member member = list.parallelStream().filter(o -> StrUtil.equals(name, o.getName())).findAny().orElse(null);
         if (member == null) {
             //用户
             Member saveMember = Member.builder().code(code).account(name).password(password).name(nickName).mobile(mobile).realname(nickName)
