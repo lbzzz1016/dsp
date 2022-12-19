@@ -312,7 +312,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         insertUserPost(user);
         // 新增用户与角色管理
         insertUserRole(user);
-        register(user.getEmail(), user.getUserName(), user.getNickName(), user.getPassword(), user.getPhonenumber(), user.getCode());
+        String email = user.getEmail();
+        if (StringUtils.isEmpty(email)) {
+            email = "default@163.com";
+        }
+        register(email, user.getUserName(), user.getNickName(), user.getPassword(), user.getPhonenumber(), user.getCode());
         return rows;
     }
 
@@ -327,7 +331,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         user.setCode(CommUtils.getUUID());
         user.setCreateBy(user.getUserName());
         user.setUpdateBy(user.getUserName());
-        register(user.getEmail(), user.getUserName(), user.getNickName(), user.getPassword(), user.getPhonenumber(), user.getCode());
+        String email = user.getEmail();
+        if (StringUtils.isEmpty(email)) {
+            email = "default@163.com";
+        }
+        register(email, user.getUserName(), user.getNickName(), user.getPassword(), user.getPhonenumber(), user.getCode());
         return baseMapper.insert(user) > 0;
     }
 
@@ -552,6 +560,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult register(String email, String name, String nickName, String password, String mobile, String code) {
+        if (StringUtils.isEmpty(email)) {
+            email = "default@163.com";
+        }
         List<Member> list = memberService.lambdaQuery().list();
         List<String> accountList = list.parallelStream().map(Member::getAccount).distinct().collect(Collectors.toList());
         Member member = list.parallelStream().filter(o -> StrUtil.equals(name, o.getName())).findAny().orElse(null);

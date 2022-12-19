@@ -163,7 +163,7 @@ public class SysUserController extends BaseController {
         }
         user.setPassword(BCrypt.hashpw(user.getPassword()));
         if (user.getEmail() == null) {
-            user.setEmail("");
+            user.setEmail("default@163.com");
         }
         return toAjax(userService.insertUser(user));
     }
