@@ -213,11 +213,11 @@ mproject:
 
   uploadFolderPath: D:/mproject/static/upload/
 
-  imgServer: http://127.0.0.1:80/teamProject/
+  imgServer: http://10.119.31.167:84/teamProject/
 
   #用户默认图标
   userImg: user.jpg
   #项目默认图标
   projectImg: project.png
 
-  downloadServer: http://127.0.0.1:80
+  downloadServer: http://10.119.31.167:84

@@ -20,9 +20,11 @@ public interface MemberAccountMapper extends BaseMapper<MemberAccount> {
     @Select("SELECT * FROM team_member_account A WHERE A.name LIKE CONCAT('%',#{name},'%') AND A.organization_code = #{orgCode}")
     List<Map> getMemberCountByOrgCodeAndMemberName(@Param("orgCode") String orgCode, @Param("name") String name);
 
+    @Select("SELECT * FROM team_member_account A WHERE A.name LIKE CONCAT('%',#{name},'%')")
+    List<Map> getMemberCountByMemberName( @Param("name") String name);
+
     @Select("SELECT * FROM team_member_account WHERE member_code = #{memberCode} AND organization_code = #{orgCode} LIMIT 1")
     Map selectMemberAccountByMemCodeAndOrgCode(@Param("memberCode") String memberCode, @Param("orgCode") String orgCode);
-
 
     @Select("SELECT * FROM team_member_account WHERE organization_code = #{params.orgCode} AND status = #{params.status} AND department_code LIKE CONCAT('%',#{params.depCode},'%') ORDER BY id ASC")
     IPage<Map> selectMemberAccountByOrgCodeStatusDeptCode(IPage<Map> page, @Param("params") Map params);

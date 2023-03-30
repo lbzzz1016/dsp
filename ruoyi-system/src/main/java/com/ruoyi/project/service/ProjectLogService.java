@@ -42,6 +42,7 @@ public class ProjectLogService extends ServiceImpl<ProjectLogMapper, ProjectLog>
                 .type(MapUtils.getString(param,"type")).sourceCode(MapUtils.getString(param,"source_code"))
                 .memberCode(MapUtils.getString(param,"member_code")).projectCode(MapUtils.getString(param,"project_code")).build();
         Project project = projectService.getProjectProjectByCode(projectLog.getProjectCode());
+        System.out.println(project.getCode());
         projectLog.setProjectCode(project.getCode());
         Member toMember = new Member();
         if(StringUtils.isNotEmpty(projectLog.getToMemberCode())){

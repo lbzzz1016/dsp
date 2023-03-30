@@ -96,7 +96,7 @@ public class ProjectController extends BaseController {
         IPage<Map> ipage = Constant.createPage(mmap);
         Map params = new HashMap();
         params.put("memberCode",MapUtils.getString(loginMember,"memberCode"));
-        params.put("orgCode",MapUtils.getString(loginMember,"organizationCode"));
+//        params.put("orgCode",MapUtils.getString(loginMember,"organizationCode"));
         params.put("projectCode",projectCode);
 
         IPage<Map> resultData =  proService.getLogBySelfProject(ipage,params);

@@ -26,9 +26,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</foreach>
 	</select>
 
-	<select id="selectProjectCodesByMemberAndOrg" resultType="java.lang.String">
+	<select id="selectProjectCodesByMemberAndOrg" resultType="java.lang.String" parameterType="java.util.Map">
 		select pp.code from team_project as pp join team_project_member as pm on pm.project_code = pp.code
-		where pp.organization_code = #{params.orgCode} and (pm.member_code = #{params.memberCode}) and
+		where pm.member_code = #{params.memberCode} and
 		pp.deleted = 0 group by pp.`code`
 	</select>
 

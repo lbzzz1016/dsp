@@ -101,6 +101,8 @@ public class ProjectMemberService extends ServiceImpl<ProjectMemberMapper, Proje
         lambdaQueryWrapper.eq(ProjectMember::getProjectCode,project.getCode());
         lambdaQueryWrapper.eq(ProjectMember::getMemberCode,memberCode);
         Integer result = baseMapper.delete(lambdaQueryWrapper);
+        Integer result2 = memberAccountService.removeMemberAccount(memberCode, project.getOrganizationCode());
+
         projectLogService.run(new HashMap(){{
             put("member_code",memberCode);
             put("source_code",project.getCode());
@@ -108,8 +110,9 @@ public class ProjectMemberService extends ServiceImpl<ProjectMemberMapper, Proje
             put("to_member_code",memberCode);
             put("is_comment",0);
             put("content","");
+            put("project_code",project.getCode());
         }});
-        return result;
+        return result + result2;
     }
 
 

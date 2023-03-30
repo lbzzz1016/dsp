@@ -735,13 +735,14 @@ public class ProjectService extends ServiceImpl<ProjectMapper, Project> {
     public List<Task> taskPriority(String orgCode) {
         List<Project> list = lambdaQuery().select(Project::getCode).eq(Project::getOrganizationCode, orgCode).list();
         List<Task> taskList = null;
-        if (list != null) {
+        if (list != null && list.size() != 0) {
             List<String> codes = list.parallelStream().map(Project::getCode).collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(codes)) {
-                taskList = taskProjectService.lambdaQuery().select(Task::getCode, Task::getName, Task::getPri, Task::getEndTime).ne(Task::getExecuteStatus, "closed")
-                    .eq(Task::getDeleted, 0).eq(Task::getDone, 0).in(Task::getProjectCode, codes).list();
+            if (codes == null || codes.size() == 0) {
+                return taskList;
             }
-            if (taskList != null) {
+            taskList = taskProjectService.lambdaQuery().select(Task::getCode, Task::getName, Task::getPri, Task::getEndTime).ne(Task::getExecuteStatus, "closed")
+                .eq(Task::getDeleted, 0).eq(Task::getDone, 0).in(Task::getProjectCode, codes).list();
+            if (taskList != null && taskList.size() != 0) {
             	taskList = taskList.stream().filter(o -> o.getPri() != null && o.getEndTime() != null).sorted(Comparator.comparing(Task::getEndTime, Comparator.reverseOrder())).sorted(Comparator.comparing(Task::getPri, Comparator.reverseOrder())).collect(Collectors.toList());
             }
         }

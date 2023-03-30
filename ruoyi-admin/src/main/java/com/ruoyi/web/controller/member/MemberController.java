@@ -342,7 +342,9 @@ public class MemberController extends BaseController {
         String orgCode = MapUtils.getString(loginMember,"organizationCode");
         String keyword = MapUtils.getString(mmap,"keyword");
 
-        List<Map> listMemberAccounts = memberAccountService.getMemberCountByOrgCodeAndMemberName(orgCode,keyword);
+//        List<Map> listMemberAccounts = memberAccountService.getMemberCountByOrgCodeAndMemberName(orgCode,keyword);
+        List<Map> listMemberAccounts = memberAccountService.getMemberCountByMemberName(keyword);
+
         List<Map> resultData = new ArrayList<>();
         if(!CollectionUtils.isEmpty(listMemberAccounts)){
             Map tmpMap = null;
@@ -481,6 +483,7 @@ public class MemberController extends BaseController {
             return AjaxResult.warn("数据异常！");
         }
         Project project = projectService.getProjectByCodeNotDel(projectCode);
+        System.out.println(project.toString());
         if(ObjectUtils.isEmpty(project)){
             return AjaxResult.warn("该项目已失效！");
         }

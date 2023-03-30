@@ -14,6 +14,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.member.domain.Member;
 import com.ruoyi.member.domain.MemberAccount;
 import com.ruoyi.member.mapper.MemberAccountMapper;
+import com.ruoyi.project.domain.Project;
 import com.ruoyi.project.domain.ProjectAuth;
 import com.ruoyi.project.mapper.ProjectAuthMapper;
 import com.ruoyi.project.mapper.ProjectMapper;
@@ -46,6 +47,10 @@ public class MemberAccountService extends ServiceImpl<MemberAccountMapper, Membe
     public List<Map> getMemberCountByOrgCodeAndMemberName(String orgCode,String name){
         return  baseMapper.getMemberCountByOrgCodeAndMemberName(orgCode,name);
     }
+    //根据name模糊查询获取memberCount
+    public List<Map> getMemberCountByMemberName(String name){
+        return  baseMapper.getMemberCountByMemberName(name);
+    }
 
     public  Map getMemberAccountByMemCodeAndOrgCode(String memberCode,String orgCode){
         return baseMapper.selectMemberAccountByMemCodeAndOrgCode(memberCode,orgCode);
@@ -57,6 +62,13 @@ public class MemberAccountService extends ServiceImpl<MemberAccountMapper, Membe
 
     public IPage<Map> getMemberAccountByOrgCodeAndStatus(IPage page, Map params){
         return baseMapper.selectMemberAccountByOrgCodeAndStatus(page,params);
+    }
+
+    public Integer removeMemberAccount(String memberCode, String organizationCode){
+    LambdaQueryWrapper<MemberAccount> lambdaQueryWrapper =new LambdaQueryWrapper<MemberAccount>();
+        lambdaQueryWrapper.eq(MemberAccount::getOrganizationCode,organizationCode);
+        lambdaQueryWrapper.eq(MemberAccount::getMemberCode,memberCode);
+        return baseMapper.delete(lambdaQueryWrapper);
     }
 
     //Account.php  public function index()
