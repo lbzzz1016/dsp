@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("rawtypes")
@@ -26,6 +27,8 @@ public interface MemberMapper extends BaseMapper<Member> {
             "where a.code = b.member_code and a.account=#{account} limit 1")
     Map selectMemberAndAccountByAccount(@Param("account") String account);
 
+    @Select("SELECT * FROM team_member A WHERE A.name LIKE CONCAT('%',#{name},'%')")
+    List<Map> getMemberByMemberName(@Param("name") String name);
 
 }
 

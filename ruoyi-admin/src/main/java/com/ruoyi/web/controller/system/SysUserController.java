@@ -63,7 +63,6 @@ public class SysUserController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo<SysUser> list(SysUser user, PageQuery pageQuery) {
         TableDataInfo<SysUser> retVal = userService.selectPageUserList(user, pageQuery);
-        System.out.println(retVal);
         return retVal;
     }
 
@@ -72,7 +71,6 @@ public class SysUserController extends BaseController {
     @GetMapping("/listV2")
     public TableDataInfo<SysUser> listV2(SysUser user, PageQuery pageQuery) {
         TableDataInfo<SysUser> retVal = userService.selectPageUserList(user, pageQuery);
-        System.out.println(retVal);
         return retVal;
     }
 

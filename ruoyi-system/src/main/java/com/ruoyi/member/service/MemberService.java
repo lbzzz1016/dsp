@@ -68,6 +68,11 @@ public class MemberService extends ServiceImpl<MemberMapper, Member> {
         return projectMemberMapper.selectMemberByLoginParam(params);
     }
 
+    //根据name模糊查询获取member
+    public List<Map> getMemberByMemberName(String name){
+        return baseMapper.getMemberByMemberName(name);
+    }
+
     public List<Map> selectMemberCountByMemberCode(Map params){
         return projectMemberMapper.selectMemberCountByMemberCode(params);
     }

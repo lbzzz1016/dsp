@@ -497,13 +497,10 @@ public class ProjectController extends BaseController {
     {
         LoginUser loginUser = LoginHelper.getLoginUser();
         Map loginMember = getLoginMember();
-        System.out.println("this is loginMember" + loginMember.toString());
         Integer archive = MapUtils.getInteger(mmap,"archive",-1);
         Integer type =  MapUtils.getInteger(mmap,"type",0);
         Integer delete = MapUtils.getInteger(mmap,"delete",-1);
-        String organizationCode = MapUtils.getString(mmap,"organizationCode","");
         String memberCode = MapUtils.getString(mmap,"memberCode","");
-        //Member member = null;
         SysUser member = null;
         if(StringUtils.isNotEmpty(memberCode)){
             //member = memberService.getMemberByCode(memberCode);
@@ -511,7 +508,6 @@ public class ProjectController extends BaseController {
         }else{
             //member = memberService.getMemberByCode(MapUtils.getString(loginMember,"memberCode"));
             member = userService.getUserByCode(MapUtils.getString(loginMember, "memberCode"));
-            System.out.println("this is memberAccount + " + member);
         }
         if(ObjectUtils.isEmpty(member)){
             return AjaxResult.warn("参数有误");

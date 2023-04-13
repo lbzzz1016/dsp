@@ -248,6 +248,15 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         return new Date();
     }
 
+    public static Date parseStringToDate(String dateStr, String format) {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat(format);
+            return formatter.parse(dateStr);
+        } catch (ParseException e) {
+        }
+        return new Date();
+    }
+
     public static final String formatDateTime(Date date) {
         return new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS).format(date);
     }

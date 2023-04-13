@@ -1,6 +1,14 @@
 package com.ruoyi.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.ruoyi.common.constant.UserConstants;
+import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.helper.DataBaseHelper;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
@@ -16,9 +24,11 @@ import com.ruoyi.system.domain.SysProcess;
 import com.ruoyi.system.mapper.SysProcessMapper;
 import com.ruoyi.system.service.ISysProcessService;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * 请假流程Service业务层处理
@@ -82,10 +92,16 @@ public class SysProcessServiceImpl implements ISysProcessService {
         lqw.eq(StringUtils.isNotBlank(bo.getProcessType()), SysProcess::getProcessType, bo.getProcessType());
         lqw.like(StringUtils.isNotBlank(bo.getUserName()), SysProcess::getUserName, bo.getUserName());
         lqw.eq(StringUtils.isNotBlank(bo.getApprover()), SysProcess::getApprover, bo.getApprover());
-        lqw.eq(bo.getStartTime() != null, SysProcess::getStartTime, bo.getStartTime());
-        lqw.eq(bo.getEndTime() != null, SysProcess::getEndTime, bo.getEndTime());
         lqw.eq(StringUtils.isNotBlank(bo.getProcessHours()), SysProcess::getProcessHours, bo.getProcessHours());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), SysProcess::getStatus, bo.getStatus());
+        if (StringUtils.isNotBlank(bo.getStartTime())) {
+            lqw.ge(SysProcess::getStartTime, DateUtils.dateTime(DateUtils.YYYY_MM_DD, bo.getStartTime()));
+
+        }
+        if (StringUtils.isNotBlank(bo.getEndTime())){
+            lqw.le(SysProcess::getEndTime, DateUtils.dateTime(DateUtils.YYYY_MM_DD, bo.getEndTime()));
+        }
+        lqw.orderByDesc(SysProcess::getProcessCtime);
         return lqw;
     }
 

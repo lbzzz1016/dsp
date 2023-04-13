@@ -343,8 +343,8 @@ public class MemberController extends BaseController {
         String keyword = MapUtils.getString(mmap,"keyword");
 
 //        List<Map> listMemberAccounts = memberAccountService.getMemberCountByOrgCodeAndMemberName(orgCode,keyword);
-        List<Map> listMemberAccounts = memberAccountService.getMemberCountByMemberName(keyword);
-
+//        List<Map> listMemberAccounts = memberAccountService.getMemberCountByMemberName(keyword);
+        List<Map> listMemberAccounts = memberService.getMemberByMemberName(keyword);
         List<Map> resultData = new ArrayList<>();
         if(!CollectionUtils.isEmpty(listMemberAccounts)){
             Map tmpMap = null;

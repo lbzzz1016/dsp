@@ -15,22 +15,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 请假流程业务对象 sys_process
+ * 补卡流程业务对象 sys_clock_in
  *
- * @author LBZ
- * @date 2022-09-15
+ * @author lbzzz
+ * @date 2023-04-12
  */
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel("请假流程业务对象")
-public class SysProcessBo extends BaseEntity {
-
-    /**
-     * 流程类型
-     */
-    @ApiModelProperty(value = "流程类型")
-    private String processType;
+@ApiModel("补卡流程业务对象")
+public class SysClockInBo extends BaseEntity {
 
     /**
      * 申请人
@@ -39,28 +33,22 @@ public class SysProcessBo extends BaseEntity {
     private String userName;
 
     /**
-     * 审批人
+     * 工号
      */
-    @ApiModelProperty(value = "审批人")
-    private String approver;
+    @ApiModelProperty(value = "工号")
+    private String userNumber;
 
     /**
-     * 请假开始时间
+     * 补卡日期
      */
-    @ApiModelProperty(value = "请假开始时间")
-    private String startTime;
+    @ApiModelProperty(value = "补卡日期")
+    private String checkDate;
 
     /**
-     * 请假结束时间
+     * 补卡时间（上午、下午）
      */
-    @ApiModelProperty(value = "请假结束时间")
-    private String endTime;
-
-    /**
-     * 请假时长
-     */
-    @ApiModelProperty(value = "请假时长")
-    private String processHours;
+    @ApiModelProperty(value = "补卡时间（上午、下午）")
+    private String checkTime;
 
     /**
      * 流程状态（通过、未通过、删除）

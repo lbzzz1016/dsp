@@ -256,7 +256,7 @@ public class SysFileController extends BaseController {
     public AjaxResult uploadFiles(HttpServletRequest request, @RequestParam(value = "file") MultipartFile multipartFile)  throws Exception{
         String fileName= request.getParameter("identifier");
         String orgFileName= request.getParameter("filename");
-        String fileType= request.getParameter("fileType") == null ? "" : request.getParameter("fileType");
+        String fileType= request.getParameter("fileType") == null ? "rule" : request.getParameter("fileType");
 
         int  chunkNumber= request.getParameter("chunkNumber") == null ?0:new Integer(request.getParameter("chunkNumber"));
         int  totalChunks= request.getParameter("totalChunks") == null ?0:new Integer(request.getParameter("totalChunks"));

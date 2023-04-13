@@ -27,12 +27,10 @@ import com.ruoyi.flowable.factory.FlowServiceFactory;
 import com.ruoyi.flowable.utils.ModelUtils;
 import com.ruoyi.flowable.utils.ProcessFormUtils;
 import com.ruoyi.flowable.utils.TaskUtils;
+import com.ruoyi.system.domain.SysClockIn;
 import com.ruoyi.system.domain.SysProcess;
 import com.ruoyi.system.domain.bo.SysProcessBo;
-import com.ruoyi.system.service.ISysDeptService;
-import com.ruoyi.system.service.ISysProcessService;
-import com.ruoyi.system.service.ISysRoleService;
-import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.system.service.*;
 import com.ruoyi.workflow.domain.WfDeployForm;
 import com.ruoyi.workflow.domain.bo.WfProcessBo;
 import com.ruoyi.workflow.domain.vo.WfDefinitionVo;
@@ -88,6 +86,7 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
     private final ISysDeptService deptService;
     private final WfDeployFormMapper deployFormMapper;
     private final ISysProcessService processService;
+    private final ISysClockInService clockInService;
 
     /**
      * 流程定义列表
@@ -171,9 +170,15 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
             ProcessInstance processInstance = runtimeService.startProcessInstanceById(procDefId, variables);
             // 给第一步申请人节点设置任务执行人和意见 todo:第一个节点不设置为申请人节点有点问题？
             wfTaskService.startFirstTask(processInstance, variables);
-            //todo 将请假信息入库
-            SysProcess sysProcess = buildProcessPram(processInstance, variables);
-            processService.insert(sysProcess);
+            if (procDefId.contains("Process_1662088485683")) {
+                //将请假信息入库
+                SysProcess sysProcess = buildProcessPram(processInstance, variables);
+                processService.insert(sysProcess);
+            } else if (procDefId.contains("Process_1681347812947")) {
+                //将补卡信息入库
+                SysClockIn sysClockIn = buildClockPram(processInstance, variables);
+                clockInService.insert(sysClockIn);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException("流程启动错误");
@@ -209,6 +214,31 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
                                 .processHours(String.valueOf(hours))
                                 .build();
         return sysProcess;
+    }
+
+    /**
+     * 补卡流程参数构建
+     * @param variables 补卡流程参数入库
+     */
+    private SysClockIn buildClockPram(ProcessInstance processInstance, Map<String, Object> variables) {
+        //获取userId
+        Long userId = LoginHelper.getUserId();
+        String userName = LoginHelper.getNickName();
+
+        String clockDateStr = (String)variables.get("date");
+        Date clockDate = DateUtils.parseStringToDate(clockDateStr, DateUtils.YYYY_MM_DD);
+        SysClockIn sysClockIn = SysClockIn.builder()
+            .taskId(processInstance.getProcessInstanceId())
+            .processCtime(processInstance.getStartTime())
+            .userId(userId)
+            .userName(userName)
+            .userNumber((String) variables.get("num"))
+            .reason((String) variables.get("reason"))
+            .checkDate(clockDate)
+            .checkTime((String) variables.get("model"))
+            .status(ProcessStatus.INAPPROVAL.getInfo())
+            .build();
+        return sysClockIn;
     }
 
     /**

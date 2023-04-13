@@ -19,7 +19,9 @@ import com.ruoyi.flowable.flow.CustomProcessDiagramGenerator;
 import com.ruoyi.flowable.flow.FindNextNodeUtil;
 import com.ruoyi.flowable.flow.FlowableUtils;
 import com.ruoyi.flowable.utils.TaskUtils;
+import com.ruoyi.system.domain.SysClockIn;
 import com.ruoyi.system.domain.SysProcess;
+import com.ruoyi.system.service.ISysClockInService;
 import com.ruoyi.system.service.ISysProcessService;
 import com.ruoyi.system.service.ISysRoleService;
 import com.ruoyi.system.service.ISysUserService;
@@ -74,6 +76,8 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
 
     private final ISysProcessService processService;
 
+    private final ISysClockInService clockInService;
+
     /**
      * 完成任务
      *
@@ -107,17 +111,28 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
         }
 
         //更新流程信息
-        Long processId = processService.queryByTaskId(task.getProcessInstanceId());
-        log.debug("this is processId : " + processId);
         String assignee = LoginHelper.getNickName();
-        SysProcess sysProcess = SysProcess.builder()
-            .processId(processId)
-            .taskId(task.getProcessInstanceId())
-            .status(ProcessStatus.AGREE.getInfo())
-            .approver(assignee)
-            .processEtime(DateUtils.getNowDate())
-            .build();
-        processService.update(sysProcess);
+        if (task.getProcessDefinitionId().contains("Process_1662088485683")) {
+            Long processId = processService.queryByTaskId(task.getProcessInstanceId());
+            SysProcess sysProcess = SysProcess.builder()
+                .processId(processId)
+                .taskId(task.getProcessInstanceId())
+                .status(ProcessStatus.AGREE.getInfo())
+                .approver(assignee)
+                .processEtime(DateUtils.getNowDate())
+                .build();
+            processService.update(sysProcess);
+        } else if (task.getProcessDefinitionId().contains("Process_1681347812947")) {
+            Long processId = clockInService.queryByTaskId(task.getProcessInstanceId());
+            SysClockIn sysClockIn = SysClockIn.builder()
+                .processId(processId)
+                .taskId(task.getProcessInstanceId())
+                .status(ProcessStatus.AGREE.getInfo())
+                .approver(assignee)
+                .processEtime(DateUtils.getNowDate())
+                .build();
+            clockInService.update(sysClockIn);
+        }
     }
 
     /**
@@ -251,17 +266,28 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
         }
 
         //更新流程信息
-        Long processId = processService.queryByTaskId(task.getProcessInstanceId());
-        log.debug("this is processId : " + processId);
         String assignee = LoginHelper.getNickName();
-        SysProcess sysProcess = SysProcess.builder()
-            .processId(processId)
-            .taskId(task.getProcessInstanceId())
-            .status(ProcessStatus.REJECT.getInfo())
-            .approver(assignee)
-            .processEtime(DateUtils.getNowDate())
-            .build();
-        processService.update(sysProcess);
+        if (task.getProcessDefinitionId().contains("Process_1662088485683")) {
+            Long processId = processService.queryByTaskId(task.getProcessInstanceId());
+            SysProcess sysProcess = SysProcess.builder()
+                .processId(processId)
+                .taskId(task.getProcessInstanceId())
+                .status(ProcessStatus.REJECT.getInfo())
+                .approver(assignee)
+                .processEtime(DateUtils.getNowDate())
+                .build();
+            processService.update(sysProcess);
+        } else if (task.getProcessDefinitionId().contains("Process_1681347812947")) {
+            Long processId = clockInService.queryByTaskId(task.getProcessInstanceId());
+            SysClockIn sysClockIn = SysClockIn.builder()
+                .processId(processId)
+                .taskId(task.getProcessInstanceId())
+                .status(ProcessStatus.REJECT.getInfo())
+                .approver(assignee)
+                .processEtime(DateUtils.getNowDate())
+                .build();
+            clockInService.update(sysClockIn);
+        }
     }
 
     /**
@@ -351,17 +377,28 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
             throw new RuntimeException("抄送任务失败");
         }
         //更新流程信息
-        Long processId = processService.queryByTaskId(task.getProcessInstanceId());
-        log.debug("this is processId : " + processId);
         String assignee = LoginHelper.getNickName();
-        SysProcess sysProcess = SysProcess.builder()
-            .processId(processId)
-            .taskId(task.getProcessInstanceId())
-            .status(ProcessStatus.RETURN.getInfo())
-            .approver(assignee)
-            .processEtime(DateUtils.getNowDate())
-            .build();
-        processService.update(sysProcess);
+        if (task.getProcessDefinitionId().contains("Process_1662088485683")) {
+            Long processId = processService.queryByTaskId(task.getProcessInstanceId());
+            SysProcess sysProcess = SysProcess.builder()
+                .processId(processId)
+                .taskId(task.getProcessInstanceId())
+                .status(ProcessStatus.RETURN.getInfo())
+                .approver(assignee)
+                .processEtime(DateUtils.getNowDate())
+                .build();
+            processService.update(sysProcess);
+        } else if (task.getProcessDefinitionId().contains("Process_1681347812947")) {
+            Long processId = clockInService.queryByTaskId(task.getProcessInstanceId());
+            SysClockIn sysClockIn = SysClockIn.builder()
+                .processId(processId)
+                .taskId(task.getProcessInstanceId())
+                .status(ProcessStatus.RETURN.getInfo())
+                .approver(assignee)
+                .processEtime(DateUtils.getNowDate())
+                .build();
+            clockInService.update(sysClockIn);
+        }
     }
 
 
@@ -553,6 +590,31 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
                 runtimeService.createChangeActivityStateBuilder()
                     .moveExecutionsToSingleActivityId(executionIds, endId).changeState();
             }
+        }
+        // 当前任务 task
+        Task task2 = task.get(0);
+        //更新流程信息
+        String assignee = LoginHelper.getNickName();
+        if (task2.getProcessDefinitionId().contains("Process_1662088485683")) {
+            Long processId = processService.queryByTaskId(task2.getProcessInstanceId());
+            SysProcess sysProcess = SysProcess.builder()
+                .processId(processId)
+                .taskId(task2.getProcessInstanceId())
+                .status(ProcessStatus.CANCEL.getInfo())
+                .approver(assignee)
+                .processEtime(DateUtils.getNowDate())
+                .build();
+            processService.update(sysProcess);
+        } else if (task2.getProcessDefinitionId().contains("Process_1681347812947")) {
+            Long processId = clockInService.queryByTaskId(task2.getProcessInstanceId());
+            SysClockIn sysClockIn = SysClockIn.builder()
+                .processId(processId)
+                .taskId(task2.getProcessInstanceId())
+                .status(ProcessStatus.CANCEL.getInfo())
+                .approver(assignee)
+                .processEtime(DateUtils.getNowDate())
+                .build();
+            clockInService.update(sysClockIn);
         }
     }
 
